@@ -203,14 +203,21 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
 .mini > i { display: block; height: 100%; background: var(--accent); }
 .empty { padding: 18px 8px; text-align: center; color: var(--faint); font-size: 13.5px; border: 1px dashed var(--line-strong); border-radius: var(--r); }
 
-.add-row { display: flex; gap: 6px; margin-bottom: 2px; }
-.add-row input { flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink); background: transparent; border: 1px dashed var(--line-strong); border-radius: 8px; padding: 0 12px; height: 38px; }
-.add-row input::placeholder { color: var(--faint); }
-.add-row input:hover { border-color: var(--faint); }
-.add-row input:focus { border-style: solid; border-color: var(--accent); background: var(--surface); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
-.add-row button { flex: none; width: 38px; height: 38px; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); padding: 0; }
-.add-row button:hover:not(:disabled) { filter: brightness(1.08); }
-.add-row button .i { width: 17px; height: 17px; stroke-width: 2.2; }
+.board-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+.col-add { margin-left: 6px; width: 28px; height: 28px; display: grid; place-items: center; background: transparent; color: var(--muted); padding: 0; border-radius: 8px; }
+.col-add:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent); }
+.col-add .i { width: 17px; height: 17px; stroke-width: 2.2; }
+#nt-scrim { position: fixed; inset: 0; z-index: 40; background: var(--scrim); }
+#nt { position: fixed; z-index: 41; inset: 0; display: grid; place-items: start center; padding: 12vh 16px 16px; pointer-events: none; overflow-y: auto; }
+#nt form { pointer-events: auto; width: min(480px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-pop); padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+#nt h2 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
+#nt input[type="text"] { font: inherit; font-size: 16px; height: 46px; padding: 0 14px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; width: 100%; }
+#nt input[type="text"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+#nt .err { color: var(--alta); font-size: 13px; } #nt .err:empty { display: none; }
+.nt-acts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.nt-acts .btn-p { height: 42px; } .nt-acts .btn-s { height: 42px; }
+.nt-acts #nt-cancel { margin-left: auto; }
+@media (max-width: 760px) { #nt { padding-top: 8vh; } .nt-acts .btn-p { flex: 1 1 100%; } .nt-acts #nt-cancel { margin-left: 0; } }
 
 /* Paneles laterales */
 #scrim, #a-scrim, #t-scrim, #m-scrim, #n-scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); border: 0; padding: 0; margin: 0; }
@@ -686,8 +693,9 @@ button.pcard:hover { border-color: var(--line-strong); }
 .t-new .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 @media (prefers-reduced-motion: no-preference) {
-  button, .card, .col, .add-row input, .tick, .sub-box { transition: background-color .15s, border-color .15s, box-shadow .15s, color .15s, filter .15s; }
-  .bar > i { transition: width .4s cubic-bezier(.16, 1, .3, 1); }
+  #nt form { animation: ntin .18s ease-out; }
+  @keyframes ntin { from { transform: translateY(8px); opacity: 0; } }
+  button, .card, .col,   .bar > i { transition: width .4s cubic-bezier(.16, 1, .3, 1); }
   #panel, #admin, #team, #met, #notif { animation: slide .24s cubic-bezier(.16, 1, .3, 1); }
   #scrim, #a-scrim, #t-scrim, #m-scrim, #n-scrim { animation: fade .2s ease-out; }
   @keyframes slide { from { transform: translateX(20px); opacity: 0; } }
@@ -766,11 +774,14 @@ button.pcard:hover { border-color: var(--line-strong); }
       <button type="button" id="banner-ok">Confirmar</button>
     </div>
   </div>
-  <div class="vm" id="vmode" role="group" aria-label="Vista del tablero">
+  <div class="board-bar">
+    <div class="vm" id="vmode" role="group" aria-label="Vista del tablero">
     <button type="button" data-vm="board" aria-pressed="true">Tablero</button>
     <button type="button" data-vm="hoy" aria-pressed="false">Hoy</button>
     <button type="button" data-vm="semana" aria-pressed="false">Esta semana</button>
     <button type="button" data-vm="archivo" aria-pressed="false">Archivo</button>
+  </div>
+    <button type="button" class="btn-p" id="nt-open" title="Atajo: N"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nueva tarea</button>
   </div>
   <div class="filters" id="filters" role="group" aria-label="Filtrar por etiqueta" hidden></div>
   <div class="filters" id="pfilters" role="group" aria-label="Filtrar por proyecto" hidden></div>
@@ -786,34 +797,22 @@ button.pcard:hover { border-color: var(--line-strong); }
     <div class="col" data-status="pendiente">
       <div class="col-head">
         <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-dasharray="3 3"/></svg></span>
-        <span class="col-name">Pendiente</span><span class="col-n" data-n="pendiente">0</span>
+        <span class="col-name">Pendiente</span><span class="col-n" data-n="pendiente">0</span><button type="button" class="col-add" data-addto="pendiente" aria-label="Nueva tarea en Pendiente" title="Nueva tarea en Pendiente"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
-      <form class="add-row" data-add="pendiente" autocomplete="off">
-        <input type="text" id="add-pendiente" placeholder="Agregar tarea" aria-label="Agregar en Pendiente" maxlength="300">
-        <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-      </form>
       <ul class="stack" data-stack="pendiente"></ul>
     </div>
     <div class="col" data-status="proceso">
       <div class="col-head">
         <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg></span>
-        <span class="col-name">En proceso</span><span class="col-n" data-n="proceso">0</span>
+        <span class="col-name">En proceso</span><span class="col-n" data-n="proceso">0</span><button type="button" class="col-add" data-addto="proceso" aria-label="Nueva tarea en En proceso" title="Nueva tarea en En proceso"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
-      <form class="add-row" data-add="proceso" autocomplete="off">
-        <input type="text" id="add-proceso" placeholder="Agregar tarea" aria-label="Agregar en En proceso" maxlength="300">
-        <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-      </form>
       <ul class="stack" data-stack="proceso"></ul>
     </div>
     <div class="col" data-status="completado">
       <div class="col-head">
         <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg></span>
-        <span class="col-name">Completado</span><button type="button" class="btn-s" id="arch-old" hidden>Archivar +14 días</button><span class="col-n" data-n="completado">0</span>
+        <span class="col-name">Completado</span><button type="button" class="btn-s" id="arch-old" hidden>Archivar +14 días</button><span class="col-n" data-n="completado">0</span><button type="button" class="col-add" data-addto="completado" aria-label="Nueva tarea en Completado" title="Nueva tarea en Completado"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
-      <form class="add-row" data-add="completado" autocomplete="off">
-        <input type="text" id="add-completado" placeholder="Agregar tarea" aria-label="Agregar en Completado" maxlength="300">
-        <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-      </form>
       <ul class="stack" data-stack="completado"></ul>
     </div>
   </div>
@@ -861,6 +860,34 @@ button.pcard:hover { border-color: var(--line-strong); }
     <button type="submit" id="chpw-btn">Guardar contraseña</button>
     <button type="button" class="alt" id="chpw-cancel" hidden>Cancelar</button>
     <span class="err" id="chpw-err" role="alert"></span>
+  </form>
+</div>
+
+<div id="nt-scrim" hidden></div>
+<div id="nt" hidden role="dialog" aria-modal="true" aria-labelledby="nt-h">
+  <form id="nt-form" autocomplete="off">
+    <h2 id="nt-h">Nueva tarea</h2>
+    <input type="text" id="nt-text" placeholder="¿Qué hay que hacer?" aria-label="Título de la tarea" maxlength="300" required>
+    <div class="field"><span class="lbl-f" id="nt-es-l">Estado</span>
+      <div class="prio-seg" id="nt-estado" role="radiogroup" aria-labelledby="nt-es-l">
+        <button type="button" role="radio" aria-checked="true" data-v="pendiente">Pendiente</button>
+        <button type="button" role="radio" aria-checked="false" data-v="proceso">En proceso</button>
+        <button type="button" role="radio" aria-checked="false" data-v="completado">Completado</button>
+      </div></div>
+    <div class="field"><span class="lbl-f" id="nt-pr-l">Prioridad (opcional)</span>
+      <div class="prio-seg" id="nt-prio" role="radiogroup" aria-labelledby="nt-pr-l">
+        <button type="button" role="radio" aria-checked="true" data-v="">Ninguna</button>
+        <button type="button" role="radio" aria-checked="false" data-v="alta">Alta</button>
+        <button type="button" role="radio" aria-checked="false" data-v="media">Media</button>
+        <button type="button" role="radio" aria-checked="false" data-v="baja">Baja</button>
+      </div></div>
+    <div class="field"><label for="nt-due">Fecha límite (opcional)</label><input type="date" id="nt-due"></div>
+    <span class="err" id="nt-err" role="alert"></span>
+    <div class="nt-acts">
+      <button type="submit" class="btn-p" id="nt-go">Crear tarea</button>
+      <button type="button" class="btn-s" id="nt-more">Crear y agregar otra</button>
+      <button type="button" class="btn-s" id="nt-cancel">Cancelar</button>
+    </div>
   </form>
 </div>
 
@@ -1595,31 +1622,61 @@ button.pcard:hover { border-color: var(--line-strong); }
     });
   });
 
-  // Add a task straight into a column.
-  STATES.forEach(function (st) {
-    var f = document.querySelector('[data-add="' + st + '"]');
-    f.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var inp = f.querySelector('input');
-      var text = inp.value.trim();
-      if (!text || !col) return;
-      var btn = f.querySelector('button');
-      btn.disabled = true;
-      var now = Date.now();
+  // Nueva tarea: un solo botón; el estado se elige en el diálogo y la tarea va arriba de esa columna.
+  (function () {
+    var dlg = $('nt'), scr = $('nt-scrim'), openBtn = $('nt-open'), prev = null;
+    function seg(id, val) { $(id).querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-checked', String(b.dataset.v === val)); }); }
+    function segVal(id) { var b = $(id).querySelector('[aria-checked="true"]'); return b ? b.dataset.v : ''; }
+    ['nt-estado', 'nt-prio'].forEach(function (id) {
+      $(id).addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) seg(id, b.dataset.v); });
+    });
+    function open(estado) {
+      if (!canWrite || !col) return;
+      prev = document.activeElement;
+      if (!estado) estado = window.matchMedia('(max-width: 760px)').matches ? ($('board').dataset.show || 'pendiente') : 'pendiente';
+      seg('nt-estado', estado); seg('nt-prio', ''); $('nt-text').value = ''; $('nt-due').value = ''; $('nt-err').textContent = '';
+      scr.hidden = false; dlg.hidden = false; $('nt-text').focus();
+    }
+    function close() { dlg.hidden = true; scr.hidden = true; if (prev && prev.focus) { try { prev.focus(); } catch (e) {} } }
+    async function crear(seguir) {
+      var text = $('nt-text').value.trim();
+      if (!text) { $('nt-err').textContent = 'Escribí el título de la tarea.'; $('nt-text').focus(); return; }
+      var st = segVal('nt-estado') || 'pendiente', now = Date.now();
+      var btns = [$('nt-go'), $('nt-more')]; btns.forEach(function (b) { b.disabled = true; });
       try {
         var row = await col.add({
-          text: text, status: st, prio: '', due: '', notes: '', subs: [],
+          text: text, status: st, prio: segVal('nt-prio'), due: $('nt-due').value, notes: '', subs: [],
           order: startOf(st), createdAt: now, doneAt: st === 'completado' ? now : 0,
           statusAt: now, labels: [], avances: [], visible: true, proyectoId: '', equipoProyectoId: '', recurrencia: '', archivada: false,
           done: st === 'completado'
         });
         if (row && row.id) { byId[row.id] = norm(row.id, fromRow(row)); render(); } // aparece al instante
-        inp.value = ''; say('');
-      } catch (err) { say('No se pudo agregar la tarea.', err); }
-      btn.disabled = false;
-      inp.focus();
+        say('');
+        if (seguir) { $('nt-text').value = ''; $('nt-err').textContent = ''; $('nt-text').focus(); }
+        else {
+          close();
+          if (boardMode !== 'board') { boardMode = 'board'; render(); }
+          var seg2 = $('seg').querySelector('[data-seg="' + st + '"]'); if (seg2 && window.matchMedia('(max-width: 760px)').matches) seg2.click();
+        }
+      } catch (err) { $('nt-err').textContent = 'No se pudo crear la tarea. Probá de nuevo.'; say('No se pudo agregar la tarea.', err); }
+      btns.forEach(function (b) { b.disabled = false; });
+    }
+    openBtn.addEventListener('click', function () { open(); });
+    document.querySelectorAll('.col-add').forEach(function (b) { b.addEventListener('click', function () { open(b.dataset.addto); }); });
+    $('nt-form').addEventListener('submit', function (e) { e.preventDefault(); crear(false); });
+    $('nt-more').addEventListener('click', function () { crear(true); });
+    $('nt-cancel').addEventListener('click', close);
+    scr.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !dlg.hidden) { e.stopPropagation(); close(); return; }
+      if ((e.key === 'n' || e.key === 'N') && !e.ctrlKey && !e.metaKey && !e.altKey && dlg.hidden) {
+        var a = document.activeElement, tag = a && a.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (a && a.isContentEditable)) return;
+        if (view !== 'board' || !panel.hidden || !$('login').hidden || !$('admin').hidden || !$('team').hidden || !$('met').hidden || !$('notif').hidden) return;
+        e.preventDefault(); open();
+      }
     });
-  });
+  })();
 
   /* ---------- detail panel ---------- */
 
@@ -2047,8 +2104,8 @@ button.pcard:hover { border-color: var(--line-strong); }
   function offline(msg) {
     tallyEl.textContent = 'sin conexión';
     canWrite = false;
-    document.querySelectorAll('.add-row input, .add-row button').forEach(function (el) { el.disabled = true; });
-    document.querySelectorAll('.add-row input').forEach(function (el) { el.placeholder = msg; });
+    $('nt-open').disabled = true; $('nt-open').title = msg;
+    document.querySelectorAll('.col-add').forEach(function (el) { el.disabled = true; });
   }
 
   /* ---------- Supabase ---------- */
@@ -3106,14 +3163,14 @@ button.pcard:hover { border-color: var(--line-strong); }
 '- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Proyectos (si participás en alguno), Gestión (si tenés gente a cargo) y Guía.\n' +
 '- **Barra de arriba**: la campana de notificaciones, Métricas, Mi equipo (solo líderes), Usuarios (solo administradores) y Salir.\n\n' +
 '## Tu primer día\n' +
-'- Cargá tus tareas en el Tablero (escribí en «Agregar tarea» y tocá +).\n' +
+'- Cargá tus tareas en el Tablero con el botón «Nueva tarea».\n' +
 '- Leé la sección «Quién ve tus tareas»: por defecto tus responsables ven tu trabajo.\n' +
 '- Pasá por la Biblioteca: puede tener ayudas y ejemplos de tu equipo.' },
 
     { id: 'tablero', t: 'Tu tablero', b:
 'Tus tareas viven en tres columnas: **Pendiente**, **En proceso** y **Completado**. Arriba ves cuántas tareas tenés y una barra de avance general.\n\n' +
 '## Agregar una tarea\n' +
-'Escribí el título en la barra que está arriba de la columna que quieras y apretá Enter (o tocá el +). La tarea nueva aparece primera de la lista. Después abrila para completar el detalle.\n\n' +
+'Tocá **Nueva tarea** (o apretá la tecla N). En la ventana escribís el título, elegís en qué estado empieza (Pendiente, En proceso o Completado) y, si querés, la prioridad y la fecha. Con «Crear y agregar otra» cargás varias seguidas. También podés tocar el + del encabezado de cada columna para empezar con ese estado ya elegido. La tarea nueva aparece primera de su columna; después abrila para completar el detalle.\n\n' +
 '## Mover una tarea de estado\n' +
 '- En la computadora: arrastrala a otra columna.\n' +
 '- En cualquier dispositivo: tocá el botón **Empezar**, **Completar** o **Reabrir** de la tarjeta, o el círculo de la izquierda para completarla.\n' +
