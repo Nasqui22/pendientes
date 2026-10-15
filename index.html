@@ -680,10 +680,12 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   <button type="button" data-view="board" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="16.5" y="4" width="4" height="13" rx="1.5"/></svg>Tablero</button>
   <button type="button" data-view="lib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>Biblioteca</button>
   <button type="button" data-view="gest" id="side-gest" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5M16.5 5.2a3.2 3.2 0 0 1 0 5.6M18.5 14.8c1.6.7 2.6 2.2 3 4.5"/></svg>Gestión</button>
+  <button type="button" data-view="guia"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 1 1 3.4 2.2c-.7.4-1.1.9-1.1 1.8M12 16.6v.1"/></svg>Guía</button>
 </nav>
 
 <main class="wrap" id="lib-view" hidden></main>
 <main class="wrap" id="gest-view" hidden></main>
+<main class="wrap" id="guia-view" hidden></main>
 
 <div id="login" hidden>
   <form id="login-form" autocomplete="on">
@@ -2008,12 +2010,14 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   function setView(v) {
     if (v === 'gest' && !directos.length) v = 'board';
     view = v;
-    document.querySelector('.wrap:not(#lib-view):not(#gest-view)').hidden = v !== 'board';
+    document.getElementById('board-view').hidden = v !== 'board';
+    $('guia-view').hidden = v !== 'guia';
     $('lib-view').hidden = v !== 'lib';
     $('gest-view').hidden = v !== 'gest';
     $('side').querySelectorAll('[data-view]').forEach(function (b) {
       if (b.dataset.view === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
+    if (v === 'guia') renderGuia();
     if (v === 'lib') { libOpen = ''; libEdit = null; loadBiblioteca(); }
     if (v === 'gest') { loadBiblioteca(); loadTeam(); }
     window.scrollTo(0, 0);
@@ -2388,6 +2392,191 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       c.appendChild(del); ps.appendChild(c);
     });
     v.replaceChildren(head, msg, cs, ps);
+  }
+
+  /* ---------- Guía de uso ---------- */
+
+  var guiaSec = 'inicio';
+  var GUIA = [
+    { id: 'inicio', t: 'Primeros pasos', b:
+'Pendientes es tu tablero de tareas personal, con herramientas para trabajar en equipo: responsables que validan, subtareas que se pasan entre compañeros, una biblioteca compartida y métricas.\n\n' +
+'## Cómo entrar\n' +
+'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). Si no recordás tu contraseña, pedile una nueva al administrador.\n\n' +
+'## Dónde está cada cosa\n' +
+'- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Guía y, si tenés gente a cargo, Gestión.\n' +
+'- **Barra de arriba**: la campana de notificaciones, Métricas, Mi equipo (solo líderes), Usuarios (solo administradores) y Salir.\n\n' +
+'## Tu primer día\n' +
+'- Cargá tus tareas en el Tablero (escribí en «Agregar tarea» y tocá +).\n' +
+'- Leé la sección «Quién ve tus tareas»: por defecto tus responsables ven tu trabajo.\n' +
+'- Pasá por la Biblioteca: puede tener ayudas y ejemplos de tu equipo.' },
+
+    { id: 'tablero', t: 'Tu tablero', b:
+'Tus tareas viven en tres columnas: **Pendiente**, **En proceso** y **Completado**. Arriba ves cuántas tareas tenés y una barra de avance general.\n\n' +
+'## Agregar una tarea\n' +
+'Escribí el título en la columna que quieras (abajo del todo) y tocá el +. Después abrila para completar el detalle.\n\n' +
+'## Mover una tarea de estado\n' +
+'- En la computadora: arrastrala a otra columna.\n' +
+'- En cualquier dispositivo: tocá el botón **Empezar**, **Completar** o **Reabrir** de la tarjeta, o el círculo de la izquierda para completarla.\n' +
+'- En el celular ves una columna a la vez: elegí cuál arriba (Pendiente, En proceso, Completado).\n\n' +
+'## Qué muestra cada tarjeta\n' +
+'Título, primera línea de las notas, las subtareas que faltan, la prioridad, la fecha en palabras («Vence mañana», «Venció hace 2 días»), las etiquetas, el proyecto y avisos como «Asignada por…», «Compartida», «Esperando validación», «Validada» o «Devuelta».\n\n' +
+'## Filtrar\n' +
+'Si usás etiquetas o proyectos, aparecen filtros arriba del tablero. «Compartidas» muestra lo que ven tus responsables.' },
+
+    { id: 'tarea', t: 'Dentro de una tarea', b:
+'Tocá una tarjeta para abrir su detalle. Todo se guarda solo, apenas lo cambiás.\n\n' +
+'- **Estado y prioridad**: Alta, Media o Baja.\n' +
+'- **Fecha límite**: elegila en el calendario o usá los atajos Hoy, Mañana, En una semana o Sin fecha.\n' +
+'- **Etiquetas**: hasta 8 por tarea, para agrupar por tema (por ejemplo «Evento»). Las que ya usaste aparecen como sugerencia.\n' +
+'- **Notas**: contexto, links, personas, próximos pasos.\n' +
+'- **Subtareas**: pasos chicos con tilde. Podés reordenarlas con las flechas y ves el progreso («2 de 3»).\n' +
+'- **Avances**: anotás novedades cortas con fecha («Hablé con el proveedor»). El más reciente queda arriba. Sirven para dejar registro sin editar las notas.\n' +
+'- **Proyecto** y **Proyecto de equipo**: ver la sección de proyectos.\n' +
+'- **Historia**: cuándo se creó, desde cuándo está en este estado y cuánto tardó en cerrarse.\n\n' +
+'## Eliminar\n' +
+'El botón Eliminar pide una segunda confirmación. Las tareas que te asignó tu responsable no se pueden eliminar.' },
+
+    { id: 'proyectos', t: 'Proyectos y etiquetas', b:
+'Hay dos tipos de proyecto, y conviene no confundirlos.\n\n' +
+'## Proyecto personal\n' +
+'Lo creás vos, desde el detalle de cualquier tarea (campo «Nuevo proyecto»). Es solo para ordenar tu tablero: nadie más lo ve, y sirve para filtrar.\n\n' +
+'## Proyecto de equipo\n' +
+'Lo crea un líder en Gestión y suma a sus colaboradores. Si participás en uno, en el detalle de la tarea aparece «Proyecto de equipo» y podés vincular tus tareas. Así tu líder ve en qué trabaja cada uno. Si el proyecto se borra, tus tareas no se pierden: quedan sin proyecto.\n\n' +
+'## Etiquetas\n' +
+'Son palabras libres que agregás a la tarea (máximo 8). No son proyectos: sirven para filtrar por tema, y tienen su propio filtro arriba del tablero.' },
+
+    { id: 'privacidad', t: 'Quién ve tus tareas', b:
+'## La regla\n' +
+'Tus responsables directos ven tus tareas **por defecto**. Cada tarea tiene la casilla **«Visible para mis responsables»**: si la desmarcás, esa tarea es solo tuya.\n\n' +
+'## Qué ve cada persona\n' +
+'- **Tu responsable directo**: las tareas visibles, y las que él mismo te asignó. Nada más.\n' +
+'- **Tus compañeros** (personas con el mismo responsable): no ven tus tareas. Solo pueden pasarte subtareas y ver los libros que compartas.\n' +
+'- **El administrador**: gestiona usuarios y relaciones, pero no ve las tareas de nadie.\n\n' +
+'## Cuando sumás un responsable nuevo\n' +
+'Si el administrador te suma un responsable, todavía no ve nada tuyo. Te aparece un aviso arriba del tablero: revisá cuáles querés dejar privadas, tocá «Ver lo compartido» para chequear, y confirmá. Recién ahí empieza a ver lo visible.\n\n' +
+'## Qué no se hace\n' +
+'Tu responsable no ve cuántas tareas privadas tenés, ni cuándo te conectaste.' },
+
+    { id: 'validacion', t: 'Tareas asignadas y validación', b:
+'## Tareas que te asigna tu responsable\n' +
+'Aparecen en tu columna Pendiente con la marca «Asignada por…». La fecha y la prioridad las fija quien la asignó, así que no se pueden cambiar. Tampoco se pueden eliminar. Todo lo demás (notas, subtareas, avances, estado) lo manejás vos.\n\n' +
+'## Validación\n' +
+'Cuando completás una tarea visible o asignada, queda **«Esperando validación»** hasta que tu responsable la revise.\n' +
+'- **Validada**: queda cerrada y ya no se puede reabrir ni cambiar de estado.\n' +
+'- **Devuelta**: tu responsable la manda de vuelta a «En proceso» con un motivo. Lo ves en la tarea y queda anotado en Avances. Corregís y la completás de nuevo.\n\n' +
+'Si hay varios responsables, alcanza con que valide uno: el primero que la cierra queda registrado.' },
+
+    { id: 'delegar', t: 'Pasar subtareas a un compañero', b:
+'Si una subtarea de una tarea tuya la puede hacer otra persona de tu equipo, podés pasársela.\n\n' +
+'## Cómo se pasa\n' +
+'- Abrí tu tarea y tocá el ícono de persona al lado de la subtarea.\n' +
+'- Elegí al compañero y tocá Enviar. «Compañero» es alguien que comparte al menos un responsable con vos.\n\n' +
+'## Qué pasa después\n' +
+'- A tu compañero le llega una notificación en la **campana** de arriba, con el título de la subtarea y el de tu tarea. Puede **aceptar** o **rechazar** (con un motivo opcional).\n' +
+'- Si acepta, se crea una tarea nueva en su Pendiente. Vos ves «la aceptó y la tiene como tarea».\n' +
+'- Si rechaza, ves el motivo y podés pasársela a otra persona.\n' +
+'- Mientras espera respuesta, podés cancelarla desde la campana.\n\n' +
+'El número de la campana cuenta lo que tenés que responder más las respuestas que todavía no viste.\n\n' +
+'Tené en cuenta: cuando tu compañero termina la tarea, tu subtarea no se tilda sola; tildala vos.' },
+
+    { id: 'biblioteca', t: 'Biblioteca', b:
+'La Biblioteca es un espacio para compartir información con tu equipo, parecido a las páginas de Microsoft. Cada **libro** tiene varias páginas y enlaces. No se pueden subir archivos: solo texto y URLs.\n\n' +
+'## Leer\n' +
+'Elegí un libro; las páginas están en el índice de la izquierda. Los enlaces están al pie, marcados como **Automatismo**, **Ejemplo** o **Ayuda**, y abren en otra pestaña.\n\n' +
+'## Crear un libro\n' +
+'Tocá «Nuevo libro». Cualquier persona puede crear libros. Completá:\n' +
+'- **Título**, **resumen** y **categoría**: Power Automate, Merlin, Información general o Ayuda.\n' +
+'- **Páginas** (hasta 12): título y texto. Podés usar # para un título, ## para un subtítulo, - para viñetas, **negrita**, y los links se vuelven clickeables solos.\n' +
+'- **Enlaces** (hasta 20): nombre, URL (tiene que empezar con http o https) y tipo.\n\n' +
+'## Quién lo ve\n' +
+'- **Solo yo**: queda como borrador.\n' +
+'- **Todo mi equipo**: tu responsable, tus compañeros y tus directos.\n' +
+'- **Personas puntuales**: elegís quiénes dentro de tu equipo.\n\n' +
+'Solo el autor edita o elimina un libro. Un líder puede asignar sus libros a un proyecto de equipo, y entonces los miembros del proyecto lo ven aunque no esté compartido de otra forma.\n\n' +
+'Para encontrar algo: usá el buscador y los filtros por categoría y proyecto.' },
+
+    { id: 'metricas', t: 'Métricas', b:
+'El botón **Métricas** de arriba muestra cómo venís trabajando. Se calcula con tus tareas, sin que cargues nada extra.\n\n' +
+'## Indicadores\n' +
+'- **Abiertas**: tareas que no están completadas.\n' +
+'- **Completadas en 30 días**: lo que cerraste en el último mes.\n' +
+'- **Vencidas**: abiertas con fecha límite pasada.\n' +
+'- **Tiempo medio de resolución**: típicamente cuánto pasa desde que creás una tarea hasta que la completás (es la mediana, para que una tarea eterna no distorsione).\n' +
+'- **Cerradas a tiempo**: de las completadas que tenían fecha, cuántas se cerraron hasta ese día.\n' +
+'- **Sin moverse hace +7 días**: abiertas que llevan más de una semana en el mismo estado.\n\n' +
+'## Gráficos\n' +
+'El **ritmo semanal** compara tareas creadas y completadas en las últimas 8 semanas. La barra de estados muestra cuánto hay en cada columna. Abajo, la lista de lo que más tiempo lleva abierto: buen punto de partida para destrabar.' },
+
+    { id: 'equipo', lider: true, t: 'Mi equipo (líderes)', b:
+'Si sos responsable de otras personas, arriba aparece el botón **Mi equipo**. Ahí ves la cola de trabajo de tus directos, sin agrupar por persona.\n\n' +
+'## Qué ves\n' +
+'Solo las tareas que tus directos dejaron visibles y las que vos les asignaste. Lo privado no aparece.\n' +
+'- **Para validar**: tareas completadas esperando tu revisión. **Validar** las cierra. **Devolver** pide un motivo obligatorio y las manda de vuelta a «En proceso».\n' +
+'- **Asignadas por vos y vencidas**: lo que delegaste y se pasó de fecha. Podés **Retirar** una tarea que asignaste (con confirmación).\n' +
+'- **Asignadas y compartidas**: el resto del trabajo visible, más las últimas validadas.\n\n' +
+'## Asignar una tarea\n' +
+'Tocá «+ Asignar una tarea», elegí a la persona (uno de tus directos), el título, prioridad, fecha y, si querés, un proyecto de equipo. Le llega a su Pendiente con la marca «Asignada por».\n\n' +
+'## Métricas del equipo\n' +
+'En Métricas, la pestaña **Equipo** consolida los indicadores de todos tus directos, marca los cuellos de botella (sin validar, estancadas, vencidas) y permite abrir las métricas de cada persona. Solo cuentan tareas visibles o asignadas.' },
+
+    { id: 'gestion', lider: true, t: 'Gestión de equipo (líderes)', b:
+'En **Gestión** (barra lateral) organizás a tus colaboradores por proyecto.\n\n' +
+'## Colaboradores\n' +
+'Cada tarjeta muestra los proyectos en los que trabaja esa persona y un atajo a sus métricas.\n\n' +
+'## Proyectos de equipo\n' +
+'- Creá un proyecto con nombre y descripción.\n' +
+'- Marcá qué colaboradores participan: solo podés sumar a tus directos.\n' +
+'- Marcá qué libros tuyos incluye. Los miembros los ven en su Biblioteca.\n' +
+'- Mirá cuántas tareas tiene vinculadas el proyecto, cuántas abiertas y cuántas completadas.\n\n' +
+'Cada colaborador puede vincular sus tareas al proyecto desde el detalle de la tarea, y vos podés asignar tareas directamente a un proyecto desde Mi equipo. Si dejás de ser responsable de alguien, esa persona pierde acceso a los libros del proyecto.' },
+
+    { id: 'admin', admin: true, t: 'Administración', b:
+'El botón **Usuarios** de arriba abre el panel de administración. Tiene dos pestañas.\n\n' +
+'## Usuarios\n' +
+'- **Nuevo usuario**: nombre, email y contraseña inicial (mínimo 8 caracteres). Podés marcarlo como administrador.\n' +
+'- Por usuario: **Editar** (nombre, rol), **desactivar/activar** y **cambiar contraseña**. Sobre tu propia cuenta solo podés editar.\n\n' +
+'## Responsables\n' +
+'Elegí quién responde por cada persona. Una persona puede tener varios responsables, y un responsable puede tener a su vez los suyos (cadena). No se permiten ciclos. Cuando sumás un responsable, la persona debe confirmarlo antes de que él vea sus tareas.\n\n' +
+'Las cuentas de administración no ven las tareas de nadie: están pensadas solo para gestionar usuarios y relaciones.' },
+
+    { id: 'faq', t: 'Preguntas frecuentes', b:
+'## No veo «Mi equipo» ni «Gestión»\n' +
+'Solo aparecen si sos responsable de alguien. Pedile al administrador que te asigne como responsable.\n\n' +
+'## Mi responsable no ve mis tareas\n' +
+'Revisá que la casilla «Visible para mis responsables» esté marcada y que hayas confirmado el aviso de responsable nuevo.\n\n' +
+'## No puedo cambiar la fecha o la prioridad de una tarea\n' +
+'Si dice «Asignada por…», esos campos los fija quien la asignó. Hablá con esa persona.\n\n' +
+'## No puedo reabrir una tarea completada\n' +
+'Si está «Validada», quedó cerrada. Para retomarla, creá una tarea nueva o pedile a tu responsable que la devuelva.\n\n' +
+'## ¿Puedo adjuntar archivos?\n' +
+'No. En la Biblioteca y en las tareas podés poner enlaces (por ejemplo a un archivo en la nube), pero no subir archivos.\n\n' +
+'## Cambié algo y no se refleja en otro dispositivo\n' +
+'El tablero se actualiza solo. Si algo no aparece, recargá la página.\n\n' +
+'## Olvidé mi contraseña\n' +
+'Pedile una nueva al administrador.' }
+  ];
+
+  function renderGuia() {
+    var v = $('guia-view');
+    var isAdmin = !!(perfil && perfil.es_admin), isLider = directos.length > 0;
+    var secs = GUIA.filter(function (g) { return (!g.lider || isLider) && (!g.admin || isAdmin); });
+    if (!secs.some(function (g) { return g.id === guiaSec; })) guiaSec = secs[0].id;
+    var head = mk('div', 'v-head'), t = mk('div');
+    t.appendChild(mk('h1', '', 'Guía de uso')); t.appendChild(mk('p', '', 'Cómo funciona Pendientes, paso a paso.'));
+    head.appendChild(t);
+    var book = mk('div', 'book'), toc = mk('div', 'book-toc'), box = mk('div', 'book-page');
+    function show() {
+      toc.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-current', String(b.dataset.id === guiaSec)); });
+      var g = secs.filter(function (x) { return x.id === guiaSec; })[0];
+      box.replaceChildren(mk('h3', '', g.t), prose(g.b));
+    }
+    secs.forEach(function (g) {
+      var b = mk('button', '', g.t); b.type = 'button'; b.dataset.id = g.id;
+      b.addEventListener('click', function () { guiaSec = g.id; show(); if (window.matchMedia('(max-width: 760px)').matches) box.scrollIntoView({ block: 'start' }); });
+      toc.appendChild(b);
+    });
+    book.appendChild(toc); book.appendChild(box);
+    v.replaceChildren(head, book); show();
   }
 
   /* ---------- Notificaciones ---------- */
