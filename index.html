@@ -203,7 +203,7 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
 .mini > i { display: block; height: 100%; background: var(--accent); }
 .empty { padding: 18px 8px; text-align: center; color: var(--faint); font-size: 13.5px; border: 1px dashed var(--line-strong); border-radius: var(--r); }
 
-.add-row { display: flex; gap: 6px; }
+.add-row { display: flex; gap: 6px; margin-bottom: 2px; }
 .add-row input { flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink); background: transparent; border: 1px dashed var(--line-strong); border-radius: 8px; padding: 0 12px; height: 38px; }
 .add-row input::placeholder { color: var(--faint); }
 .add-row input:hover { border-color: var(--faint); }
@@ -227,6 +227,18 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
   overflow: hidden;
 }
 #admin, #team, #notif { width: min(560px, 100%); }
+#panel { width: min(var(--panel-w, 640px), 100%); }
+#panel.expanded { width: min(1100px, 100%); }
+.p-resize { position: absolute; left: 0; top: 0; bottom: 0; width: 10px; cursor: col-resize; z-index: 3; touch-action: none; }
+.p-resize::after { content: ""; position: absolute; left: 3px; top: 50%; width: 3px; height: 44px; margin-top: -22px; border-radius: 3px; background: var(--line-strong); opacity: 0; transition: opacity .15s; }
+.p-resize:hover::after, .p-resize:focus-visible::after, .p-resize.drag::after { opacity: 1; background: var(--accent); }
+.p-resize:focus-visible { outline: none; }
+body.resizing { cursor: col-resize; user-select: none; }
+body.resizing #panel { transition: none; animation: none; }
+.p-expand { display: grid; place-items: center; background: transparent; color: var(--muted); width: 40px; height: 40px; padding: 0; }
+.p-expand:hover { color: var(--ink); background: var(--surface-2); }
+.p-expand .i { width: 17px; height: 17px; }
+@media (max-width: 760px) { .p-resize, .p-expand { display: none; } #panel, #panel.expanded { width: 100%; } }
 #met { width: min(720px, 100%); }
 .p-head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 20px; border-bottom: 1px solid var(--line); }
 .p-state { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500; padding: 3px 10px; border-radius: 7px; }
@@ -234,6 +246,8 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
 .p-state[data-s="pendiente"] { background: var(--pend-soft); color: var(--pend); }
 .p-state[data-s="proceso"] { background: var(--proc-soft); color: var(--proc); }
 .p-state[data-s="completado"] { background: var(--comp-soft); color: var(--comp); }
+.p-head .p-expand { margin-left: auto; }
+.p-head .p-expand + .p-close { margin-left: 0; }
 .p-close { margin-left: auto; display: grid; place-items: center; background: transparent; color: var(--muted); width: 40px; height: 40px; padding: 0; }
 .p-close:hover { color: var(--ink); background: var(--surface-2); }
 .p-close .i { width: 18px; height: 18px; }
@@ -774,33 +788,33 @@ button.pcard:hover { border-color: var(--line-strong); }
         <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-dasharray="3 3"/></svg></span>
         <span class="col-name">Pendiente</span><span class="col-n" data-n="pendiente">0</span>
       </div>
-      <ul class="stack" data-stack="pendiente"></ul>
       <form class="add-row" data-add="pendiente" autocomplete="off">
         <input type="text" id="add-pendiente" placeholder="Agregar tarea" aria-label="Agregar en Pendiente" maxlength="300">
         <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       </form>
+      <ul class="stack" data-stack="pendiente"></ul>
     </div>
     <div class="col" data-status="proceso">
       <div class="col-head">
         <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg></span>
         <span class="col-name">En proceso</span><span class="col-n" data-n="proceso">0</span>
       </div>
-      <ul class="stack" data-stack="proceso"></ul>
       <form class="add-row" data-add="proceso" autocomplete="off">
         <input type="text" id="add-proceso" placeholder="Agregar tarea" aria-label="Agregar en En proceso" maxlength="300">
         <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       </form>
+      <ul class="stack" data-stack="proceso"></ul>
     </div>
     <div class="col" data-status="completado">
       <div class="col-head">
         <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg></span>
         <span class="col-name">Completado</span><button type="button" class="btn-s" id="arch-old" hidden>Archivar +14 días</button><span class="col-n" data-n="completado">0</span>
       </div>
-      <ul class="stack" data-stack="completado"></ul>
       <form class="add-row" data-add="completado" autocomplete="off">
         <input type="text" id="add-completado" placeholder="Agregar tarea" aria-label="Agregar en Completado" maxlength="300">
         <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       </form>
+      <ul class="stack" data-stack="completado"></ul>
     </div>
   </div>
 </div>
@@ -852,8 +866,10 @@ button.pcard:hover { border-color: var(--line-strong); }
 
 <div id="scrim" hidden></div>
 <aside id="panel" hidden tabindex="-1" aria-label="Detalle de la tarea">
+  <div class="p-resize" id="p-resize" role="separator" aria-orientation="vertical" aria-label="Cambiar el ancho del detalle (arrastrá o usá las flechas)" tabindex="0" title="Arrastrá para cambiar el ancho · doble clic para restablecer"></div>
   <div class="p-head">
     <span class="p-state" id="p-state" data-s="pendiente">Pendiente</span>
+    <button type="button" class="p-expand" id="p-expand" aria-label="Ampliar el detalle" aria-pressed="false" title="Ampliar / reducir"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg></button>
     <button type="button" class="p-close" id="p-close" aria-label="Cerrar detalle"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="p-body">
@@ -1225,6 +1241,14 @@ button.pcard:hover { border-color: var(--line-strong); }
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () { save(t, 'No se pudo guardar el cambio.'); }, 500);
   }
+  // Las tareas nuevas van arriba de su columna, junto a la barra de agregar.
+  function startOf(status) {
+    var min = 0, any = false;
+    Object.keys(byId).forEach(function (k) {
+      if (byId[k].status === status && (!any || byId[k].order < min)) { min = byId[k].order; any = true; }
+    });
+    return any ? min - 1000 : 1000;
+  }
   function endOf(status) {
     var max = 0;
     Object.keys(byId).forEach(function (k) {
@@ -1583,12 +1607,13 @@ button.pcard:hover { border-color: var(--line-strong); }
       btn.disabled = true;
       var now = Date.now();
       try {
-        await col.add({
+        var row = await col.add({
           text: text, status: st, prio: '', due: '', notes: '', subs: [],
-          order: endOf(st), createdAt: now, doneAt: st === 'completado' ? now : 0,
+          order: startOf(st), createdAt: now, doneAt: st === 'completado' ? now : 0,
           statusAt: now, labels: [], avances: [], visible: true, proyectoId: '', equipoProyectoId: '', recurrencia: '', archivada: false,
           done: st === 'completado'
         });
+        if (row && row.id) { byId[row.id] = norm(row.id, fromRow(row)); render(); } // aparece al instante
         inp.value = ''; say('');
       } catch (err) { say('No se pudo agregar la tarea.', err); }
       btn.disabled = false;
@@ -1823,6 +1848,43 @@ button.pcard:hover { border-color: var(--line-strong); }
     scrim.hidden = true;
   }
   $('p-close').addEventListener('click', closePanel);
+
+  // Ancho del detalle: se arrastra el borde izquierdo (se recuerda), doble clic restablece y el botón amplía.
+  (function () {
+    var KEY = 'panelAncho', MIN = 420, DEF = 640, rz = $('p-resize'), ex = $('p-expand');
+    function maxW() { return Math.min(1100, window.innerWidth - 16); }
+    function clamp(w) { return Math.max(MIN, Math.min(maxW(), Math.round(w))); }
+    function setW(w, save) {
+      panel.style.setProperty('--panel-w', clamp(w) + 'px');
+      if (save) { try { localStorage.setItem(KEY, String(clamp(w))); } catch (e) {} }
+    }
+    function curW() { return panel.getBoundingClientRect().width; }
+    try { var sv = Number(localStorage.getItem(KEY)); if (sv >= MIN) setW(sv, false); } catch (e) {}
+    rz.addEventListener('pointerdown', function (e) {
+      e.preventDefault(); panel.classList.remove('expanded'); ex.setAttribute('aria-pressed', 'false');
+      try { rz.setPointerCapture(e.pointerId); } catch (x) {}
+      rz.classList.add('drag'); document.body.classList.add('resizing');
+    });
+    rz.addEventListener('pointermove', function (e) { if (rz.classList.contains('drag')) setW(window.innerWidth - e.clientX, false); });
+    function fin(e) {
+      if (!rz.classList.contains('drag')) return;
+      rz.classList.remove('drag'); document.body.classList.remove('resizing');
+      try { rz.releasePointerCapture(e.pointerId); } catch (x) {}
+      setW(curW(), true);
+    }
+    rz.addEventListener('pointerup', fin); rz.addEventListener('pointercancel', fin);
+    rz.addEventListener('dblclick', function () { panel.classList.remove('expanded'); ex.setAttribute('aria-pressed', 'false'); setW(DEF, true); });
+    rz.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault(); panel.classList.remove('expanded'); ex.setAttribute('aria-pressed', 'false');
+      setW(curW() + (e.key === 'ArrowLeft' ? 32 : -32), true);
+    });
+    ex.addEventListener('click', function () {
+      var on = panel.classList.toggle('expanded'); ex.setAttribute('aria-pressed', String(on));
+      ex.setAttribute('aria-label', on ? 'Reducir el detalle' : 'Ampliar el detalle');
+    });
+    window.addEventListener('resize', function () { if (panel.style.getPropertyValue('--panel-w')) setW(parseFloat(panel.style.getPropertyValue('--panel-w')), false); });
+  })();
   scrim.addEventListener('click', closePanel);
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !panel.hidden) closePanel();
@@ -2026,7 +2088,8 @@ button.pcard:hover { border-color: var(--line-strong); }
         };
       },
       add: async function (d) {
-        fail(await sb.from(T).insert(Object.assign({ user_id: userId }, toRow(d))));
+        var r = fail(await sb.from(T).insert(Object.assign({ user_id: userId }, toRow(d))).select().single());
+        return r.data;
       },
       onSnapshot: function (ok, bad) {
         async function load() {
@@ -3050,7 +3113,7 @@ button.pcard:hover { border-color: var(--line-strong); }
     { id: 'tablero', t: 'Tu tablero', b:
 'Tus tareas viven en tres columnas: **Pendiente**, **En proceso** y **Completado**. Arriba ves cuántas tareas tenés y una barra de avance general.\n\n' +
 '## Agregar una tarea\n' +
-'Escribí el título en la columna que quieras (abajo del todo) y tocá el +. Después abrila para completar el detalle.\n\n' +
+'Escribí el título en la barra que está arriba de la columna que quieras y apretá Enter (o tocá el +). La tarea nueva aparece primera de la lista. Después abrila para completar el detalle.\n\n' +
 '## Mover una tarea de estado\n' +
 '- En la computadora: arrastrala a otra columna.\n' +
 '- En cualquier dispositivo: tocá el botón **Empezar**, **Completar** o **Reabrir** de la tarjeta, o el círculo de la izquierda para completarla.\n' +
@@ -3067,7 +3130,7 @@ button.pcard:hover { border-color: var(--line-strong); }
 '- **Archivo**: tareas completadas que archivaste. Con el botón «Archivar +14 días» de la columna Completado despejás el tablero; siguen contando en las métricas y las podés restaurar.' },
 
     { id: 'tarea', t: 'Dentro de una tarea', b:
-'Tocá una tarjeta para abrir su detalle. Todo se guarda solo, apenas lo cambiás.\n\n' +
+'Tocá una tarjeta para abrir su detalle. Todo se guarda solo, apenas lo cambiás. En la computadora podés cambiar el ancho del panel arrastrando su borde izquierdo (doble clic lo restablece, y el botón de las flechas lo amplía o lo reduce); el sistema recuerda el ancho que elegís.\n\n' +
 '- **Estado y prioridad**: Alta, Media o Baja.\n' +
 '- **Fecha límite**: elegila en el calendario o usá los atajos Hoy, Mañana, En una semana o Sin fecha.\n' +
 '- **Etiquetas**: hasta 8 por tarea, para agrupar por tema (por ejemplo «Evento»). Las que ya usaste aparecen como sugerencia.\n' +
