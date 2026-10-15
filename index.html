@@ -770,6 +770,10 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
           <button type="submit">Crear</button>
         </form>
       </div>
+      <div class="field wide" id="p-ep-f">
+        <label for="p-ep">Proyecto de equipo</label>
+        <select id="p-ep"></select>
+      </div>
       <div class="field wide" id="p-vis-f">
         <label class="vis-row"><input type="checkbox" id="p-vis"><span>Visible para mis responsables<small id="p-vis-s">Quienes responden por vos ven esta tarea y la validan cuando la completás. Si la desmarcás, es solo tuya.</small></span></label>
       </div>
@@ -867,6 +871,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       <form class="t-new" id="t-new" autocomplete="off">
         <select id="t-who" aria-label="Asignar a" required></select>
         <input class="txt" type="text" id="t-text" placeholder="Qué hay que hacer" aria-label="Título" maxlength="300" required>
+        <select id="t-proj" aria-label="Proyecto de equipo (opcional)"></select>
         <div class="row2">
           <select id="t-prio" aria-label="Prioridad"><option value="">Sin prioridad</option><option value="alta">Alta</option><option value="media">Media</option><option value="baja">Baja</option></select>
           <input type="date" id="t-due" aria-label="Fecha límite">
@@ -1002,6 +1007,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       labels: cleanLabels(d.labels),
       visible: !!d.visible,
       proyectoId: typeof d.proyectoId === 'string' ? d.proyectoId : '',
+      equipoProyectoId: typeof d.equipoProyectoId === 'string' ? d.equipoProyectoId : '',
       asignadaPor: typeof d.asignadaPor === 'string' ? d.asignadaPor : '',
       validadaPor: typeof d.validadaPor === 'string' ? d.validadaPor : '',
       validadaAt: typeof d.validadaAt === 'number' ? d.validadaAt : 0,
@@ -1017,7 +1023,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       text: t.text, status: t.status, prio: t.prio, due: t.due, notes: t.notes,
       subs: t.subs, order: t.order, createdAt: t.createdAt, doneAt: t.doneAt,
       statusAt: t.statusAt, labels: t.labels, avances: t.avances,
-      visible: t.visible, proyectoId: t.proyectoId,
+      visible: t.visible, proyectoId: t.proyectoId, equipoProyectoId: t.equipoProyectoId,
       done: t.status === 'completado'
     };
   }
@@ -1118,6 +1124,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     else if (t.motivo && t.status !== 'completado') pills.push(pill('warn', 'Devuelta'));
     else if (t.status === 'completado' && (t.visible || t.asignadaPor)) pills.push(pill('warn', 'Esperando validación'));
     else if (t.visible) pills.push(pill('', 'Compartida'));
+    if (t.equipoProyectoId && projName(t.equipoProyectoId)) pills.push(pill('ok', esc(projName(t.equipoProyectoId))));
     if (t.proyectoId) { var pj = proyectos.filter(function (x) { return x.id === t.proyectoId; })[0]; if (pj) pills.push(pill('', esc(pj.nombre))); }
     if (pills.length) {
       var meta = document.createElement('div');
@@ -1200,6 +1207,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   function renderPFilters() {
     var box = $('pfilters'), items = [];
     if (proyectos.length) items = items.concat(proyectos.map(function (x) { return mkPFilter(x.id, x.nombre); }));
+    eqProy.forEach(function (x) { items.push(mkPFilter(x.id, x.nombre)); });
     if (misResp.length) items.push(mkPFilter('__shared', 'Compartidas'));
     if (!items.length) { box.hidden = true; box.replaceChildren(); return; }
     box.hidden = false;
@@ -1207,13 +1215,13 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   }
   function inProj(t) {
     if (!filterProj) return true;
-    return filterProj === '__shared' ? (t.visible || !!t.asignadaPor) : t.proyectoId === filterProj;
+    return filterProj === '__shared' ? (t.visible || !!t.asignadaPor) : (t.proyectoId === filterProj || t.equipoProyectoId === filterProj);
   }
 
   function render() {
     var all = Object.keys(byId).map(function (k) { return byId[k]; });
     if (filterLabel && !all.some(function (t) { return t.labels.indexOf(filterLabel) !== -1; })) filterLabel = '';
-    if (filterProj && filterProj !== '__shared' && !proyectos.some(function (x) { return x.id === filterProj; })) filterProj = '';
+    if (filterProj && filterProj !== '__shared' && !proyectos.some(function (x) { return x.id === filterProj; }) && !eqProy.some(function (x) { return x.id === filterProj; })) filterProj = '';
     renderFilters(); renderPFilters(); renderBanner();
     if (!$('met').hidden && metTab === 'mias') renderMet();
     var shown = all.filter(function (t) { return (!filterLabel || t.labels.indexOf(filterLabel) !== -1) && inProj(t); });
@@ -1294,7 +1302,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
         await col.add({
           text: text, status: st, prio: '', due: '', notes: '', subs: [],
           order: endOf(st), createdAt: now, doneAt: st === 'completado' ? now : 0,
-          statusAt: now, labels: [], avances: [], visible: true, proyectoId: '',
+          statusAt: now, labels: [], avances: [], visible: true, proyectoId: '', equipoProyectoId: '',
           done: st === 'completado'
         });
         inp.value = ''; say('');
@@ -1330,6 +1338,14 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       }));
       pj.value = t.proyectoId;
     }
+    var ep = $('p-ep');
+    if (document.activeElement !== ep) {
+      var opts = [['', 'Ninguno']].concat(eqProy.map(function (x) { return [x.id, x.nombre]; }));
+      if (t.equipoProyectoId && !eqProy.some(function (x) { return x.id === t.equipoProyectoId; })) opts.push([t.equipoProyectoId, 'Otro proyecto']);
+      ep.replaceChildren.apply(ep, opts.map(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; return op; }));
+      ep.value = t.equipoProyectoId;
+    }
+    $('p-ep-f').hidden = !eqProy.length && !t.equipoProyectoId;
     var asig = !!t.asignadaPor, lock = !!t.validadaPor;
     $('p-vis').checked = asig || t.visible;
     $('p-vis-f').hidden = !asig && !misResp.length && !t.visible;
@@ -1494,6 +1510,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     $('p-quick').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite || asig; });
     $('p-vis').disabled = !canWrite || asig;
     $('p-proj').disabled = !canWrite; $('p-proj-new').disabled = !canWrite;
+    $('p-ep').disabled = !canWrite || asig;
     del.hidden = asig; del.disabled = !canWrite || asig;
   }
 
@@ -1585,6 +1602,9 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   $('p-vis').addEventListener('change', function () {
     var c = edit('visible', this.checked); if (c) save(c, 'No se pudo guardar la visibilidad.');
   });
+  $('p-ep').addEventListener('change', function () {
+    var c = edit('equipoProyectoId', this.value); if (c) save(c, 'No se pudo vincular el proyecto de equipo.');
+  });
   $('p-proj').addEventListener('change', function () {
     var c = edit('proyectoId', this.value); if (c) save(c, 'No se pudo cambiar el proyecto.');
   });
@@ -1645,7 +1665,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       text: d.text, status: d.status, prio: d.prio, due: d.due, notes: d.notes,
       subs: d.subs, ord: d.order, created_at: d.createdAt, done_at: d.doneAt,
       status_at: d.statusAt, labels: d.labels, avances: d.avances,
-      visible: !!d.visible, proyecto_id: d.proyectoId || null
+      visible: !!d.visible, proyecto_id: d.proyectoId || null, equipo_proyecto_id: d.equipoProyectoId || null
     };
   }
   function fromRow(r) {
@@ -1653,7 +1673,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       text: r.text, status: r.status, prio: r.prio, due: r.due, notes: r.notes,
       subs: r.subs, order: Number(r.ord), createdAt: Number(r.created_at), doneAt: Number(r.done_at),
       statusAt: Number(r.status_at) || 0, labels: r.labels, avances: r.avances,
-      visible: !!r.visible, proyectoId: r.proyecto_id || '', asignadaPor: r.asignada_por || '',
+      visible: !!r.visible, proyectoId: r.proyecto_id || '', equipoProyectoId: r.equipo_proyecto_id || '', asignadaPor: r.asignada_por || '',
       validadaPor: r.validada_por || '', validadaAt: Number(r.validada_at) || 0, motivo: r.motivo_devolucion || ''
     };
   }
@@ -1698,6 +1718,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     $('bell-btn').hidden = false;
     $('side').hidden = false; document.body.classList.add('has-side');
     loadProyectos();
+    loadEqProy();
     loadEquipo().then(loadDeleg);
     if (delegChannel) sb.removeChannel(delegChannel);
     delegChannel = sb.channel('deleg-' + me).on('postgres_changes', { event: '*', schema: 'public', table: 'delegaciones' }, loadDeleg).subscribe();
@@ -1714,6 +1735,11 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     });
   }
 
+  async function loadEqProy() {
+    var r = await sb.from('equipo_proyectos').select('*').order('created_at');
+    eqProy = r.error ? [] : r.data;
+    render();
+  }
   async function loadProyectos() {
     var r = await sb.from('proyectos').select('id,nombre').order('created_at');
     proyectos = r.error ? [] : r.data;
@@ -1989,7 +2015,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       if (b.dataset.view === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
     if (v === 'lib') { libOpen = ''; libEdit = null; loadBiblioteca(); }
-    if (v === 'gest') loadBiblioteca();
+    if (v === 'gest') { loadBiblioteca(); loadTeam(); }
     window.scrollTo(0, 0);
   }
   $('side').addEventListener('click', function (e) {
@@ -2018,6 +2044,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     eqProy = rs[1].error ? [] : rs[1].data;
     eqMiem = rs[2].error ? [] : rs[2].data;
     eqLib = rs[3].error ? [] : rs[3].data;
+    render();
     if (rs[0].error) say('No se pudo cargar la biblioteca.', rs[0].error);
     renderViews();
   }
@@ -2316,6 +2343,9 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
         gSay('Guardado.', true); await loadBiblioteca();
       });
       row.appendChild(pn); row.appendChild(sv); c.appendChild(row); c.appendChild(ds);
+      var lk = Object.keys(byId).map(function (k) { return byId[k]; }).concat(teamTasks).filter(function (t) { return t.equipoProyectoId === p.id; });
+      var lkOpen = lk.filter(function (t) { return t.status !== 'completado'; }).length;
+      c.appendChild(mk('p', 'a-help', lk.length ? lk.length + (lk.length === 1 ? ' tarea vinculada' : ' tareas vinculadas') + ' · ' + lkOpen + (lkOpen === 1 ? ' abierta' : ' abiertas') + ' · ' + (lk.length - lkOpen) + ' completadas' : 'Todavía no hay tareas vinculadas.'));
       var cols = mk('div', 'proj-cols');
       var cm = mk('div'); cm.appendChild(mk('h5', '', 'Colaboradores en este proyecto'));
       var ck = mk('div', 'checks');
@@ -2652,6 +2682,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     var sub = mk('div', 't-sub');
     sub.appendChild(mk('span', '', names[t.userId] || 'Persona'));
     sub.appendChild(mk('span', '', LABEL[t.status]));
+    if (t.equipoProyectoId && projName(t.equipoProyectoId)) sub.appendChild(mk('span', '', 'Proyecto: ' + projName(t.equipoProyectoId)));
     if (t.prio) sub.appendChild(mk('span', '', 'Prioridad ' + PRIO[t.prio].toLowerCase()));
     if (t.due) sub.appendChild(mk('span', '', relDue(t.due, t.status === 'completado')));
     if (t.status === 'completado' && t.doneAt) sub.appendChild(mk('span', '', 'completada ' + ago(t.doneAt)));
@@ -2707,6 +2738,12 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       var o = document.createElement('option'); o.value = id; o.textContent = nameOf(id); return o;
     }));
     if (keep && directos.indexOf(keep) !== -1) w.value = keep;
+    var tp = $('t-proj'), tk = tp.value;
+    var mineP = eqProy.filter(function (x) { return x.lider_id === me; });
+    tp.replaceChildren.apply(tp, [['', 'Sin proyecto de equipo']].concat(mineP.map(function (x) { return [x.id, x.nombre]; })).map(function (o) {
+      var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; return op;
+    }));
+    if (tk && mineP.some(function (x) { return x.id === tk; })) tp.value = tk;
   }
   function openTeam() {
     tSay(''); $('t-scrim').hidden = false; $('team').hidden = false; $('team').focus();
@@ -2721,7 +2758,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     e.preventDefault();
     var btn = $('t-create'); btn.disabled = true;
     var ok = await teamCall('asignar_tarea', {
-      p_persona: $('t-who').value, p_text: $('t-text').value, p_prio: $('t-prio').value, p_due: $('t-due').value, p_notes: ''
+      p_persona: $('t-who').value, p_text: $('t-text').value, p_prio: $('t-prio').value, p_due: $('t-due').value, p_notes: '', p_proyecto: $('t-proj').value || null
     }, 'Tarea asignada.');
     if (ok) { $('t-text').value = ''; $('t-prio').value = ''; $('t-due').value = ''; }
     btn.disabled = false;
