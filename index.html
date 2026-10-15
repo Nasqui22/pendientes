@@ -665,7 +665,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
         </form>
       </div>
       <div class="field wide" id="p-vis-f">
-        <label class="vis-row"><input type="checkbox" id="p-vis"><span>Visible para mis responsables<small id="p-vis-s">Quienes responden por vos ven esta tarea y la validan cuando la completás. Si no la marcás, es solo tuya.</small></span></label>
+        <label class="vis-row"><input type="checkbox" id="p-vis"><span>Visible para mis responsables<small id="p-vis-s">Quienes responden por vos ven esta tarea y la validan cuando la completás. Si la desmarcás, es solo tuya.</small></span></label>
       </div>
       <div class="field wide">
         <div class="sub-head"><label for="p-av-new">Avances</label><span class="sub-count" id="p-av-count"></span></div>
@@ -740,7 +740,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     <button type="button" class="p-close" id="t-close" aria-label="Cerrar Mi equipo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="p-body">
-    <p class="a-help">Solo ves lo que tus directos marcaron como visible o lo que les asignaste vos. Lo demás es privado.</p>
+    <p class="a-help">Solo ves lo que tus directos no marcaron como privado o lo que les asignaste vos. Lo demás es privado.</p>
     <p class="a-msg" id="t-msg" role="status"></p>
     <details>
       <summary class="btn-s">+ Asignar una tarea</summary>
@@ -1171,7 +1171,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
         await col.add({
           text: text, status: st, prio: '', due: '', notes: '', subs: [],
           order: endOf(st), createdAt: now, doneAt: st === 'completado' ? now : 0,
-          statusAt: now, labels: [], avances: [], visible: false, proyectoId: '',
+          statusAt: now, labels: [], avances: [], visible: true, proyectoId: '',
           done: st === 'completado'
         });
         inp.value = ''; say('');
@@ -1581,7 +1581,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     var who = pend.map(function (r) { return nameOf(r.responsable_id); }).join(', ');
     var n = Object.keys(byId).filter(function (k) { return byId[k].visible; }).length;
     $('banner-t').textContent = who + (pend.length > 1 ? ' fueron sumados como responsables' : ' fue sumado como responsable') +
-      ' tuyo. Todavía no ve nada de lo que marcaste como visible (hoy: ' + n + '). Revisalo y confirmá.';
+      ' tuyo. Todavía no ve ninguna de tus tareas visibles (hoy: ' + n + '). Revisá cuáles querés dejar privadas y confirmá.';
   }
   $('banner-see').addEventListener('click', function () { filterProj = '__shared'; render(); });
   $('banner-ok').addEventListener('click', async function () {
@@ -1929,7 +1929,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       box.appendChild(personalView(all.filter(function (t) { return t.userId === metPerson; })));
       return box;
     }
-    box.appendChild(mk('p', 'a-help', 'Incluye solo lo que tu equipo marcó como visible y lo que asignaste vos. Lo privado no entra en las cuentas.'));
+    box.appendChild(mk('p', 'a-help', 'Incluye las tareas visibles de tu equipo y las que asignaste vos. Lo que cada uno marcó como privado no entra en las cuentas.'));
     var st = mStats(all), now = Date.now();
     var k = mk('div', 'kpis');
     k.appendChild(kpi(st.open.length, 'Abiertas'));
