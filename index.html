@@ -392,6 +392,87 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 .chip button .i { width: 13px; height: 13px; }
 .none { font-size: 13px; color: var(--faint); }
 
+/* Barra lateral y vistas */
+.side { position: fixed; z-index: 9; left: 0; top: 57px; bottom: 0; width: 216px; padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid var(--line); background: var(--bg); overflow-y: auto; }
+.side button { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 500; text-align: left; border: 0; border-radius: 8px; width: 100%; }
+.side button:hover { color: var(--ink); background: var(--surface-2); }
+.side button[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+.side .i { width: 18px; height: 18px; }
+@media (prefers-reduced-motion: no-preference) { .side button { transition: none; } }
+body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% - 216px); }
+@media (max-width: 760px) { .top-actions .bl, .who { display: none; } .top-actions { gap: 2px; } .top-actions .btn { padding: 0 10px; } }
+@media (max-width: 899px) {
+  .side { top: auto; bottom: 0; left: 0; right: 0; width: auto; height: calc(58px + env(safe-area-inset-bottom, 0px)); flex-direction: row; padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); gap: 4px; border-right: 0; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); overflow: visible; }
+  .side button { flex: 1; flex-direction: column; justify-content: center; gap: 3px; height: 100%; padding: 0 4px; font-size: 11.5px; text-align: center; }
+  body.has-side .wrap { margin-left: auto; width: auto; }
+  body.has-side { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
+}
+.v-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
+.v-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.btn-p { background: var(--accent); color: var(--accent-ink); font-weight: 600; font-size: 14px; padding: 0 16px; height: 40px; display: inline-flex; align-items: center; gap: 8px; }
+.btn-p:hover:not(:disabled) { filter: brightness(1.08); }
+.lib-tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.lib-tools .txt { max-width: 320px; }
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.lib-card { text-align: left; display: flex; flex-direction: column; gap: 8px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); color: var(--ink); min-height: 132px; }
+.lib-card:hover { border-color: var(--line-strong); box-shadow: var(--shadow-pop); }
+.lib-card h4 { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.lib-card p { margin: 0; font-size: 13.5px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lib-card .meta { margin-top: auto; padding-left: 0; margin-left: 0; }
+.lib-sec { display: flex; flex-direction: column; gap: 10px; }
+.lib-sec h3 { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+.lib-empty { color: var(--faint); font-size: 14px; margin: 0; }
+.book { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .book { grid-template-columns: 1fr; gap: 14px; } }
+.book-toc { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 76px; }
+@media (max-width: 760px) { .book-toc { position: static; flex-direction: row; overflow-x: auto; gap: 6px; scrollbar-width: none; } }
+.book-toc button { text-align: left; background: transparent; color: var(--muted); padding: 8px 12px; font-size: 14px; border-radius: 8px; white-space: nowrap; }
+@media (min-width: 761px) { .book-toc button { white-space: normal; } }
+.book-toc button:hover { background: var(--surface-2); color: var(--ink); }
+.book-toc button[aria-current="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+.book-page { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; min-height: 160px; max-width: 760px; }
+.book-page h3 { margin: 0 0 12px; font-size: 20px; letter-spacing: -0.015em; }
+.prose { font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; }
+.prose p { margin: 0 0 12px; white-space: pre-wrap; }
+.prose h4, .prose h5 { margin: 18px 0 8px; font-size: 16px; font-weight: 600; }
+.prose h5 { font-size: 14.5px; color: var(--muted); }
+.prose ul { margin: 0 0 12px; padding-left: 22px; }
+.prose code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--surface-2); padding: 1px 5px; border-radius: 5px; }
+.prose a, .link-row a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.link-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
+.link-row .k { flex: none; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
+.link-row .k.ejemplo { background: var(--comp-soft); color: var(--comp); }
+.link-row .k.ayuda { background: var(--proc-soft); color: var(--proc); }
+.link-row a { min-width: 0; overflow-wrap: anywhere; font-weight: 500; }
+.link-row small { color: var(--muted); display: block; font-size: 12px; font-weight: 400; }
+.ed { display: flex; flex-direction: column; gap: 18px; max-width: 760px; }
+.ed-pg, .ed-ln { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+.ed-ln { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.ed-ln .txt { flex: 1 1 160px; height: 38px; }
+.ed-ln select { flex: 0 1 140px; height: 38px; }
+.ed-row { display: flex; gap: 6px; align-items: center; }
+.ed-row .txt { flex: 1; }
+.ico-b { flex: none; width: 36px; height: 36px; display: grid; place-items: center; background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 8px; padding: 0; }
+.ico-b:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
+.radios { display: flex; flex-direction: column; gap: 8px; }
+.radios label { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; cursor: pointer; accent-color: var(--accent); }
+.radios small { display: block; color: var(--muted); font-size: 12.5px; }
+.people { display: flex; flex-direction: column; gap: 4px; padding: 8px 0 0 28px; }
+.people label { display: flex; align-items: center; gap: 8px; font-size: 14px; min-height: 30px; accent-color: var(--accent); }
+.ed-foot { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.proj-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.proj-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 760px) { .proj-cols { grid-template-columns: 1fr; } }
+.proj-cols h5 { margin: 0 0 6px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.checks { display: flex; flex-direction: column; gap: 2px; }
+.checks label { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; accent-color: var(--accent); overflow-wrap: anywhere; }
+.collab { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+.collab .meta { padding-left: 0; }
+.collab-top { display: flex; align-items: center; gap: 10px; }
+.collab-top .u-name { flex: 1; }
+.collab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+
 /* Notificaciones y delegación de subtareas */
 .bell { position: relative; }
 .bell .n { position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 600; display: grid; place-items: center; }
@@ -522,15 +603,15 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     <div class="top-actions">
       <span class="who" id="who"></span>
       <button type="button" class="btn ghost bell" id="bell-btn" hidden aria-label="Notificaciones"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><span class="n" id="bell-n" hidden></span></button>
-      <button type="button" class="btn ghost" id="met-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Métricas</button>
-      <button type="button" class="btn ghost" id="team-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Mi equipo</button>
-      <button type="button" class="btn ghost" id="admin-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Usuarios</button>
-      <button type="button" class="btn ghost" id="logout" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 8l-4 4 4 4M6 12h10"/></svg>Salir</button>
+      <button type="button" class="btn ghost" id="met-btn" hidden aria-label="Métricas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span class="bl">Métricas</span></button>
+      <button type="button" class="btn ghost" id="team-btn" hidden aria-label="Mi equipo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="bl">Mi equipo</span></button>
+      <button type="button" class="btn ghost" id="admin-btn" hidden aria-label="Usuarios"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg><span class="bl">Usuarios</span></button>
+      <button type="button" class="btn ghost" id="logout" hidden aria-label="Salir"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 8l-4 4 4 4M6 12h10"/></svg><span class="bl">Salir</span></button>
     </div>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap" id="board-view">
   <div class="head">
     <div class="head-main">
       <h1 id="title">Mi tablero</h1>
@@ -594,6 +675,15 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     </div>
   </div>
 </div>
+
+<nav class="side" id="side" hidden aria-label="Secciones">
+  <button type="button" data-view="board" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="16.5" y="4" width="4" height="13" rx="1.5"/></svg>Tablero</button>
+  <button type="button" data-view="lib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>Biblioteca</button>
+  <button type="button" data-view="gest" id="side-gest" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5M16.5 5.2a3.2 3.2 0 0 1 0 5.6M18.5 14.8c1.6.7 2.6 2.2 3 4.5"/></svg>Gestión</button>
+</nav>
+
+<main class="wrap" id="lib-view" hidden></main>
+<main class="wrap" id="gest-view" hidden></main>
 
 <div id="login" hidden>
   <form id="login-form" autocomplete="on">
@@ -1606,6 +1696,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     me = session.user.id;
     loadPerfil(session);
     $('bell-btn').hidden = false;
+    $('side').hidden = false; document.body.classList.add('has-side');
     loadProyectos();
     loadEquipo().then(loadDeleg);
     if (delegChannel) sb.removeChannel(delegChannel);
@@ -1638,6 +1729,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     (p.error ? [] : p.data).forEach(function (u) { names[u.id] = u.nombre || u.email; });
     $('team-btn').hidden = !directos.length;
     $('tab-m-eq').hidden = !directos.length;
+    $('side-gest').hidden = !directos.length;
     var c = await sb.rpc('mis_companeros');
     companeros = c.error ? [] : c.data;
     companeros.forEach(function (x) { names[x.id] = x.nombre; });
@@ -1689,7 +1781,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } closeNotif(); closeMet(); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -1878,6 +1970,383 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   $('a-close').addEventListener('click', closeAdmin);
   $('a-scrim').addEventListener('click', closeAdmin);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('admin').hidden) closeAdmin(); });
+
+  /* ---------- Barra lateral, Biblioteca y Gestión de equipo ---------- */
+
+  var view = 'board';
+  var libros = [], eqProy = [], eqMiem = [], eqLib = [];
+  var libQ = '', libProj = '', libOpen = '', libPage = 0, libEdit = null, gestMsg = '';
+  var KIND = { automatismo: 'Automatismo', ejemplo: 'Ejemplo', ayuda: 'Ayuda' };
+
+  function setView(v) {
+    if (v === 'gest' && !directos.length) v = 'board';
+    view = v;
+    document.querySelector('.wrap:not(#lib-view):not(#gest-view)').hidden = v !== 'board';
+    $('lib-view').hidden = v !== 'lib';
+    $('gest-view').hidden = v !== 'gest';
+    $('side').querySelectorAll('[data-view]').forEach(function (b) {
+      if (b.dataset.view === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
+    if (v === 'lib') { libOpen = ''; libEdit = null; loadBiblioteca(); }
+    if (v === 'gest') loadBiblioteca();
+    window.scrollTo(0, 0);
+  }
+  $('side').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view);
+  });
+
+  function teamPeople() {
+    var seen = {}, out = [];
+    companeros.map(function (c) { return c.id; }).concat(directos, misResp.map(function (r) { return r.responsable_id; })).forEach(function (id) {
+      if (id && id !== me && !seen[id]) { seen[id] = 1; out.push({ id: id, nombre: nameOf(id) }); }
+    });
+    return out.sort(function (a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
+  }
+  function projName(id) { var p = eqProy.filter(function (x) { return x.id === id; })[0]; return p ? p.nombre : ''; }
+  function libProjects(libId) { return eqLib.filter(function (x) { return x.libro_id === libId; }).map(function (x) { return x.proyecto_id; }); }
+
+  async function loadBiblioteca() {
+    if (!sb || !me) return;
+    var rs = await Promise.all([
+      sb.from('libros').select('*').order('updated_at', { ascending: false }),
+      sb.from('equipo_proyectos').select('*').order('created_at'),
+      sb.from('equipo_proyecto_miembros').select('*'),
+      sb.from('equipo_proyecto_libros').select('*')
+    ]);
+    libros = rs[0].error ? [] : rs[0].data;
+    eqProy = rs[1].error ? [] : rs[1].data;
+    eqMiem = rs[2].error ? [] : rs[2].data;
+    eqLib = rs[3].error ? [] : rs[3].data;
+    if (rs[0].error) say('No se pudo cargar la biblioteca.', rs[0].error);
+    renderViews();
+  }
+  function renderViews() { if (view === 'lib') renderLib(); if (view === 'gest') renderGest(); }
+
+  // Texto con formato mínimo: # título, ## subtítulo, - viñetas, **negrita**, `código` y enlaces http(s).
+  function inline(text, parent) {
+    text.split(/(\*\*[^*]+\*\*|`[^`]+`|https?:\/\/[^\s<>"]+)/g).forEach(function (part) {
+      if (!part) return;
+      if (part.slice(0, 2) === '**' && part.slice(-2) === '**' && part.length > 4) parent.appendChild(mk('strong', '', part.slice(2, -2)));
+      else if (part.charAt(0) === '`' && part.slice(-1) === '`' && part.length > 2) parent.appendChild(mk('code', '', part.slice(1, -1)));
+      else if (/^https?:\/\//.test(part)) { var a = mk('a', '', part); a.href = part; a.target = '_blank'; a.rel = 'noopener noreferrer'; parent.appendChild(a); }
+      else parent.appendChild(document.createTextNode(part));
+    });
+  }
+  function prose(text) {
+    var box = mk('div', 'prose'), ul = null;
+    String(text || '').split('\n').forEach(function (line) {
+      var m;
+      if ((m = /^\s*[-*]\s+(.*)$/.exec(line))) {
+        if (!ul) { ul = mk('ul'); box.appendChild(ul); }
+        var li = mk('li'); inline(m[1], li); ul.appendChild(li); return;
+      }
+      ul = null;
+      if ((m = /^##\s+(.*)$/.exec(line))) { var h5 = mk('h5'); inline(m[1], h5); box.appendChild(h5); }
+      else if ((m = /^#\s+(.*)$/.exec(line))) { var h4 = mk('h4'); inline(m[1], h4); box.appendChild(h4); }
+      else if (line.trim()) { var p = mk('p'); inline(line, p); box.appendChild(p); }
+    });
+    return box;
+  }
+  function scopeText(l) {
+    if (l.alcance === 'equipo') return 'Todo el equipo';
+    if (l.alcance === 'personas') return (l.destinatarios || []).length + ((l.destinatarios || []).length === 1 ? ' persona' : ' personas');
+    return 'Solo yo';
+  }
+  function host(u) { try { return new URL(u).host; } catch (e) { return ''; } }
+  function backBtn(text, fn) {
+    var b = mk('button', 'btn-s m-back', text); b.type = 'button'; b.addEventListener('click', fn); return b;
+  }
+
+  /* --- lista --- */
+  function bookCard(l) {
+    var c = mk('button', 'lib-card'); c.type = 'button';
+    c.appendChild(mk('h4', '', l.titulo));
+    if (l.resumen) c.appendChild(mk('p', '', l.resumen));
+    var meta = mk('div', 'meta');
+    var by = l.user_id === me ? scopeText(l) : 'De ' + nameOf(l.user_id);
+    meta.appendChild(pill('', esc(by)));
+    meta.appendChild(pill('', (l.paginas || []).length + ((l.paginas || []).length === 1 ? ' página' : ' páginas')));
+    if ((l.enlaces || []).length) meta.appendChild(pill('', (l.enlaces || []).length + ((l.enlaces || []).length === 1 ? ' enlace' : ' enlaces')));
+    libProjects(l.id).forEach(function (pid) { var n = projName(pid); if (n) meta.appendChild(pill('ok', esc(n))); });
+    c.appendChild(meta);
+    c.addEventListener('click', function () { libOpen = l.id; libPage = 0; renderLib(); window.scrollTo(0, 0); });
+    return c;
+  }
+  function renderLib() {
+    var v = $('lib-view');
+    if (libEdit) return renderEditor(v);
+    if (libOpen) { var cur = libros.filter(function (x) { return x.id === libOpen; })[0]; if (cur) return renderReader(v, cur); libOpen = ''; }
+    var head = mk('div', 'v-head'), t = mk('div');
+    t.appendChild(mk('h1', '', 'Biblioteca')); t.appendChild(mk('p', '', 'Mini libros con información, ejemplos y enlaces para el equipo.'));
+    var nb = mk('button', 'btn-p'); nb.type = 'button'; nb.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo libro';
+    nb.addEventListener('click', function () { libEdit = { id: '', titulo: '', resumen: '', paginas: [{ t: 'Introducción', b: '' }], enlaces: [], alcance: 'equipo', destinatarios: [] }; renderLib(); window.scrollTo(0, 0); });
+    head.appendChild(t); head.appendChild(nb);
+    var tools = mk('div', 'lib-tools');
+    var q = mk('input', 'txt'); q.type = 'search'; q.placeholder = 'Buscar en la biblioteca'; q.value = libQ; q.setAttribute('aria-label', 'Buscar libros');
+    q.addEventListener('input', function () { libQ = q.value; var pos = q.selectionStart; renderLib(); var n = $('lib-view').querySelector('input[type=search]'); n.focus(); n.setSelectionRange(pos, pos); });
+    tools.appendChild(q);
+    var mineP = eqProy.slice();
+    if (mineP.length) {
+      var fx = mk('div', 'filters'); fx.setAttribute('role', 'group'); fx.setAttribute('aria-label', 'Filtrar por proyecto');
+      [['', 'Todos']].concat(mineP.map(function (p) { return [p.id, p.nombre]; })).forEach(function (o) {
+        var b = mk('button', 'fchip', o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(libProj === o[0]));
+        b.addEventListener('click', function () { libProj = o[0]; renderLib(); }); fx.appendChild(b);
+      });
+      tools.appendChild(fx);
+    }
+    var qq = libQ.trim().toLowerCase();
+    var shown = libros.filter(function (l) {
+      if (libProj && libProjects(l.id).indexOf(libProj) === -1) return false;
+      return !qq || (l.titulo + ' ' + l.resumen).toLowerCase().indexOf(qq) !== -1;
+    });
+    var mine = shown.filter(function (l) { return l.user_id === me; }), other = shown.filter(function (l) { return l.user_id !== me; });
+    function sec(title, items, empty) {
+      var s = mk('section', 'lib-sec'); s.appendChild(mk('h3', '', title));
+      if (!items.length) { s.appendChild(mk('p', 'lib-empty', empty)); return s; }
+      var g = mk('div', 'lib-grid'); items.forEach(function (l) { g.appendChild(bookCard(l)); }); s.appendChild(g); return s;
+    }
+    var parts = [head, tools, sec('Del equipo', other, libros.length ? 'Nada del equipo con este filtro.' : 'Todavía nadie compartió libros con vos.'), sec('Míos', mine, 'Todavía no creaste libros. Tocá «Nuevo libro».')];
+    v.replaceChildren.apply(v, parts);
+  }
+
+  /* --- lectura --- */
+  function renderReader(v, l) {
+    var parts = [backBtn('← Biblioteca', function () { libOpen = ''; renderLib(); })];
+    var head = mk('div', 'v-head'), t = mk('div');
+    t.appendChild(mk('h1', '', l.titulo));
+    t.appendChild(mk('p', '', (l.user_id === me ? 'Tuyo' : 'De ' + nameOf(l.user_id)) + ' · ' + scopeText(l) + ' · actualizado ' + ago(l.updated_at)));
+    head.appendChild(t);
+    if (l.user_id === me) {
+      var eb = mk('button', 'btn-s', 'Editar'); eb.type = 'button';
+      eb.addEventListener('click', function () { libEdit = JSON.parse(JSON.stringify(l)); renderLib(); window.scrollTo(0, 0); });
+      head.appendChild(eb);
+    }
+    parts.push(head);
+    if (l.resumen) parts.push(mk('p', 'a-help', l.resumen));
+    var pages = l.paginas || [];
+    if (libPage >= pages.length) libPage = 0;
+    var book = mk('div', 'book');
+    var toc = mk('div', 'book-toc'); toc.setAttribute('role', 'tablist');
+    var pageBox = mk('div', 'book-page');
+    function show() {
+      toc.querySelectorAll('button').forEach(function (b, i) { b.setAttribute('aria-current', String(i === libPage)); });
+      var pg = pages[libPage];
+      pageBox.replaceChildren(pg ? mk('h3', '', pg.t || 'Sin título') : mk('p', 'lib-empty', 'Este libro todavía no tiene páginas.'));
+      if (pg) pageBox.appendChild(prose(pg.b));
+    }
+    pages.forEach(function (pg, i) {
+      var b = mk('button', '', pg.t || 'Página ' + (i + 1)); b.type = 'button';
+      b.addEventListener('click', function () { libPage = i; show(); }); toc.appendChild(b);
+    });
+    if (pages.length) book.appendChild(toc);
+    book.appendChild(pageBox); parts.push(book); show();
+    if ((l.enlaces || []).length) {
+      var ul = mk('ul', 'links');
+      l.enlaces.forEach(function (e) {
+        var li = mk('li', 'link-row'); li.appendChild(mk('span', 'k ' + e.k, KIND[e.k] || e.k));
+        var d = mk('div'), a = mk('a', '', e.l || e.u); a.href = e.u; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        d.appendChild(a); d.appendChild(mk('small', '', host(e.u))); li.appendChild(d); ul.appendChild(li);
+      });
+      var s = mk('section', 'lib-sec'); s.appendChild(mk('h3', '', 'Enlaces: automatismos, ejemplos y ayudas')); s.appendChild(ul); parts.push(s);
+    }
+    var pj = libProjects(l.id).map(projName).filter(Boolean);
+    if (pj.length) parts.push(mk('p', 'a-help', 'Parte de: ' + pj.join(', ')));
+    v.replaceChildren.apply(v, parts);
+  }
+
+  /* --- editor --- */
+  function renderEditor(v) {
+    var d = libEdit, parts = [];
+    function rerender() { renderEditor(v); }
+    parts.push(backBtn('← Cancelar', function () { libEdit = null; renderLib(); }));
+    var head = mk('div', 'v-head'); head.appendChild(mk('h1', '', d.id ? 'Editar libro' : 'Nuevo libro')); parts.push(head);
+    var ed = mk('div', 'ed'), msg = mk('p', 'a-msg'); msg.setAttribute('role', 'alert');
+    function field(label, el) { var f = mk('div', 'field'); f.appendChild(mk('label', '', label)); f.appendChild(el); return f; }
+    var ti = mk('input', 'txt'); ti.maxLength = 120; ti.value = d.titulo; ti.placeholder = 'Título del libro'; ti.addEventListener('input', function () { d.titulo = ti.value; });
+    var rs = mk('input', 'txt'); rs.maxLength = 300; rs.value = d.resumen; rs.placeholder = 'De qué trata (opcional)'; rs.addEventListener('input', function () { d.resumen = rs.value; });
+    ed.appendChild(field('Título', ti)); ed.appendChild(field('Resumen', rs));
+
+    var pg = mk('div', 'field'); pg.appendChild(mk('label', '', 'Páginas (hasta 12). Podés usar # título, ## subtítulo, - viñetas, **negrita**, `código` y enlaces.'));
+    d.paginas.forEach(function (p, i) {
+      var c = mk('div', 'ed-pg'), row = mk('div', 'ed-row');
+      var pt = mk('input', 'txt'); pt.maxLength = 100; pt.value = p.t; pt.placeholder = 'Título de la página'; pt.setAttribute('aria-label', 'Título de la página ' + (i + 1)); pt.addEventListener('input', function () { p.t = pt.value; });
+      function ib(label, path, off, fn) { var b = mk('button', 'ico-b'); b.type = 'button'; b.disabled = off; b.setAttribute('aria-label', label); b.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="' + path + '"/></svg>'; b.addEventListener('click', fn); return b; }
+      row.appendChild(pt);
+      row.appendChild(ib('Subir página', 'm6 14 6-6 6 6', i === 0, function () { var x = d.paginas[i - 1]; d.paginas[i - 1] = p; d.paginas[i] = x; rerender(); }));
+      row.appendChild(ib('Bajar página', 'm6 10 6 6 6-6', i === d.paginas.length - 1, function () { var x = d.paginas[i + 1]; d.paginas[i + 1] = p; d.paginas[i] = x; rerender(); }));
+      row.appendChild(ib('Quitar página', 'M6 6l12 12M18 6 6 18', false, function () { d.paginas.splice(i, 1); rerender(); }));
+      var tb = mk('textarea'); tb.maxLength = 10000; tb.value = p.b; tb.placeholder = 'Contenido'; tb.setAttribute('aria-label', 'Contenido de la página ' + (i + 1)); tb.addEventListener('input', function () { p.b = tb.value; });
+      c.appendChild(row); c.appendChild(tb); pg.appendChild(c);
+    });
+    var ap = mk('button', 'btn-s', '+ Agregar página'); ap.type = 'button'; ap.disabled = d.paginas.length >= 12; ap.style.width = 'fit-content';
+    ap.addEventListener('click', function () { d.paginas.push({ t: '', b: '' }); rerender(); }); pg.appendChild(ap); ed.appendChild(pg);
+
+    var ln = mk('div', 'field'); ln.appendChild(mk('label', '', 'Enlaces (URL de automatismos, ejemplos o ayudas; no se suben archivos)'));
+    d.enlaces.forEach(function (e, i) {
+      var r = mk('div', 'ed-ln');
+      var el = mk('input', 'txt'); el.maxLength = 80; el.value = e.l; el.placeholder = 'Nombre'; el.setAttribute('aria-label', 'Nombre del enlace'); el.addEventListener('input', function () { e.l = el.value; });
+      var eu = mk('input', 'txt'); eu.type = 'url'; eu.maxLength = 500; eu.value = e.u; eu.placeholder = 'https://…'; eu.setAttribute('aria-label', 'URL'); eu.addEventListener('input', function () { e.u = eu.value; });
+      var ek = mk('select'); ek.setAttribute('aria-label', 'Tipo');
+      Object.keys(KIND).forEach(function (k) { var o = mk('option', '', KIND[k]); o.value = k; ek.appendChild(o); });
+      ek.value = e.k; ek.addEventListener('change', function () { e.k = ek.value; });
+      var rm = mk('button', 'ico-b'); rm.type = 'button'; rm.setAttribute('aria-label', 'Quitar enlace'); rm.innerHTML = ICON_X; rm.addEventListener('click', function () { d.enlaces.splice(i, 1); rerender(); });
+      r.appendChild(el); r.appendChild(eu); r.appendChild(ek); r.appendChild(rm); ln.appendChild(r);
+    });
+    var al = mk('button', 'btn-s', '+ Agregar enlace'); al.type = 'button'; al.disabled = d.enlaces.length >= 20; al.style.width = 'fit-content';
+    al.addEventListener('click', function () { d.enlaces.push({ l: '', u: '', k: 'ayuda' }); rerender(); }); ln.appendChild(al); ed.appendChild(ln);
+
+    var sc = mk('div', 'field'); sc.appendChild(mk('label', '', 'Quién lo ve'));
+    var rg = mk('div', 'radios');
+    [['privado', 'Solo yo', 'Queda como borrador.'], ['equipo', 'Todo mi equipo', 'Tu responsable, tus compañeros y tus directos.'], ['personas', 'Personas puntuales', 'Elegís quién lo ve dentro de tu equipo.']].forEach(function (o) {
+      var lb = mk('label'), rd = mk('input'); rd.type = 'radio'; rd.name = 'alc'; rd.value = o[0]; rd.checked = d.alcance === o[0];
+      rd.addEventListener('change', function () { d.alcance = o[0]; rerender(); });
+      var sp = mk('span', '', o[1]); sp.appendChild(mk('small', '', o[2])); lb.appendChild(rd); lb.appendChild(sp); rg.appendChild(lb);
+    });
+    sc.appendChild(rg);
+    if (d.alcance === 'personas') {
+      var pp = mk('div', 'people'), people = teamPeople();
+      if (!people.length) pp.appendChild(mk('p', 'lib-empty', 'No tenés personas en tu equipo todavía.'));
+      people.forEach(function (p) {
+        var lb = mk('label'), cb = mk('input'); cb.type = 'checkbox'; cb.checked = d.destinatarios.indexOf(p.id) !== -1;
+        cb.addEventListener('change', function () { d.destinatarios = d.destinatarios.filter(function (x) { return x !== p.id; }); if (cb.checked) d.destinatarios.push(p.id); });
+        lb.appendChild(cb); lb.appendChild(document.createTextNode(p.nombre)); pp.appendChild(lb);
+      });
+      sc.appendChild(pp);
+    }
+    ed.appendChild(sc);
+
+    var foot = mk('div', 'ed-foot');
+    var save = mk('button', 'btn-p', d.id ? 'Guardar cambios' : 'Publicar libro'); save.type = 'button';
+    save.addEventListener('click', async function () {
+      msg.textContent = ''; msg.className = 'a-msg';
+      var titulo = d.titulo.trim();
+      if (!titulo) { msg.textContent = 'Ponele un título al libro.'; return; }
+      for (var i = 0; i < d.enlaces.length; i++) {
+        var u = d.enlaces[i].u.trim();
+        if (!/^https?:\/\/[^\s<>"]+$/i.test(u)) { msg.textContent = 'El enlace ' + (i + 1) + ' no es una URL válida (tiene que empezar con http:// o https://).'; return; }
+      }
+      if (d.alcance === 'personas' && !d.destinatarios.length) { msg.textContent = 'Elegí al menos una persona.'; return; }
+      var row = {
+        titulo: titulo, resumen: d.resumen.trim(), alcance: d.alcance, destinatarios: d.alcance === 'personas' ? d.destinatarios : [],
+        paginas: d.paginas.filter(function (p) { return p.t.trim() || p.b.trim(); }).map(function (p) { return { t: p.t.trim(), b: p.b }; }),
+        enlaces: d.enlaces.map(function (e) { return { l: e.l.trim(), u: e.u.trim(), k: e.k }; })
+      };
+      save.disabled = true;
+      var r = d.id ? await sb.from('libros').update(row).eq('id', d.id).select().single() : await sb.from('libros').insert(row).select().single();
+      save.disabled = false;
+      if (r.error) { msg.textContent = r.error.message; return; }
+      libEdit = null; libOpen = r.data.id; libPage = 0; await loadBiblioteca();
+    });
+    foot.appendChild(save);
+    if (d.id) {
+      var del = mk('button', 'btn-s', 'Eliminar libro'); del.type = 'button';
+      del.addEventListener('click', async function () {
+        if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Confirmar eliminación'; return; }
+        var r = await sb.from('libros').delete().eq('id', d.id);
+        if (r.error) { msg.textContent = r.error.message; return; }
+        libEdit = null; libOpen = ''; await loadBiblioteca();
+      });
+      foot.appendChild(del);
+    }
+    ed.appendChild(foot); ed.appendChild(msg);
+    parts.push(ed);
+    v.replaceChildren.apply(v, parts);
+  }
+
+  /* --- Gestión de equipo (líderes) --- */
+  function gSay(msg, ok) { gestMsg = msg || ''; var m = $('gest-msg'); if (m) { m.textContent = gestMsg; m.className = 'a-msg' + (ok ? ' ok' : ''); } }
+  function renderGest() {
+    var v = $('gest-view');
+    var head = mk('div', 'v-head'), t = mk('div');
+    t.appendChild(mk('h1', '', 'Gestión de equipo'));
+    t.appendChild(mk('p', '', 'Armá proyectos, asigná libros y definí en qué proyecto trabaja cada colaborador.'));
+    head.appendChild(t);
+    var msg = mk('p', 'a-msg'); msg.id = 'gest-msg'; msg.setAttribute('role', 'status'); msg.textContent = gestMsg;
+    var mine = eqProy.filter(function (p) { return p.lider_id === me; });
+
+    var cs = mk('section', 'lib-sec'); cs.appendChild(mk('h3', '', 'Colaboradores'));
+    var grid = mk('div', 'collab-grid');
+    directos.forEach(function (id) {
+      var c = mk('div', 'collab'), top = mk('div', 'collab-top');
+      top.appendChild(mk('span', 'av', initials(nameOf(id)))); top.appendChild(mk('span', 'u-name', nameOf(id)));
+      var mb = mk('button', 'btn-s', 'Métricas'); mb.type = 'button';
+      mb.addEventListener('click', function () { openMet(); metTab = 'eq'; metPerson = id; renderMet(); loadTeam(); });
+      top.appendChild(mb); c.appendChild(top);
+      var ps = mine.filter(function (p) { return eqMiem.some(function (m) { return m.proyecto_id === p.id && m.persona_id === id; }); });
+      var chips = mk('div', 'meta');
+      if (ps.length) ps.forEach(function (p) { chips.appendChild(pill('ok', esc(p.nombre))); }); else chips.appendChild(mk('span', 'none', 'Sin proyecto asignado'));
+      c.appendChild(chips); grid.appendChild(c);
+    });
+    cs.appendChild(grid);
+
+    var ps = mk('section', 'lib-sec'); ps.appendChild(mk('h3', '', 'Proyectos'));
+    var nf = mk('form', 'sub-add'); nf.autocomplete = 'off';
+    var ni = mk('input'); ni.maxLength = 60; ni.placeholder = 'Nuevo proyecto (nombre)'; ni.setAttribute('aria-label', 'Nombre del proyecto');
+    var nb = mk('button', '', 'Crear'); nb.type = 'submit'; nf.appendChild(ni); nf.appendChild(nb);
+    nf.addEventListener('submit', async function (e) {
+      e.preventDefault(); var n = ni.value.trim(); if (!n) return;
+      var r = await sb.from('equipo_proyectos').insert({ nombre: n }).select().single();
+      if (r.error) { gSay(r.error.message); return; }
+      gSay('Proyecto creado.', true); await loadBiblioteca();
+    });
+    ps.appendChild(nf);
+    var myBooks = libros.filter(function (l) { return l.user_id === me; });
+    if (!mine.length) ps.appendChild(mk('p', 'lib-empty', 'Todavía no creaste proyectos.'));
+    mine.forEach(function (p) {
+      var c = mk('div', 'proj-card');
+      var row = mk('div', 'ed-row');
+      var pn = mk('input', 'txt'); pn.maxLength = 60; pn.value = p.nombre; pn.setAttribute('aria-label', 'Nombre del proyecto');
+      var ds = mk('input', 'txt'); ds.maxLength = 400; ds.value = p.descripcion; ds.placeholder = 'Descripción (opcional)'; ds.setAttribute('aria-label', 'Descripción');
+      var sv = mk('button', 'btn-s', 'Guardar'); sv.type = 'button';
+      sv.addEventListener('click', async function () {
+        var r = await sb.from('equipo_proyectos').update({ nombre: pn.value.trim(), descripcion: ds.value.trim() }).eq('id', p.id);
+        if (r.error) { gSay(r.error.message); return; }
+        gSay('Guardado.', true); await loadBiblioteca();
+      });
+      row.appendChild(pn); row.appendChild(sv); c.appendChild(row); c.appendChild(ds);
+      var cols = mk('div', 'proj-cols');
+      var cm = mk('div'); cm.appendChild(mk('h5', '', 'Colaboradores en este proyecto'));
+      var ck = mk('div', 'checks');
+      directos.forEach(function (id) {
+        var lb = mk('label'), cb = mk('input'); cb.type = 'checkbox';
+        cb.checked = eqMiem.some(function (m) { return m.proyecto_id === p.id && m.persona_id === id; });
+        cb.addEventListener('change', async function () {
+          cb.disabled = true;
+          var r = cb.checked ? await sb.from('equipo_proyecto_miembros').insert({ proyecto_id: p.id, persona_id: id })
+            : await sb.from('equipo_proyecto_miembros').delete().eq('proyecto_id', p.id).eq('persona_id', id);
+          if (r.error) { gSay(r.error.message); cb.checked = !cb.checked; cb.disabled = false; return; }
+          gSay(''); await loadBiblioteca();
+        });
+        lb.appendChild(cb); lb.appendChild(document.createTextNode(nameOf(id))); ck.appendChild(lb);
+      });
+      cm.appendChild(ck);
+      var cl = mk('div'); cl.appendChild(mk('h5', '', 'Libros del proyecto (los tuyos)'));
+      var ck2 = mk('div', 'checks');
+      if (!myBooks.length) ck2.appendChild(mk('span', 'none', 'Creá un libro en Biblioteca para asignarlo.'));
+      myBooks.forEach(function (l) {
+        var lb = mk('label'), cb = mk('input'); cb.type = 'checkbox';
+        cb.checked = eqLib.some(function (x) { return x.proyecto_id === p.id && x.libro_id === l.id; });
+        cb.addEventListener('change', async function () {
+          cb.disabled = true;
+          var r = cb.checked ? await sb.from('equipo_proyecto_libros').insert({ proyecto_id: p.id, libro_id: l.id })
+            : await sb.from('equipo_proyecto_libros').delete().eq('proyecto_id', p.id).eq('libro_id', l.id);
+          if (r.error) { gSay(r.error.message); cb.checked = !cb.checked; cb.disabled = false; return; }
+          gSay(''); await loadBiblioteca();
+        });
+        lb.appendChild(cb); lb.appendChild(document.createTextNode(l.titulo)); ck2.appendChild(lb);
+      });
+      cl.appendChild(ck2); cols.appendChild(cm); cols.appendChild(cl); c.appendChild(cols);
+      var del = mk('button', 'btn-s', 'Eliminar proyecto'); del.type = 'button'; del.style.width = 'fit-content';
+      del.addEventListener('click', async function () {
+        if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Confirmar eliminación'; return; }
+        var r = await sb.from('equipo_proyectos').delete().eq('id', p.id);
+        if (r.error) { gSay(r.error.message); return; }
+        gSay('Proyecto eliminado.', true); await loadBiblioteca();
+      });
+      c.appendChild(del); ps.appendChild(c);
+    });
+    v.replaceChildren(head, msg, cs, ps);
+  }
 
   /* ---------- Notificaciones ---------- */
 
