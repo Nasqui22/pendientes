@@ -1975,7 +1975,8 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 
   var view = 'board';
   var libros = [], eqProy = [], eqMiem = [], eqLib = [];
-  var libQ = '', libProj = '', libOpen = '', libPage = 0, libEdit = null, gestMsg = '';
+  var libQ = '', libProj = '', libCat = '', libOpen = '', libPage = 0, libEdit = null, gestMsg = '';
+  var CATS = { power_automate: 'Power Automate', merlin: 'Merlin', general: 'Información general', ayuda: 'Ayuda' };
   var KIND = { automatismo: 'Automatismo', ejemplo: 'Ejemplo', ayuda: 'Ayuda' };
 
   function setView(v) {
@@ -2063,6 +2064,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     c.appendChild(mk('h4', '', l.titulo));
     if (l.resumen) c.appendChild(mk('p', '', l.resumen));
     var meta = mk('div', 'meta');
+    meta.appendChild(pill('', esc(CATS[l.categoria] || CATS.general)));
     var by = l.user_id === me ? scopeText(l) : 'De ' + nameOf(l.user_id);
     meta.appendChild(pill('', esc(by)));
     meta.appendChild(pill('', (l.paginas || []).length + ((l.paginas || []).length === 1 ? ' página' : ' páginas')));
@@ -2079,16 +2081,22 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     var head = mk('div', 'v-head'), t = mk('div');
     t.appendChild(mk('h1', '', 'Biblioteca')); t.appendChild(mk('p', '', 'Mini libros con información, ejemplos y enlaces para el equipo.'));
     var nb = mk('button', 'btn-p'); nb.type = 'button'; nb.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo libro';
-    nb.addEventListener('click', function () { libEdit = { id: '', titulo: '', resumen: '', paginas: [{ t: 'Introducción', b: '' }], enlaces: [], alcance: 'equipo', destinatarios: [] }; renderLib(); window.scrollTo(0, 0); });
+    nb.addEventListener('click', function () { libEdit = { id: '', titulo: '', resumen: '', categoria: 'general', paginas: [{ t: 'Introducción', b: '' }], enlaces: [], alcance: 'equipo', destinatarios: [] }; renderLib(); window.scrollTo(0, 0); });
     head.appendChild(t); head.appendChild(nb);
     var tools = mk('div', 'lib-tools');
     var q = mk('input', 'txt'); q.type = 'search'; q.placeholder = 'Buscar en la biblioteca'; q.value = libQ; q.setAttribute('aria-label', 'Buscar libros');
     q.addEventListener('input', function () { libQ = q.value; var pos = q.selectionStart; renderLib(); var n = $('lib-view').querySelector('input[type=search]'); n.focus(); n.setSelectionRange(pos, pos); });
     tools.appendChild(q);
+    var fc = mk('div', 'filters'); fc.setAttribute('role', 'group'); fc.setAttribute('aria-label', 'Filtrar por categoría');
+    [['', 'Todas las categorías']].concat(Object.keys(CATS).map(function (k) { return [k, CATS[k]]; })).forEach(function (o) {
+      var b = mk('button', 'fchip', o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(libCat === o[0]));
+      b.addEventListener('click', function () { libCat = o[0]; renderLib(); }); fc.appendChild(b);
+    });
+    tools.appendChild(fc);
     var mineP = eqProy.slice();
     if (mineP.length) {
       var fx = mk('div', 'filters'); fx.setAttribute('role', 'group'); fx.setAttribute('aria-label', 'Filtrar por proyecto');
-      [['', 'Todos']].concat(mineP.map(function (p) { return [p.id, p.nombre]; })).forEach(function (o) {
+      [['', 'Todos los proyectos']].concat(mineP.map(function (p) { return [p.id, p.nombre]; })).forEach(function (o) {
         var b = mk('button', 'fchip', o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(libProj === o[0]));
         b.addEventListener('click', function () { libProj = o[0]; renderLib(); }); fx.appendChild(b);
       });
@@ -2097,6 +2105,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     var qq = libQ.trim().toLowerCase();
     var shown = libros.filter(function (l) {
       if (libProj && libProjects(l.id).indexOf(libProj) === -1) return false;
+      if (libCat && (l.categoria || 'general') !== libCat) return false;
       return !qq || (l.titulo + ' ' + l.resumen).toLowerCase().indexOf(qq) !== -1;
     });
     var mine = shown.filter(function (l) { return l.user_id === me; }), other = shown.filter(function (l) { return l.user_id !== me; });
@@ -2114,7 +2123,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     var parts = [backBtn('← Biblioteca', function () { libOpen = ''; renderLib(); })];
     var head = mk('div', 'v-head'), t = mk('div');
     t.appendChild(mk('h1', '', l.titulo));
-    t.appendChild(mk('p', '', (l.user_id === me ? 'Tuyo' : 'De ' + nameOf(l.user_id)) + ' · ' + scopeText(l) + ' · actualizado ' + ago(l.updated_at)));
+    t.appendChild(mk('p', '', (l.user_id === me ? 'Tuyo' : 'De ' + nameOf(l.user_id)) + ' · ' + (CATS[l.categoria] || CATS.general) + ' · ' + scopeText(l) + ' · actualizado ' + ago(l.updated_at)));
     head.appendChild(t);
     if (l.user_id === me) {
       var eb = mk('button', 'btn-s', 'Editar'); eb.type = 'button';
@@ -2164,7 +2173,10 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     function field(label, el) { var f = mk('div', 'field'); f.appendChild(mk('label', '', label)); f.appendChild(el); return f; }
     var ti = mk('input', 'txt'); ti.maxLength = 120; ti.value = d.titulo; ti.placeholder = 'Título del libro'; ti.addEventListener('input', function () { d.titulo = ti.value; });
     var rs = mk('input', 'txt'); rs.maxLength = 300; rs.value = d.resumen; rs.placeholder = 'De qué trata (opcional)'; rs.addEventListener('input', function () { d.resumen = rs.value; });
-    ed.appendChild(field('Título', ti)); ed.appendChild(field('Resumen', rs));
+    var ct = mk('select'); ct.setAttribute('aria-label', 'Categoría');
+    Object.keys(CATS).forEach(function (k) { var o = mk('option', '', CATS[k]); o.value = k; ct.appendChild(o); });
+    ct.value = d.categoria || 'general'; ct.addEventListener('change', function () { d.categoria = ct.value; });
+    ed.appendChild(field('Título', ti)); ed.appendChild(field('Categoría', ct)); ed.appendChild(field('Resumen', rs));
 
     var pg = mk('div', 'field'); pg.appendChild(mk('label', '', 'Páginas (hasta 12). Podés usar # título, ## subtítulo, - viñetas, **negrita**, `código` y enlaces.'));
     d.paginas.forEach(function (p, i) {
@@ -2227,7 +2239,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       }
       if (d.alcance === 'personas' && !d.destinatarios.length) { msg.textContent = 'Elegí al menos una persona.'; return; }
       var row = {
-        titulo: titulo, resumen: d.resumen.trim(), alcance: d.alcance, destinatarios: d.alcance === 'personas' ? d.destinatarios : [],
+        titulo: titulo, categoria: d.categoria || 'general', resumen: d.resumen.trim(), alcance: d.alcance, destinatarios: d.alcance === 'personas' ? d.destinatarios : [],
         paginas: d.paginas.filter(function (p) { return p.t.trim() || p.b.trim(); }).map(function (p) { return { t: p.t.trim(), b: p.b }; }),
         enlaces: d.enlaces.map(function (e) { return { l: e.l.trim(), u: e.u.trim(), k: e.k }; })
       };
