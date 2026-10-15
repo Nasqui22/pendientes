@@ -208,9 +208,9 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
 .add-row button .i { width: 17px; height: 17px; stroke-width: 2.2; }
 
 /* Paneles laterales */
-#scrim, #a-scrim, #t-scrim, #m-scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); border: 0; padding: 0; margin: 0; }
-#panel:focus, #admin:focus, #team:focus, #met:focus { outline: none; }
-#panel, #admin, #team, #met {
+#scrim, #a-scrim, #t-scrim, #m-scrim, #n-scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); border: 0; padding: 0; margin: 0; }
+#panel:focus, #admin:focus, #team:focus, #met:focus, #notif:focus { outline: none; }
+#panel, #admin, #team, #met, #notif {
   position: fixed; z-index: 21; top: 0; right: 0; bottom: 0;
   width: min(480px, 100%);
   background: var(--surface); border-left: 1px solid var(--line);
@@ -221,7 +221,7 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
   padding-right: env(safe-area-inset-right, 0px);
   overflow: hidden;
 }
-#admin, #team { width: min(560px, 100%); }
+#admin, #team, #notif { width: min(560px, 100%); }
 #met { width: min(720px, 100%); }
 .p-head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 20px; border-bottom: 1px solid var(--line); }
 .p-state { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500; padding: 3px 10px; border-radius: 7px; }
@@ -392,6 +392,21 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 .chip button .i { width: 13px; height: 13px; }
 .none { font-size: 13px; color: var(--faint); }
 
+/* Notificaciones y delegación de subtareas */
+.bell { position: relative; }
+.bell .n { position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+.subs li { flex-wrap: wrap; }
+.sub-deleg { flex: none; width: 32px; height: 32px; display: grid; place-items: center; background: none; color: var(--muted); border-radius: 8px; padding: 0; }
+.sub-deleg:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent); }
+.sub-deleg .i { width: 16px; height: 16px; }
+.sub-st { flex-basis: 100%; padding-left: 28px; font-size: 12.5px; color: var(--muted); }
+.sub-st.bad { color: var(--alta); }
+.sub-pick { flex-basis: 100%; display: flex; gap: 8px; padding-left: 28px; }
+.sub-pick select { height: 36px; flex: 1; min-width: 0; }
+.sub-pick button { height: 36px; padding: 0 12px; font-size: 13px; font-weight: 600; background: var(--accent); color: var(--accent-ink); }
+.n-sec { display: flex; flex-direction: column; gap: 8px; }
+.n-sec h3 { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+
 /* Métricas */
 .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .kpi { border: 1px solid var(--line); background: var(--bg); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -458,8 +473,8 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 @media (prefers-reduced-motion: no-preference) {
   button, .card, .col, .add-row input, .tick, .sub-box { transition: background-color .15s, border-color .15s, box-shadow .15s, color .15s, filter .15s; }
   .bar > i { transition: width .4s cubic-bezier(.16, 1, .3, 1); }
-  #panel, #admin, #team, #met { animation: slide .24s cubic-bezier(.16, 1, .3, 1); }
-  #scrim, #a-scrim, #t-scrim, #m-scrim { animation: fade .2s ease-out; }
+  #panel, #admin, #team, #met, #notif { animation: slide .24s cubic-bezier(.16, 1, .3, 1); }
+  #scrim, #a-scrim, #t-scrim, #m-scrim, #n-scrim { animation: fade .2s ease-out; }
   @keyframes slide { from { transform: translateX(20px); opacity: 0; } }
   @keyframes fade { from { opacity: 0; } }
 }
@@ -506,6 +521,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     </span>
     <div class="top-actions">
       <span class="who" id="who"></span>
+      <button type="button" class="btn ghost bell" id="bell-btn" hidden aria-label="Notificaciones"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><span class="n" id="bell-n" hidden></span></button>
       <button type="button" class="btn ghost" id="met-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Métricas</button>
       <button type="button" class="btn ghost" id="team-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Mi equipo</button>
       <button type="button" class="btn ghost" id="admin-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Usuarios</button>
@@ -720,6 +736,20 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   </div>
 </aside>
 
+<div id="n-scrim" hidden></div>
+<aside id="notif" hidden tabindex="-1" aria-label="Notificaciones">
+  <div class="p-head">
+    <h2 class="a-h">Notificaciones</h2>
+    <button type="button" class="p-close" id="n-close" aria-label="Cerrar notificaciones"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="p-body">
+    <p class="a-msg" id="n-msg" role="status"></p>
+    <section class="n-sec" aria-labelledby="n-h1"><h3 id="n-h1">Te pasaron una subtarea</h3><ul class="u-list" id="n-in"></ul></section>
+    <section class="n-sec" aria-labelledby="n-h2"><h3 id="n-h2">Respuestas a lo que pasaste</h3><ul class="u-list" id="n-out"></ul></section>
+    <section class="n-sec" aria-labelledby="n-h3"><h3 id="n-h3">Esperando respuesta</h3><ul class="u-list" id="n-wait"></ul></section>
+  </div>
+</aside>
+
 <div id="m-scrim" hidden></div>
 <aside id="met" hidden tabindex="-1" aria-label="Métricas">
   <div class="p-head">
@@ -776,7 +806,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   var ICON_X = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
   var col = null;            // CollectionReference
-  var me = '', proyectos = [], misResp = [], directos = [], names = {};
+  var me = '', proyectos = [], misResp = [], directos = [], names = {}, companeros = [], deleg = [], delegChannel = null, openPick = '';
   var byId = {};             // id -> task
   var openId = null;         // task open in the panel
   var canWrite = true;
@@ -927,6 +957,9 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 
   /* ---------- board ---------- */
 
+  function delegOf(tid, texto) {
+    return deleg.filter(function (d) { return d.tarea_id === tid && d.texto === texto; })[0] || null; // la más reciente primero
+  }
   var ICON_OK = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
   function nameOf(id) { return names[id] || 'tu responsable'; }
   function pill(cls, html) {
@@ -1275,7 +1308,37 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       mvs.className = 'sub-mvs';
       mvs.appendChild(mvBtn(-1, 'm6 14 6-6 6 6', 'Subir subtarea', i === 0));
       mvs.appendChild(mvBtn(1, 'm6 10 6 6 6-6', 'Bajar subtarea', i === t.subs.length - 1));
-      li.appendChild(cb); li.appendChild(sp); li.appendChild(mvs); li.appendChild(del);
+      li.appendChild(cb); li.appendChild(sp); li.appendChild(mvs);
+      var dl = delegOf(t.id, s.t);
+      if (!s.d && canWrite && companeros.length && !(dl && dl.estado === 'pendiente')) {
+        var dg = document.createElement('button');
+        dg.type = 'button'; dg.className = 'sub-deleg'; dg.setAttribute('aria-label', 'Pasar esta subtarea a un compañero');
+        dg.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5 1.4 0 2.6.3 3.6.9M17 13v6M14 16h6"/></svg>';
+        dg.addEventListener('click', function () { openPick = openPick === t.id + '|' + s.t ? '' : t.id + '|' + s.t; fillPanel(byId[t.id]); });
+        li.appendChild(dg);
+      } else if (!s.d && canWrite && companeros.length) {
+        var sp3 = document.createElement('span'); sp3.style.width = '32px'; sp3.style.flex = 'none'; li.appendChild(sp3);
+      }
+      li.appendChild(del);
+      if (dl) {
+        var who = nameOf(dl.a_id);
+        var stx = dl.estado === 'pendiente' ? 'Pasada a ' + who + ' · esperando respuesta'
+          : dl.estado === 'aceptada' ? who + ' la aceptó y la tiene como tarea'
+          : who + ' la rechazó' + (dl.motivo ? ': «' + dl.motivo + '»' : '');
+        li.appendChild(mk('div', 'sub-st' + (dl.estado === 'rechazada' ? ' bad' : ''), stx));
+      }
+      if (openPick === t.id + '|' + s.t) {
+        var pk = mk('div', 'sub-pick'), sel = mk('select'); sel.setAttribute('aria-label', 'Pasar a');
+        companeros.forEach(function (c) { var o = mk('option', '', c.nombre); o.value = c.id; sel.appendChild(o); });
+        var go = mk('button', '', 'Enviar'); go.type = 'button';
+        go.addEventListener('click', async function () {
+          go.disabled = true;
+          var r = await sb.rpc('delegar_subtarea', { p_tarea: t.id, p_texto: s.t, p_a: sel.value });
+          if (r.error) { say(r.error.message); go.disabled = false; return; }
+          openPick = ''; say(''); await loadDeleg(); if (byId[t.id]) fillPanel(byId[t.id]);
+        });
+        pk.appendChild(sel); pk.appendChild(go); li.appendChild(pk);
+      }
       return li;
     }));
     var sd = t.subs.filter(function (s) { return s.d; }).length;
@@ -1542,8 +1605,11 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     $('met-btn').hidden = false;
     me = session.user.id;
     loadPerfil(session);
+    $('bell-btn').hidden = false;
     loadProyectos();
-    loadEquipo();
+    loadEquipo().then(loadDeleg);
+    if (delegChannel) sb.removeChannel(delegChannel);
+    delegChannel = sb.channel('deleg-' + me).on('postgres_changes', { event: '*', schema: 'public', table: 'delegaciones' }, loadDeleg).subscribe();
     col = makeCollection(session.user.id);
     canWrite = true;
     col.onSnapshot(function (snap) {
@@ -1572,6 +1638,9 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     (p.error ? [] : p.data).forEach(function (u) { names[u.id] = u.nombre || u.email; });
     $('team-btn').hidden = !directos.length;
     $('tab-m-eq').hidden = !directos.length;
+    var c = await sb.rpc('mis_companeros');
+    companeros = c.error ? [] : c.data;
+    companeros.forEach(function (x) { names[x.id] = x.nombre; });
     render();
   }
   function renderBanner() {
@@ -1620,7 +1689,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; closeMet(); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } closeNotif(); closeMet(); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -1809,6 +1878,86 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   $('a-close').addEventListener('click', closeAdmin);
   $('a-scrim').addEventListener('click', closeAdmin);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('admin').hidden) closeAdmin(); });
+
+  /* ---------- Notificaciones ---------- */
+
+  function nCounts() {
+    return {
+      inc: deleg.filter(function (d) { return d.a_id === me && d.estado === 'pendiente'; }),
+      out: deleg.filter(function (d) { return d.de_id === me && d.estado !== 'pendiente' && !d.visto_por_de; }),
+      wait: deleg.filter(function (d) { return d.de_id === me && d.estado === 'pendiente'; })
+    };
+  }
+  async function loadDeleg() {
+    if (!sb || !me) return;
+    var r = await sb.from('delegaciones').select('*').order('created_at', { ascending: false });
+    deleg = r.error ? [] : r.data;
+    var c = nCounts(), n = c.inc.length + c.out.length;
+    var b = $('bell-n'); b.hidden = !n; b.textContent = String(n);
+    $('bell-btn').setAttribute('aria-label', n ? 'Notificaciones: ' + n + ' sin atender' : 'Notificaciones');
+    if (!$('notif').hidden) renderNotif();
+    if (openId && byId[openId]) fillPanel(byId[openId]);
+  }
+  function nSay(msg, ok) { var m = $('n-msg'); m.textContent = msg || ''; m.className = 'a-msg' + (ok ? ' ok' : ''); }
+  async function nCall(fn, args, okMsg) {
+    nSay('');
+    var r = await sb.rpc(fn, args);
+    if (r.error) { nSay(r.error.message); return false; }
+    if (okMsg) nSay(okMsg, true);
+    await loadDeleg();
+    return true;
+  }
+  function nItem(d, kind) {
+    var li = mk('li', 't-item');
+    if (kind === 'in') {
+      li.appendChild(mk('div', 't-title', d.texto));
+      li.appendChild(mk('div', 't-sub', nameOf(d.de_id) + ' te la pasó · de la tarea «' + d.tarea_texto + '» · ' + ago(d.created_at)));
+      var acts = mk('div', 't-acts');
+      var ok = mk('button', 'a-btn', 'Aceptar'); ok.type = 'button';
+      ok.addEventListener('click', function () { ok.disabled = true; nCall('responder_delegacion', { p_id: d.id, p_acepta: true }, 'Aceptada: ya la tenés en Pendiente.'); });
+      var no = mk('button', 'btn-s', 'Rechazar'); no.type = 'button';
+      var form = mk('form', 'sub-add'); form.hidden = true; form.autocomplete = 'off';
+      var inp = mk('input'); inp.type = 'text'; inp.maxLength = 300; inp.placeholder = 'Motivo (opcional)'; inp.setAttribute('aria-label', 'Motivo del rechazo');
+      var go = mk('button', '', 'Rechazar'); go.type = 'submit';
+      form.appendChild(inp); form.appendChild(go);
+      no.addEventListener('click', function () { form.hidden = !form.hidden; if (!form.hidden) inp.focus(); });
+      form.addEventListener('submit', function (e) { e.preventDefault(); go.disabled = true; nCall('responder_delegacion', { p_id: d.id, p_acepta: false, p_motivo: inp.value }, 'Rechazada.'); });
+      acts.appendChild(ok); acts.appendChild(no); li.appendChild(acts); li.appendChild(form);
+    } else if (kind === 'out') {
+      li.appendChild(mk('div', 't-title', nameOf(d.a_id) + (d.estado === 'aceptada' ? ' aceptó' : ' rechazó') + ' «' + d.texto + '»'));
+      li.appendChild(mk('div', 't-sub', 'de la tarea «' + d.tarea_texto + '»' + (d.motivo ? ' · Motivo: ' + d.motivo : '') + ' · ' + ago(d.resuelta_at)));
+    } else {
+      li.appendChild(mk('div', 't-title', d.texto));
+      li.appendChild(mk('div', 't-sub', 'Pasada a ' + nameOf(d.a_id) + ' · ' + ago(d.created_at)));
+      var ac = mk('div', 't-acts'), cx = mk('button', 'btn-s', 'Cancelar'); cx.type = 'button';
+      cx.addEventListener('click', function () { cx.disabled = true; nCall('cancelar_delegacion', { p_id: d.id }, 'Cancelada.'); });
+      ac.appendChild(cx); li.appendChild(ac);
+    }
+    return li;
+  }
+  function nFill(id, items, kind, empty) {
+    var ul = $(id);
+    if (!items.length) { ul.replaceChildren(mk('li', 't-empty', empty)); return; }
+    ul.replaceChildren.apply(ul, items.map(function (d) { return nItem(d, kind); }));
+  }
+  function renderNotif() {
+    var c = nCounts();
+    nFill('n-in', c.inc, 'in', 'Nada para responder.');
+    nFill('n-out', seenOut.length ? seenOut : c.out, 'out', 'Sin respuestas nuevas.');
+    nFill('n-wait', c.wait, 'wait', 'Nada esperando respuesta.');
+  }
+  var seenOut = [];
+  function openNotif() {
+    nSay(''); seenOut = nCounts().out;
+    $('n-scrim').hidden = false; $('notif').hidden = false; $('notif').focus();
+    renderNotif();
+    if (seenOut.length) sb.rpc('marcar_delegaciones_vistas').then(loadDeleg);
+  }
+  function closeNotif() { seenOut = []; $('notif').hidden = true; $('n-scrim').hidden = true; if (me) loadDeleg(); }
+  $('bell-btn').addEventListener('click', openNotif);
+  $('n-close').addEventListener('click', closeNotif);
+  $('n-scrim').addEventListener('click', closeNotif);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('notif').hidden) closeNotif(); });
 
   /* ---------- Métricas ---------- */
 
