@@ -927,6 +927,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   var ICON_X = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
   var col = null;            // CollectionReference
+  var delegTasks = {};
   var me = '', proyectos = [], misResp = [], directos = [], names = {}, companeros = [], deleg = [], delegChannel = null, openPick = '';
   var byId = {};             // id -> task
   var openId = null;         // task open in the panel
@@ -1035,6 +1036,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       proyectoId: typeof d.proyectoId === 'string' ? d.proyectoId : '',
       equipoProyectoId: typeof d.equipoProyectoId === 'string' ? d.equipoProyectoId : '',
       asignadaPor: typeof d.asignadaPor === 'string' ? d.asignadaPor : '',
+      delegadaPor: typeof d.delegadaPor === 'string' ? d.delegadaPor : '',
       validadaPor: typeof d.validadaPor === 'string' ? d.validadaPor : '',
       validadaAt: typeof d.validadaAt === 'number' ? d.validadaAt : 0,
       motivo: typeof d.motivo === 'string' ? d.motivo : '',
@@ -1079,6 +1081,11 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 
   /* ---------- board ---------- */
 
+  function delegEstado(dl) {
+    var x = delegTasks[dl.nueva_tarea_id];
+    if (!x) return 'la tiene como tarea';
+    return x.validada_por ? 'validada' : x.status === 'completado' ? 'completada, esperando validación' : x.status === 'proceso' ? 'en proceso' : 'pendiente';
+  }
   function delegOf(tid, texto) {
     return deleg.filter(function (d) { return d.tarea_id === tid && d.texto === texto; })[0] || null; // la más reciente primero
   }
@@ -1146,9 +1153,10 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     }
     t.labels.forEach(function (l) { pills.push(lblEl(l)); });
     if (t.asignadaPor) pills.push(pill('', 'Asignada por ' + esc(nameOf(t.asignadaPor))));
+    else if (t.delegadaPor) pills.push(pill('', 'Pasada por ' + esc(nameOf(t.delegadaPor))));
     if (t.validadaPor) pills.push(pill('ok', ICON_OK + 'Validada'));
     else if (t.motivo && t.status !== 'completado') pills.push(pill('warn', 'Devuelta'));
-    else if (t.status === 'completado' && (t.visible || t.asignadaPor)) pills.push(pill('warn', 'Esperando validación'));
+    else if (t.status === 'completado' && (t.visible || t.asignadaPor || t.delegadaPor)) pills.push(pill('warn', 'Esperando validación'));
     else if (t.visible) pills.push(pill('', 'Compartida'));
     if (t.equipoProyectoId && projName(t.equipoProyectoId)) pills.push(pill('ok', esc(projName(t.equipoProyectoId))));
     if (t.proyectoId) { var pj = proyectos.filter(function (x) { return x.id === t.proyectoId; })[0]; if (pj) pills.push(pill('', esc(pj.nombre))); }
@@ -1372,12 +1380,13 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       ep.value = t.equipoProyectoId;
     }
     $('p-ep-f').hidden = !eqProy.length && !t.equipoProyectoId;
-    var asig = !!t.asignadaPor, lock = !!t.validadaPor;
-    $('p-vis').checked = asig || t.visible;
-    $('p-vis-f').hidden = !asig && !misResp.length && !t.visible;
+    var asig = !!t.asignadaPor, lock = !!t.validadaPor, dlg = !!t.delegadaPor;
+    $('p-vis').checked = asig || dlg || t.visible;
+    $('p-vis-f').hidden = !asig && !dlg && !misResp.length && !t.visible;
     var pn = $('p-note'), msg = '';
     if (lock) msg = 'Validada por ' + nameOf(t.validadaPor) + (t.validadaAt ? ' el ' + fmtStamp(t.validadaAt) : '') + '. Ya no se puede cambiar el estado.';
     else if (t.motivo && t.status !== 'completado') msg = 'Devuelta por tu responsable: «' + t.motivo + '»';
+    else if (dlg && !asig) msg = 'Te la pasó ' + nameOf(t.delegadaPor) + ' (una subtarea suya que aceptaste). Su estado lo ven tu responsable y ' + nameOf(t.delegadaPor) + ', y no se puede dejar privada. Lo que escribas en notas o avances también lo ven.';
     else if (asig) msg = 'Asignada por ' + nameOf(t.asignadaPor) + '. La fecha y la prioridad las fija quien la asignó.';
     pn.hidden = !msg; pn.textContent = msg;
 
@@ -1442,7 +1451,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       mvs.appendChild(mvBtn(1, 'm6 10 6 6 6-6', 'Bajar subtarea', i === t.subs.length - 1));
       li.appendChild(cb); li.appendChild(sp); li.appendChild(mvs);
       var dl = delegOf(t.id, s.t);
-      if (!s.d && canWrite && companeros.length && !(dl && dl.estado === 'pendiente')) {
+      if (!s.d && canWrite && companeros.length && !(dl && (dl.estado === 'pendiente' || dl.estado === 'aceptada'))) {
         var dg = document.createElement('button');
         dg.type = 'button'; dg.className = 'sub-deleg'; dg.setAttribute('aria-label', 'Pasar esta subtarea a un compañero');
         dg.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5 1.4 0 2.6.3 3.6.9M17 13v6M14 16h6"/></svg>';
@@ -1455,7 +1464,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       if (dl) {
         var who = nameOf(dl.a_id);
         var stx = dl.estado === 'pendiente' ? 'Pasada a ' + who + ' · esperando respuesta'
-          : dl.estado === 'aceptada' ? who + ' la aceptó y la tiene como tarea'
+          : dl.estado === 'aceptada' ? who + ' la aceptó · ' + delegEstado(dl)
           : who + ' la rechazó' + (dl.motivo ? ': «' + dl.motivo + '»' : '');
         li.appendChild(mk('div', 'sub-st' + (dl.estado === 'rechazada' ? ' bad' : ''), stx));
       }
@@ -1534,10 +1543,10 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     $('p-due').disabled = !canWrite || asig;
     $('p-prio').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite || asig; });
     $('p-quick').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite || asig; });
-    $('p-vis').disabled = !canWrite || asig;
+    $('p-vis').disabled = !canWrite || asig || dlg;
     $('p-proj').disabled = !canWrite; $('p-proj-new').disabled = !canWrite;
     $('p-ep').disabled = !canWrite || asig;
-    del.hidden = asig; del.disabled = !canWrite || asig;
+    del.hidden = asig || dlg; del.disabled = !canWrite || asig || dlg;
   }
 
   function openPanel(id) {
@@ -1699,7 +1708,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       text: r.text, status: r.status, prio: r.prio, due: r.due, notes: r.notes,
       subs: r.subs, order: Number(r.ord), createdAt: Number(r.created_at), doneAt: Number(r.done_at),
       statusAt: Number(r.status_at) || 0, labels: r.labels, avances: r.avances,
-      visible: !!r.visible, proyectoId: r.proyecto_id || '', equipoProyectoId: r.equipo_proyecto_id || '', asignadaPor: r.asignada_por || '',
+      visible: !!r.visible, proyectoId: r.proyecto_id || '', equipoProyectoId: r.equipo_proyecto_id || '', asignadaPor: r.asignada_por || '', delegadaPor: r.delegada_por || '',
       validadaPor: r.validada_por || '', validadaAt: Number(r.validada_at) || 0, motivo: r.motivo_devolucion || ''
     };
   }
@@ -1728,7 +1737,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
         }
         load();
         channel = sb.channel('tareas-' + userId)
-          .on('postgres_changes', { event: '*', schema: 'public', table: T }, load)
+          .on('postgres_changes', { event: '*', schema: 'public', table: T }, function () { load(); if (typeof loadDeleg === 'function') loadDeleg(); })
           .subscribe();
       }
     };
@@ -2546,7 +2555,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 '- Elegí al compañero y tocá Enviar. «Compañero» es alguien que comparte al menos un responsable con vos.\n\n' +
 '## Qué pasa después\n' +
 '- A tu compañero le llega una notificación en la **campana** de arriba, con el título de la subtarea y el de tu tarea. Puede **aceptar** o **rechazar** (con un motivo opcional).\n' +
-'- Si acepta, se crea una tarea nueva en su Pendiente. Vos ves «la aceptó y la tiene como tarea».\n' +
+'- Si acepta, se crea una tarea nueva en su Pendiente, marcada «Pasada por…». Esa tarea es siempre visible: la ven su responsable y vos, y tu subtarea muestra cómo viene (pendiente, en proceso, completada, validada). Tu compañero no puede dejarla privada ni eliminarla; lo que escriba en sus notas y avances también lo ven.\n' +
 '- Si rechaza, ves el motivo y podés pasársela a otra persona.\n' +
 '- Mientras espera respuesta, podés cancelarla desde la campana.\n\n' +
 'El número de la campana cuenta lo que tenés que responder más las respuestas que todavía no viste.\n\n' +
@@ -2667,6 +2676,9 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     if (!sb || !me) return;
     var r = await sb.from('delegaciones').select('*').order('created_at', { ascending: false });
     deleg = r.error ? [] : r.data;
+    var rt = await sb.from('tareas').select('id,status,validada_por').eq('delegada_por', me);
+    delegTasks = {};
+    (rt.error ? [] : rt.data).forEach(function (x) { delegTasks[x.id] = x; });
     var c = nCounts(), n = c.inc.length + c.out.length;
     var b = $('bell-n'); b.hidden = !n; b.textContent = String(n);
     $('bell-btn').setAttribute('aria-label', n ? 'Notificaciones: ' + n + ' sin atender' : 'Notificaciones');
