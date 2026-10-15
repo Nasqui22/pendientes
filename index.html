@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pendientes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: encabezado con avance general, tres columnas de estado con tarjetas elevadas, panel de detalle lateral. */
+:root {
+  --bg: #EEF3F2;
+  --surface: #FFFFFF;
+  --surface-2: #E3EBE9;
+  --ink: #12302D;
+  --muted: #4F6764;
+  --faint: #7B908D;
+  --line: #D3DEDC;
+  --accent: #0B7A75;
+  --accent-soft: #D6EEEB;
+  --accent-ink: #FFFFFF;
+  --pend: #5B6B8C;
+  --pend-soft: #E3E8F3;
+  --proc: #B45309;
+  --proc-soft: #FDEBD3;
+  --comp: #0E7C52;
+  --comp-soft: #D8F0E4;
+  --alta: #B3261E;
+  --media: #B45309;
+  --baja: #4F6764;
+  --scrim: rgba(10, 30, 28, .45);
+  --shadow: 0 1px 2px rgba(18, 48, 45, .07), 0 4px 12px -4px rgba(18, 48, 45, .10);
+  --shadow-up: 0 2px 4px rgba(18, 48, 45, .08), 0 10px 22px -8px rgba(18, 48, 45, .18);
+  --font-display: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1514;
+    --surface: #132220;
+    --surface-2: #0F1D1B;
+    --ink: #E4F0EE;
+    --muted: #93ABA8;
+    --faint: #6C8582;
+    --line: #223633;
+    --accent: #3FC4B8;
+    --accent-soft: #15403C;
+    --accent-ink: #04201D;
+    --pend: #9DB0DC;
+    --pend-soft: #1E2A44;
+    --proc: #F0A64D;
+    --proc-soft: #3F2B10;
+    --comp: #45C88F;
+    --comp-soft: #123A2A;
+    --alta: #F47C74;
+    --media: #F0A64D;
+    --baja: #93ABA8;
+    --scrim: rgba(0, 0, 0, .6);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 12px -4px rgba(0, 0, 0, .45);
+    --shadow-up: 0 2px 4px rgba(0, 0, 0, .45), 0 10px 22px -8px rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1514;
+  --surface: #132220;
+  --surface-2: #0F1D1B;
+  --ink: #E4F0EE;
+  --muted: #93ABA8;
+  --faint: #6C8582;
+  --line: #223633;
+  --accent: #3FC4B8;
+  --accent-soft: #15403C;
+  --accent-ink: #04201D;
+  --pend: #9DB0DC;
+  --pend-soft: #1E2A44;
+  --proc: #F0A64D;
+  --proc-soft: #3F2B10;
+  --comp: #45C88F;
+  --comp-soft: #123A2A;
+  --alta: #F47C74;
+  --media: #F0A64D;
+  --baja: #93ABA8;
+  --scrim: rgba(0, 0, 0, .6);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 12px -4px rgba(0, 0, 0, .45);
+  --shadow-up: 0 2px 4px rgba(0, 0, 0, .45), 0 10px 22px -8px rgba(0, 0, 0, .6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden]:not([hidden=until-found i]) { display: none !important; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.45;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1160px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Encabezado */
+.top { display: grid; grid-template-columns: 1fr minmax(220px, 340px); gap: 12px 32px; align-items: end; }
+.title-block { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+h1 { margin: 0; font-family: var(--font-display); font-size: clamp(30px, 5vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; text-wrap: balance; }
+.progress { display: flex; flex-direction: column; gap: 8px; }
+.progress-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.tally { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pct { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--comp); font-variant-numeric: tabular-nums; }
+.bar { height: 8px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; display: flex; }
+.bar > i { display: block; height: 100%; background: var(--comp); width: 0; }
+.bar > i.proc { background: var(--proc); opacity: .85; }
+.note { margin: 0; font-size: 13px; color: var(--alta); min-height: 1.2em; }
+.note:empty { display: none; }
+
+/* Tablero */
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.col { min-width: 0; display: flex; flex-direction: column; gap: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 16px; padding: 14px 12px 12px; }
+.col.drop-on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.col-head { display: flex; align-items: center; gap: 8px; padding-inline: 4px; }
+.col-ico { flex: none; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; }
+.col-ico .i { width: 15px; height: 15px; }
+.col[data-status="pendiente"] .col-ico { background: var(--pend-soft); color: var(--pend); }
+.col[data-status="proceso"] .col-ico { background: var(--proc-soft); color: var(--proc); }
+.col[data-status="completado"] .col-ico { background: var(--comp-soft); color: var(--comp); }
+.col-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+.col-n { margin-left: auto; min-width: 26px; text-align: center; font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+
+.stack { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; min-height: 8px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 12px 13px; cursor: pointer; display: flex; flex-direction: column; gap: 10px;
+}
+.card:hover { border-color: var(--faint); box-shadow: var(--shadow-up); }
+.card.dragging { opacity: .4; }
+.card-top { display: flex; align-items: flex-start; gap: 10px; }
+.tick {
+  appearance: none; -webkit-appearance: none; flex: none;
+  width: 20px; height: 20px; margin: 1px 0 0; border: 1.75px solid var(--faint);
+  border-radius: 50%; background: transparent; cursor: pointer; display: grid; place-content: center;
+}
+.tick:hover { border-color: var(--comp); background: var(--comp-soft); }
+.tick::after {
+  content: ""; width: 9px; height: 5px;
+  border-left: 2px solid var(--accent-ink); border-bottom: 2px solid var(--accent-ink);
+  transform: rotate(-45deg) translate(1px, -1px); opacity: 0;
+}
+.tick:checked { background: var(--comp); border-color: var(--comp); }
+.tick:checked::after { opacity: 1; }
+.card-txt { min-width: 0; overflow-wrap: anywhere; font-size: 15px; font-weight: 500; line-height: 1.4; }
+.card.done .card-txt { color: var(--muted); font-weight: 400; text-decoration: line-through; text-decoration-thickness: 1px; }
+.card.done { box-shadow: none; }
+.meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-left: 30px; }
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .01em;
+  padding: 3px 8px; border-radius: 99px; background: var(--surface-2); color: var(--muted);
+  white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.pill .i { width: 12px; height: 12px; }
+.pill.p-alta { background: color-mix(in srgb, var(--alta) 13%, var(--surface)); color: var(--alta); }
+.pill.p-media { background: color-mix(in srgb, var(--media) 15%, var(--surface)); color: var(--media); }
+.pill.p-baja { background: var(--surface-2); color: var(--baja); }
+.pill.p-alta::before, .pill.p-media::before, .pill.p-baja::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pill.late { background: color-mix(in srgb, var(--alta) 13%, var(--surface)); color: var(--alta); }
+.pill.subs { padding-right: 9px; }
+.mini { width: 22px; height: 4px; border-radius: 9px; background: var(--line); overflow: hidden; }
+.mini > i { display: block; height: 100%; background: var(--accent); }
+.empty { padding: 18px 8px; text-align: center; color: var(--faint); font-size: 13.5px; border: 1.5px dashed var(--line); border-radius: 12px; }
+
+.add-row { display: flex; gap: 6px; }
+.add-row input {
+  flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink);
+  background: transparent; border: 1.5px dashed var(--line); border-radius: 10px; padding: 0 12px; height: 40px;
+}
+.add-row input::placeholder { color: var(--faint); }
+.add-row input:hover { border-color: var(--faint); }
+.add-row input:focus { border-style: solid; border-color: var(--accent); background: var(--surface); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+button { font: inherit; cursor: pointer; border: 1px solid transparent; border-radius: 10px; }
+.add-row button { flex: none; width: 40px; height: 40px; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); padding: 0; }
+.add-row button:hover:not(:disabled) { filter: brightness(1.08); }
+.add-row button .i { width: 18px; height: 18px; stroke-width: 2.4; }
+button:disabled, input:disabled, textarea:disabled, select:disabled { opacity: .55; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Panel de detalle */
+#scrim { position: fixed; inset: 0; background: var(--scrim); border: 0; padding: 0; margin: 0; backdrop-filter: blur(2px); }
+#panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(460px, 100%);
+  background: var(--surface); border-left: 1px solid var(--line);
+  box-shadow: -20px 0 40px -20px rgba(0, 0, 0, .3);
+  display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  overflow: hidden;
+}
+.p-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
+.p-state { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; padding: 4px 11px; border-radius: 99px; }
+.p-state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.p-state[data-s="pendiente"] { background: var(--pend-soft); color: var(--pend); }
+.p-state[data-s="proceso"] { background: var(--proc-soft); color: var(--proc); }
+.p-state[data-s="completado"] { background: var(--comp-soft); color: var(--comp); }
+.p-close { margin-left: auto; display: grid; place-items: center; background: transparent; color: var(--muted); width: 40px; height: 40px; padding: 0; }
+.p-close:hover { color: var(--ink); background: var(--surface-2); }
+.p-close .i { width: 20px; height: 20px; }
+.p-body { overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+.p-title {
+  font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); line-height: 1.25;
+  width: 100%; background: transparent; border: 1px solid transparent; border-radius: 8px;
+  padding: 6px 8px; margin-left: -8px; resize: none; overflow: hidden;
+}
+.p-title:hover { border-color: var(--line); }
+.p-title:focus { background: var(--bg); border-color: var(--accent); outline: none; }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+.field > label { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); }
+select, input[type="date"], textarea {
+  font: inherit; font-size: 14.5px; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; height: 42px; width: 100%; min-width: 0;
+}
+select {
+  appearance: none; -webkit-appearance: none; padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237B908D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; cursor: pointer;
+}
+select:focus, input[type="date"]:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+textarea { resize: vertical; min-height: 120px; padding: 10px 12px; line-height: 1.5; height: auto; }
+.sub-head { display: flex; align-items: center; justify-content: space-between; }
+.sub-count { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
+.subs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.subs li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.subs li:last-child { border-bottom: 0; }
+.sub-box {
+  appearance: none; -webkit-appearance: none; flex: none;
+  width: 18px; height: 18px; margin: 1px 0 0; border: 1.75px solid var(--faint);
+  border-radius: 5px; background: transparent; cursor: pointer; display: grid; place-content: center;
+}
+.sub-box::after {
+  content: ""; width: 9px; height: 4.5px;
+  border-left: 2px solid var(--accent-ink); border-bottom: 2px solid var(--accent-ink);
+  transform: rotate(-45deg) translate(1px, -1px); opacity: 0;
+}
+.sub-box:checked { background: var(--accent); border-color: var(--accent); }
+.sub-box:checked::after { opacity: 1; }
+.subs .t { flex: 1; min-width: 0; font-size: 14.5px; overflow-wrap: anywhere; }
+.subs li.done .t { color: var(--muted); text-decoration: line-through; }
+.sub-del { flex: none; display: grid; place-items: center; background: transparent; color: var(--faint); width: 28px; height: 28px; padding: 0; margin: -4px -4px -4px 0; }
+.sub-del .i { width: 15px; height: 15px; }
+.sub-del:hover { color: var(--alta); background: color-mix(in srgb, var(--alta) 12%, transparent); }
+.sub-add { display: flex; gap: 8px; margin-top: 8px; }
+.sub-add input { font: inherit; font-size: 14px; height: 40px; padding: 0 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; flex: 1; min-width: 0; }
+.sub-add input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.sub-add button { background: var(--accent-soft); color: var(--accent); font-size: 13.5px; font-weight: 600; padding: 0 14px; height: 40px; }
+.sub-add button:hover:not(:disabled) { filter: brightness(.96); }
+.p-foot { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--surface); }
+.stamp { font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); }
+.del-task { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--alta); border-color: color-mix(in srgb, var(--alta) 40%, transparent); font-size: 13.5px; font-weight: 500; padding: 0 14px; height: 40px; }
+.del-task:hover:not(:disabled) { background: color-mix(in srgb, var(--alta) 10%, transparent); }
+.del-task.armed { background: var(--alta); color: #fff; border-color: var(--alta); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .tick, .sub-box, .card, .col, .add-row input, .add-row button, button { transition: background .15s, border-color .15s, box-shadow .15s, color .15s, filter .15s; }
+  .card:hover { transform: translateY(-1px); }
+  .card { transition: background .15s, border-color .15s, box-shadow .15s, transform .15s; }
+  .bar > i { transition: width .4s ease; }
+  #panel { animation: slide .22s cubic-bezier(.2, .8, .2, 1); }
+  #scrim { animation: fade .22s ease-out; }
+  @keyframes slide { from { transform: translateX(24px); opacity: .5; } }
+  @keyframes fade { from { opacity: 0; } }
+}
+/* Acceso */
+#login { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center; padding: 16px; }
+#login form { width: min(380px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-up); padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+#login h2 { margin: 0; font-family: var(--font-display); font-size: 24px; letter-spacing: -0.02em; }
+#login p { margin: 0; color: var(--muted); font-size: 14px; }
+#login input { font: inherit; font-size: 15px; height: 44px; padding: 0 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; width: 100%; }
+#login input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+#login button { height: 44px; background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+#login .err { color: var(--alta); font-size: 13px; min-height: 1.2em; }
+.logout { background: transparent; color: var(--muted); font-size: 12.5px; padding: 2px 8px; border-color: var(--line); height: 28px; }
+.logout:hover { color: var(--ink); }
+@media (max-width: 760px) {
+  .top { grid-template-columns: 1fr; }
+  .board { grid-template-columns: 1fr; }
+  .fields { grid-template-columns: 1fr; }
+  .tick { width: 24px; height: 24px; }
+  .meta { padding-left: 34px; }
+}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="title-block">
+      <span class="eyebrow" id="eyebrow">Tablero personal <button type="button" class="logout" id="logout" hidden>Salir</button></span>
+      <h1>Pendientes</h1>
+    </div>
+    <div class="progress">
+      <div class="progress-row">
+        <span class="tally" id="tally" aria-live="polite">cargando…</span>
+        <span class="pct" id="pct">0%</span>
+      </div>
+      <div class="bar" role="img" aria-label="Avance general" id="bar"><i id="bar-c"></i><i class="proc" id="bar-p"></i></div>
+    </div>
+  </div>
+  <p class="note" id="note" role="status"></p>
+
+  <div class="board" id="board">
+    <div class="col" data-status="pendiente">
+      <div class="col-head">
+        <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg></span>
+        <span class="col-name">Pendiente</span><span class="col-n" data-n="pendiente">0</span>
+      </div>
+      <ul class="stack" data-stack="pendiente"></ul>
+      <form class="add-row" data-add="pendiente" autocomplete="off">
+        <input type="text" id="add-pendiente" placeholder="Agregar tarea" aria-label="Agregar en Pendiente" maxlength="300">
+        <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </form>
+    </div>
+    <div class="col" data-status="proceso">
+      <div class="col-head">
+        <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></span>
+        <span class="col-name">En proceso</span><span class="col-n" data-n="proceso">0</span>
+      </div>
+      <ul class="stack" data-stack="proceso"></ul>
+      <form class="add-row" data-add="proceso" autocomplete="off">
+        <input type="text" id="add-proceso" placeholder="Agregar tarea" aria-label="Agregar en En proceso" maxlength="300">
+        <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </form>
+    </div>
+    <div class="col" data-status="completado">
+      <div class="col-head">
+        <span class="col-ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.8 2.8L16 9.5"/></svg></span>
+        <span class="col-name">Completado</span><span class="col-n" data-n="completado">0</span>
+      </div>
+      <ul class="stack" data-stack="completado"></ul>
+      <form class="add-row" data-add="completado" autocomplete="off">
+        <input type="text" id="add-completado" placeholder="Agregar tarea" aria-label="Agregar en Completado" maxlength="300">
+        <button type="submit" aria-label="Agregar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="login" hidden>
+  <form id="login-form" autocomplete="on">
+    <h2>Pendientes</h2>
+    <p>Entrá con tu cuenta para ver tus tareas.</p>
+    <input type="email" id="login-email" placeholder="Email" autocomplete="username" aria-label="Email" required>
+    <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password" aria-label="Contraseña" required>
+    <button type="submit" id="login-btn">Entrar</button>
+    <span class="err" id="login-err" role="alert"></span>
+  </form>
+</div>
+
+<div id="scrim" hidden></div>
+<aside id="panel" hidden aria-label="Detalle de la tarea">
+  <div class="p-head">
+    <span class="p-state" id="p-state" data-s="pendiente">Pendiente</span>
+    <button type="button" class="p-close" id="p-close" aria-label="Cerrar detalle"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="p-body">
+    <textarea class="p-title" id="p-title" rows="1" aria-label="Título de la tarea" maxlength="300"></textarea>
+    <div class="fields">
+      <div class="field">
+        <label for="p-status">Estado</label>
+        <select id="p-status">
+          <option value="pendiente">Pendiente</option>
+          <option value="proceso">En proceso</option>
+          <option value="completado">Completado</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-prio">Prioridad</label>
+        <select id="p-prio">
+          <option value="">Sin definir</option>
+          <option value="alta">Alta</option>
+          <option value="media">Media</option>
+          <option value="baja">Baja</option>
+        </select>
+      </div>
+      <div class="field wide">
+        <label for="p-due">Fecha límite</label>
+        <input type="date" id="p-due">
+      </div>
+      <div class="field wide">
+        <label for="p-notes">Notas</label>
+        <textarea id="p-notes" placeholder="Contexto, links, personas, próximos pasos…"></textarea>
+      </div>
+      <div class="field wide">
+        <div class="sub-head"><label for="p-sub-new">Subtareas</label><span class="sub-count" id="p-sub-count"></span></div>
+        <ul class="subs" id="p-subs"></ul>
+        <form class="sub-add" id="p-sub-add" autocomplete="off">
+          <input type="text" id="p-sub-new" placeholder="Agregar subtarea" maxlength="200">
+          <button type="submit">Agregar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="p-foot">
+    <span class="stamp" id="p-stamp"></span>
+    <button type="button" class="del-task" id="p-del">Eliminar</button>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var STATES = ['pendiente', 'proceso', 'completado'];
+  var LABEL = { pendiente: 'Pendiente', proceso: 'En proceso', completado: 'Completado' };
+  var PRIO = { alta: 'Alta', media: 'Media', baja: 'Baja' };
+  var ICON_CAL = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+  var ICON_NOTE = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 12h14M5 19h9"/></svg>';
+  var ICON_TRASH = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
+  var ICON_X = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+
+  var col = null;            // CollectionReference
+  var byId = {};             // id -> task
+  var openId = null;         // task open in the panel
+  var canWrite = true;
+  var dragId = null;
+  var saveTimer = null;
+
+  var noteEl = $('note'), tallyEl = $('tally');
+  var panel = $('panel'), scrim = $('scrim');
+
+  function say(msg, err) {
+    var code = err && err.code ? ' (' + err.code + ')' : '';
+    noteEl.textContent = msg ? msg + code : '';
+  }
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function fmtDue(iso) {
+    if (!iso) return '';
+    var p = iso.split('-');
+    if (p.length !== 3) return iso;
+    var m = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
+    return Number(p[2]) + ' ' + (m[Number(p[1]) - 1] || '');
+  }
+  function fmtStamp(ms) {
+    if (!ms) return '';
+    try { return new Date(ms).toLocaleDateString('es-UY', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    catch (e) { return ''; }
+  }
+
+  // Normalize a stored document into the shape the page works with.
+  function norm(id, d) {
+    d = d || {};
+    var st = d.status;
+    if (STATES.indexOf(st) === -1) st = d.done ? 'completado' : 'pendiente';
+    return {
+      id: id,
+      text: typeof d.text === 'string' ? d.text : '',
+      status: st,
+      prio: PRIO[d.prio] ? d.prio : '',
+      due: typeof d.due === 'string' ? d.due : '',
+      notes: typeof d.notes === 'string' ? d.notes : '',
+      subs: Array.isArray(d.subs) ? d.subs.filter(function (s) { return s && typeof s.t === 'string'; })
+        .map(function (s) { return { t: s.t, d: !!s.d }; }) : [],
+      order: typeof d.order === 'number' ? d.order : 0,
+      createdAt: typeof d.createdAt === 'number' ? d.createdAt : 0,
+      doneAt: typeof d.doneAt === 'number' ? d.doneAt : 0
+    };
+  }
+  // Full-document write: every save sends the complete body, so there is no
+  // merge path that can reject when a field is missing.
+  function body(t) {
+    return {
+      text: t.text, status: t.status, prio: t.prio, due: t.due, notes: t.notes,
+      subs: t.subs, order: t.order, createdAt: t.createdAt, doneAt: t.doneAt,
+      done: t.status === 'completado'
+    };
+  }
+  async function save(t, msg) {
+    if (!col) return false;
+    byId[t.id] = t;
+    try { await col.doc(t.id).set(body(t)); say(''); return true; }
+    catch (e) { say(msg || 'No se pudo guardar.', e); return false; }
+  }
+  function saveSoon(t) {
+    byId[t.id] = t;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () { save(t, 'No se pudo guardar el cambio.'); }, 500);
+  }
+  function endOf(status) {
+    var max = 0;
+    Object.keys(byId).forEach(function (k) {
+      if (byId[k].status === status && byId[k].order > max) max = byId[k].order;
+    });
+    return max + 1000;
+  }
+
+  /* ---------- board ---------- */
+
+  function pill(cls, html) {
+    var s = document.createElement('span');
+    s.className = 'pill' + (cls ? ' ' + cls : '');
+    s.innerHTML = html; // solo iconos fijos y texto escapado
+    return s;
+  }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  function cardFor(t) {
+    var li = document.createElement('li');
+    li.className = 'card' + (t.status === 'completado' ? ' done' : '');
+    li.dataset.id = t.id;
+    li.tabIndex = 0;
+    li.setAttribute('role', 'button');
+    if (canWrite) li.draggable = true;
+
+    var top = document.createElement('div');
+    top.className = 'card-top';
+
+    var tick = document.createElement('input');
+    tick.type = 'checkbox'; tick.className = 'tick';
+    tick.checked = t.status === 'completado';
+    tick.setAttribute('aria-label', 'Marcar como completado');
+    tick.disabled = !canWrite;
+
+    var txt = document.createElement('span');
+    txt.className = 'card-txt'; txt.textContent = t.text;
+    top.appendChild(tick); top.appendChild(txt);
+    li.appendChild(top);
+
+    var pills = [];
+    if (t.prio) pills.push(pill('p-' + t.prio, esc(PRIO[t.prio])));
+    if (t.due) pills.push(pill((t.status !== 'completado' && t.due < todayISO()) ? 'late' : '', ICON_CAL + esc(fmtDue(t.due))));
+    var sdone = t.subs.filter(function (s) { return s.d; }).length;
+    if (t.subs.length) {
+      var pct = Math.round(sdone / t.subs.length * 100);
+      pills.push(pill('subs', '<span class="mini"><i style="width:' + pct + '%"></i></span>' + sdone + '/' + t.subs.length));
+    }
+    if (t.notes.trim()) pills.push(pill('', ICON_NOTE + 'notas'));
+    if (pills.length) {
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      pills.forEach(function (p) { meta.appendChild(p); });
+      li.appendChild(meta);
+    }
+
+    tick.addEventListener('click', function (e) { e.stopPropagation(); });
+    tick.addEventListener('change', async function () {
+      var t2 = byId[t.id];
+      if (!t2) return;
+      var next = tick.checked ? 'completado' : 'pendiente';
+      tick.disabled = true;
+      var copy = Object.assign({}, t2, {
+        status: next,
+        doneAt: next === 'completado' ? Date.now() : 0,
+        order: next === t2.status ? t2.order : endOf(next)
+      });
+      var ok = await save(copy, 'No se pudo cambiar el estado.');
+      if (!ok) { tick.checked = t2.status === 'completado'; byId[t.id] = t2; }
+      tick.disabled = !canWrite;
+    });
+
+    li.addEventListener('click', function () { openPanel(t.id); });
+    li.addEventListener('keydown', function (e) {
+      if (e.target !== li) return;
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(t.id); }
+    });
+    li.addEventListener('dragstart', function (e) {
+      dragId = t.id;
+      li.classList.add('dragging');
+      try { e.dataTransfer.setData('text/plain', t.id); e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
+    });
+    li.addEventListener('dragend', function () { li.classList.remove('dragging'); dragId = null; });
+
+    return li;
+  }
+
+  function render() {
+    var all = Object.keys(byId).map(function (k) { return byId[k]; });
+    STATES.forEach(function (st) {
+      var items = all.filter(function (t) { return t.status === st; }).sort(function (a, b) {
+        if (st === 'completado') return (b.doneAt || b.order) - (a.doneAt || a.order);
+        return a.order - b.order;
+      });
+      var ul = document.querySelector('[data-stack="' + st + '"]');
+      if (items.length) {
+        ul.replaceChildren.apply(ul, items.map(cardFor));
+      } else {
+        var li = document.createElement('li');
+        li.className = 'empty';
+        li.textContent = st === 'completado' ? 'Nada completado todavía.' : (st === 'proceso' ? 'Arrastrá una tarea acá cuando la empieces.' : 'Sin tareas acá.');
+        ul.replaceChildren(li);
+      }
+      document.querySelector('[data-n="' + st + '"]').textContent = items.length;
+    });
+    var open = all.filter(function (t) { return t.status !== 'completado'; }).length;
+    var done = all.length - open;
+    var proc = all.filter(function (t) { return t.status === 'proceso'; }).length;
+    tallyEl.textContent = all.length + (all.length === 1 ? ' tarea · ' : ' tareas · ') + open + (open === 1 ? ' abierta' : ' abiertas');
+    var pc = all.length ? Math.round(done / all.length * 100) : 0;
+    $('pct').textContent = pc + '%';
+    $('bar-c').style.width = (all.length ? done / all.length * 100 : 0) + '%';
+    $('bar-p').style.width = (all.length ? proc / all.length * 100 : 0) + '%';
+    $('bar').setAttribute('aria-label', 'Avance general: ' + pc + '% completado');
+    if (openId) {
+      if (byId[openId]) fillPanel(byId[openId]);
+      else closePanel();
+    }
+  }
+
+  // Drag between columns.
+  STATES.forEach(function (st) {
+    var colEl = document.querySelector('.col[data-status="' + st + '"]');
+    colEl.addEventListener('dragover', function (e) {
+      if (!dragId || !canWrite) return;
+      e.preventDefault();
+      try { e.dataTransfer.dropEffect = 'move'; } catch (err) {}
+      colEl.classList.add('drop-on');
+    });
+    colEl.addEventListener('dragleave', function (e) {
+      if (!colEl.contains(e.relatedTarget)) colEl.classList.remove('drop-on');
+    });
+    colEl.addEventListener('drop', async function (e) {
+      e.preventDefault();
+      colEl.classList.remove('drop-on');
+      var id = dragId || (function () { try { return e.dataTransfer.getData('text/plain'); } catch (err) { return null; } })();
+      var t = id && byId[id];
+      if (!t || t.status === st) return;
+      await save(Object.assign({}, t, {
+        status: st, order: endOf(st), doneAt: st === 'completado' ? Date.now() : 0
+      }), 'No se pudo mover la tarea.');
+    });
+  });
+
+  // Add a task straight into a column.
+  STATES.forEach(function (st) {
+    var f = document.querySelector('[data-add="' + st + '"]');
+    f.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var inp = f.querySelector('input');
+      var text = inp.value.trim();
+      if (!text || !col) return;
+      var btn = f.querySelector('button');
+      btn.disabled = true;
+      var now = Date.now();
+      try {
+        await col.add({
+          text: text, status: st, prio: '', due: '', notes: '', subs: [],
+          order: endOf(st), createdAt: now, doneAt: st === 'completado' ? now : 0,
+          done: st === 'completado'
+        });
+        inp.value = ''; say('');
+      } catch (err) { say('No se pudo agregar la tarea.', err); }
+      btn.disabled = false;
+      inp.focus();
+    });
+  });
+
+  /* ---------- detail panel ---------- */
+
+  function autoGrow(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+  function panelHasFocus() { return panel.contains(document.activeElement); }
+
+  function fillPanel(t) {
+    var st = $('p-state');
+    st.textContent = LABEL[t.status];
+    st.dataset.s = t.status;
+
+    // Don't overwrite a field the person is typing in.
+    if (document.activeElement !== $('p-title')) { $('p-title').value = t.text; autoGrow($('p-title')); }
+    if (document.activeElement !== $('p-status')) $('p-status').value = t.status;
+    if (document.activeElement !== $('p-prio')) $('p-prio').value = t.prio;
+    if (document.activeElement !== $('p-due')) $('p-due').value = t.due;
+    if (document.activeElement !== $('p-notes')) $('p-notes').value = t.notes;
+
+    var ul = $('p-subs');
+    ul.replaceChildren.apply(ul, t.subs.map(function (s, i) {
+      var li = document.createElement('li');
+      if (s.d) li.className = 'done';
+      var cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.className = 'sub-box'; cb.checked = s.d; cb.disabled = !canWrite;
+      cb.setAttribute('aria-label', 'Completar subtarea');
+      var sp = document.createElement('span');
+      sp.className = 't'; sp.textContent = s.t;
+      var del = document.createElement('button');
+      del.type = 'button'; del.className = 'sub-del'; del.innerHTML = ICON_X;
+      del.setAttribute('aria-label', 'Quitar subtarea'); del.disabled = !canWrite;
+      cb.addEventListener('change', function () {
+        var cur = byId[t.id]; if (!cur) return;
+        var subs = cur.subs.slice();
+        subs[i] = { t: subs[i].t, d: cb.checked };
+        save(Object.assign({}, cur, { subs: subs }), 'No se pudo guardar la subtarea.');
+      });
+      del.addEventListener('click', function () {
+        var cur = byId[t.id]; if (!cur) return;
+        var subs = cur.subs.slice(); subs.splice(i, 1);
+        save(Object.assign({}, cur, { subs: subs }), 'No se pudo quitar la subtarea.');
+      });
+      li.appendChild(cb); li.appendChild(sp); li.appendChild(del);
+      return li;
+    }));
+    var sd = t.subs.filter(function (s) { return s.d; }).length;
+    $('p-sub-count').textContent = t.subs.length ? sd + ' de ' + t.subs.length : '';
+
+    $('p-stamp').textContent = t.status === 'completado' && t.doneAt
+      ? 'Completada el ' + fmtStamp(t.doneAt)
+      : (t.createdAt ? 'Creada el ' + fmtStamp(t.createdAt) : '');
+
+    var del = $('p-del');
+    del.innerHTML = ICON_TRASH + 'Eliminar'; del.classList.remove('armed');
+    [$('p-title'), $('p-status'), $('p-prio'), $('p-due'), $('p-notes'), $('p-sub-new')].forEach(function (el) {
+      el.disabled = !canWrite;
+    });
+    del.disabled = !canWrite;
+  }
+
+  function openPanel(id) {
+    var t = byId[id];
+    if (!t) return;
+    openId = id;
+    fillPanel(t);
+    scrim.hidden = false;
+    panel.hidden = false;
+    autoGrow($('p-title')); // medir recién cuando el panel es visible
+    $('p-close').focus();
+  }
+  function closePanel() {
+    openId = null;
+    panel.hidden = true;
+    scrim.hidden = true;
+  }
+  $('p-close').addEventListener('click', closePanel);
+  scrim.addEventListener('click', closePanel);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) closePanel();
+  });
+
+  function edit(field, value) {
+    var t = openId && byId[openId];
+    if (!t) return null;
+    var copy = Object.assign({}, t);
+    copy[field] = value;
+    return copy;
+  }
+
+  $('p-title').addEventListener('input', function () {
+    autoGrow(this);
+    var c = edit('text', this.value.trim() || '(sin título)');
+    if (c) saveSoon(c);
+  });
+  $('p-notes').addEventListener('input', function () {
+    var c = edit('notes', this.value);
+    if (c) saveSoon(c);
+  });
+  $('p-status').addEventListener('change', function () {
+    var t = openId && byId[openId];
+    if (!t) return;
+    var st = this.value;
+    save(Object.assign({}, t, {
+      status: st, order: endOf(st), doneAt: st === 'completado' ? Date.now() : 0
+    }), 'No se pudo cambiar el estado.');
+  });
+  $('p-prio').addEventListener('change', function () {
+    var c = edit('prio', this.value); if (c) save(c, 'No se pudo guardar la prioridad.');
+  });
+  $('p-due').addEventListener('change', function () {
+    var c = edit('due', this.value); if (c) save(c, 'No se pudo guardar la fecha.');
+  });
+  $('p-sub-add').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var inp = $('p-sub-new');
+    var v = inp.value.trim();
+    var t = openId && byId[openId];
+    if (!v || !t) return;
+    inp.value = '';
+    save(Object.assign({}, t, { subs: t.subs.concat([{ t: v, d: false }]) }), 'No se pudo agregar la subtarea.');
+    inp.focus();
+  });
+  $('p-del').addEventListener('click', async function () {
+    var btn = this;
+    if (!btn.classList.contains('armed')) {
+      btn.classList.add('armed');
+      btn.textContent = 'Confirmar';
+      return;
+    }
+    var id = openId;
+    if (!id || !col) return;
+    btn.disabled = true;
+    try {
+      await col.doc(id).delete();
+      delete byId[id];
+      closePanel(); render(); say('');
+    } catch (e) { say('No se pudo eliminar la tarea.', e); btn.disabled = false; }
+  });
+
+  /* ---------- start ---------- */
+
+  function offline(msg) {
+    tallyEl.textContent = 'sin conexión';
+    canWrite = false;
+    document.querySelectorAll('.add-row input, .add-row button').forEach(function (el) { el.disabled = true; });
+    document.querySelectorAll('.add-row input').forEach(function (el) { el.placeholder = msg; });
+  }
+
+  /* ---------- Supabase ---------- */
+
+  var sb = null, channel = null;
+
+  function toRow(d) {
+    return {
+      text: d.text, status: d.status, prio: d.prio, due: d.due, notes: d.notes,
+      subs: d.subs, ord: d.order, created_at: d.createdAt, done_at: d.doneAt
+    };
+  }
+  function fromRow(r) {
+    return {
+      text: r.text, status: r.status, prio: r.prio, due: r.due, notes: r.notes,
+      subs: r.subs, order: Number(r.ord), createdAt: Number(r.created_at), doneAt: Number(r.done_at)
+    };
+  }
+  function fail(r) { if (r.error) { var e = new Error(r.error.message); e.code = r.error.code; throw e; } return r; }
+
+  // Misma interfaz mínima que usaba la página: doc(id).set/delete, add, onSnapshot.
+  function makeCollection(userId) {
+    var T = 'tareas';
+    return {
+      doc: function (id) {
+        return {
+          set: async function (d) {
+            fail(await sb.from(T).upsert(Object.assign({ id: id, user_id: userId }, toRow(d))));
+          },
+          delete: async function () { fail(await sb.from(T).delete().eq('id', id)); }
+        };
+      },
+      add: async function (d) {
+        fail(await sb.from(T).insert(Object.assign({ user_id: userId }, toRow(d))));
+      },
+      onSnapshot: function (ok, bad) {
+        async function load() {
+          var r = await sb.from(T).select('*');
+          if (r.error) { bad(r.error); return; }
+          ok({ docs: r.data.map(function (row) { return { id: row.id, data: function () { return fromRow(row); } }; }) });
+        }
+        load();
+        channel = sb.channel('tareas-' + userId)
+          .on('postgres_changes', { event: '*', schema: 'public', table: T }, load)
+          .subscribe();
+      }
+    };
+  }
+
+  function showLogin(show) { $('login').hidden = !show; $('logout').hidden = show; }
+
+  function boot(session) {
+    showLogin(false);
+    col = makeCollection(session.user.id);
+    canWrite = true;
+    col.onSnapshot(function (snap) {
+      var next = {};
+      snap.docs.forEach(function (d) { next[d.id] = norm(d.id, d.data()); });
+      byId = next;
+      render();
+    }, function (e) {
+      tallyEl.textContent = 'sin conexión';
+      say('No se pudo cargar la lista. Recargá la página.', e);
+    });
+  }
+
+  async function start() {
+    render();
+    var cfg = window.PENDIENTES_CONFIG;
+    if (!window.supabase || !cfg || !cfg.url || cfg.url.indexOf('TU-PROYECTO') !== -1) {
+      offline('Falta configurar Supabase en config.js');
+      return;
+    }
+    sb = window.supabase.createClient(cfg.url, cfg.anonKey);
+    tallyEl.textContent = 'cargando…';
+    var s = await sb.auth.getSession();
+    if (s.data.session) boot(s.data.session); else { showLogin(true); tallyEl.textContent = 'sin sesión'; }
+  }
+
+  $('login-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var btn = $('login-btn'); btn.disabled = true; $('login-err').textContent = '';
+    var r = await sb.auth.signInWithPassword({ email: $('login-email').value.trim(), password: $('login-pass').value });
+    btn.disabled = false;
+    if (r.error) {
+      var m = r.error.message || '';
+      $('login-err').textContent = /not confirmed/i.test(m)
+        ? 'El email no está confirmado. En Supabase, abrí el usuario y confirmalo.'
+        : /invalid login/i.test(m) ? 'Email o contraseña incorrectos.' : 'No se pudo entrar: ' + m;
+      return;
+    }
+    boot(r.data.session);
+  });
+  $('logout').addEventListener('click', async function () {
+    await sb.auth.signOut();
+    if (channel) { sb.removeChannel(channel); channel = null; }
+    byId = {}; col = null; closePanel(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+  });
+  start();
+})();
+</script>
