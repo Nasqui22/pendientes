@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://zeedhbokiyvowlgenkon.supabase.co wss://zeedhbokiyvowlgenkon.supabase.co; base-uri 'none'; object-src 'none'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<style id="antiframe">html { display: none !important; }</style>
+<script>if (window.top === window.self) { var a = document.getElementById('antiframe'); a.parentNode.removeChild(a); } else { window.top.location = window.self.location; }</script>
 <title>Pendientes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -887,7 +891,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   </div>
 </aside>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js" integrity="sha384-dl/4LkSyQ4uEucc48NM6VDZLAjLLq9yMzZ5JLXumBq7Ld33XBof73hseOqPhO89+" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script>
 (function () {
@@ -1792,18 +1796,24 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     if (s.data.session) boot(s.data.session); else { showLogin(true); tallyEl.textContent = 'sin sesión'; }
   }
 
+  var loginFails = 0, loginLock = 0; // freno de cortesía; el límite real lo aplica Supabase Auth
   $('login-form').addEventListener('submit', async function (e) {
     e.preventDefault();
+    var wait = Math.ceil((loginLock - Date.now()) / 1000);
+    if (wait > 0) { $('login-err').textContent = 'Demasiados intentos. Probá de nuevo en ' + wait + ' segundos.'; return; }
     var btn = $('login-btn'); btn.disabled = true; $('login-err').textContent = '';
     var r = await sb.auth.signInWithPassword({ email: $('login-email').value.trim(), password: $('login-pass').value });
     btn.disabled = false;
     if (r.error) {
+      loginFails++;
+      if (loginFails >= 5) { loginLock = Date.now() + 30000 * Math.min(loginFails - 4, 10); }
       var m = r.error.message || '';
       $('login-err').textContent = /not confirmed/i.test(m)
         ? 'El email no está confirmado. En Supabase, abrí el usuario y confirmalo.'
         : /invalid login/i.test(m) ? 'Email o contraseña incorrectos.' : 'No se pudo entrar: ' + m;
       return;
     }
+    loginFails = 0; loginLock = 0;
     boot(r.data.session);
   });
   $('logout').addEventListener('click', async function () {

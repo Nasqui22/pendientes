@@ -40,5 +40,13 @@ Tablero personal de tareas en tres estados (Pendiente, En proceso, Completado) c
 - Tareas y proyectos de equipo (migración `20261015240000`): `tareas.equipo_proyecto_id`; el trigger `tareas_proteger` solo deja vincular proyectos donde la persona es líder o miembro vigente. `asignar_tarea` acepta un proyecto opcional (del líder, con la persona como miembro).
 - Guía de uso: sección `Guía` de la barra lateral, con el contenido en el arreglo `GUIA` de `index.html` (por rol: líder y admin). Al agregar o cambiar una función, actualizar la guía.
 
+## Seguridad (migración `20261015250000` y Edge Function)
+- Permisos mínimos: `anon` no accede a ninguna tabla; `authenticated` sin TRUNCATE/REFERENCES/TRIGGER. Las funciones de trigger no se ejecutan desde la web.
+- El admin no puede crear un responsable ya confirmado (la persona confirma). Las tareas se validan en el servidor (`tareas_validar`) y hay límites de uso (`limites_uso`: tareas, libros, proyectos, delegaciones y asignaciones por hora).
+- `admin_acciones` registra cada acción de la Edge Function (sin políticas: solo `service_role`) y limita a 20 por minuto por admin. La función solo acepta CORS de la web publicada y de localhost:8000/127.0.0.1:8000: si cambia el dominio, actualizar `ORIGENES` en `index.ts` y la CSP de `index.html`.
+- `index.html` lleva una CSP por `<meta>` (GitHub Pages no permite cabeceras), `referrer` sin envío y protección contra iframes. La CSP permite scripts propios inline, jsdelivr y Google Fonts, y solo conecta con este proyecto de Supabase. `supabase-js` va fijado con SRI (`integrity`): al cambiar la versión hay que recalcular el hash (sha384). La misma versión está en `supabase/functions/admin-usuarios/index.ts`.
+- Todo texto de usuarios se pinta con `textContent`; `innerHTML` solo recibe íconos fijos o texto pasado por `esc()`. No agregar `innerHTML` con datos de la base.
+- Pendiente en el panel de Supabase (no se maneja desde el repo): largo mínimo de contraseña de Auth, límites de intentos de login, protección de contraseñas filtradas y, si se quiere, MFA. La conexión a la base ya exige SSL.
+
 ## Historia
 La primera versión fue un artifact de Claude ("Pendientes") con la base interna de Claude. Ya no se usa; este repo es el proyecto real.
