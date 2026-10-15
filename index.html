@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://zeedhbokiyvowlgenkon.supabase.co wss://zeedhbokiyvowlgenkon.supabase.co; base-uri 'none'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
+<script>try { var tm = localStorage.getItem('tema'); if (tm === 'light' || tm === 'dark') document.documentElement.setAttribute('data-theme', tm); } catch (e) {}</script>
 <style id="antiframe">html { display: none !important; }</style>
 <script>if (window.top === window.self) { var a = document.getElementById('antiframe'); a.parentNode.removeChild(a); } else { window.top.location = window.self.location; }</script>
 <title>Pendientes</title>
@@ -608,6 +609,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     </span>
     <div class="top-actions">
       <span class="who" id="who"></span>
+      <button type="button" class="btn ghost" id="theme-btn" aria-label="Cambiar tema"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" id="theme-ico"></svg><span class="bl" id="theme-txt">Tema</span></button>
       <button type="button" class="btn ghost" id="pass-btn" hidden aria-label="Cambiar contraseña"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3.5"/><path d="M10.5 12.5 19 4M16 7l2.5 2.5M13.5 9.5 15.5 11.5"/></svg><span class="bl">Contraseña</span></button>
       <button type="button" class="btn ghost bell" id="bell-btn" hidden aria-label="Notificaciones"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><span class="n" id="bell-n" hidden></span></button>
       <button type="button" class="btn ghost" id="met-btn" hidden aria-label="Métricas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span class="bl">Métricas</span></button>
@@ -1884,6 +1886,27 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     if (perfil && perfil.debe_cambiar_clave) showChPw(true);
   }
 
+  /* ---------- tema claro / oscuro ---------- */
+  var ICON_SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/>';
+  var ICON_MOON = '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>';
+  function temaActual() {
+    return document.documentElement.getAttribute('data-theme') ||
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+  function pintarTema() {
+    var oscuro = temaActual() === 'dark';
+    $('theme-ico').innerHTML = oscuro ? ICON_SUN : ICON_MOON; // icono fijo
+    $('theme-txt').textContent = oscuro ? 'Claro' : 'Oscuro';
+    $('theme-btn').setAttribute('aria-label', oscuro ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
+  }
+  $('theme-btn').addEventListener('click', function () {
+    var nuevo = temaActual() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nuevo);
+    try { localStorage.setItem('tema', nuevo); } catch (e) {}
+    pintarTema();
+  });
+  pintarTema();
+
   /* ---------- cambio de contraseña ---------- */
   var chForced = false;
   function showChPw(forced) {
@@ -2483,7 +2506,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     { id: 'inicio', t: 'Primeros pasos', b:
 'Pendientes es tu tablero de tareas personal, con herramientas para trabajar en equipo: responsables que validan, subtareas que se pasan entre compañeros, una biblioteca compartida y métricas.\n\n' +
 '## Cómo entrar\n' +
-'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras con el botón de la llave, arriba. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
+'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras con el botón de la llave, arriba. Con el botón del sol o la luna elegís el fondo claro u oscuro; el sistema recuerda tu elección. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
 '## Dónde está cada cosa\n' +
 '- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Guía y, si tenés gente a cargo, Gestión.\n' +
 '- **Barra de arriba**: la campana de notificaciones, Métricas, Mi equipo (solo líderes), Usuarios (solo administradores) y Salir.\n\n' +
