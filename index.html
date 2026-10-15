@@ -571,6 +571,28 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 .load-v { grid-column: 2; font-size: 12.5px; color: var(--muted); }
 @media (max-width: 560px) { .load-row { grid-template-columns: 1fr; } .load-v { grid-column: 1; } }
 
+/* Biblioteca: búsqueda, lectura y versiones */
+.lib-card .snip { color: var(--muted); font-size: 12.5px; -webkit-line-clamp: 3; }
+.lib-card .snip mark, .prose mark { background: var(--accent-soft); color: var(--ink); border-radius: 3px; padding: 0 2px; }
+.lib-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.side button .nb { margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+.side button { position: relative; }
+@media (max-width: 899px) { .side button .nb { position: absolute; top: 2px; left: calc(50% + 6px); margin: 0; } }
+.v-head .banner-acts { display: flex; gap: 8px; }
+.read-ok { color: var(--comp); font-size: 13.5px; font-weight: 500; }
+.lect-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+@media (max-width: 640px) { .lect-grid { grid-template-columns: 1fr; } }
+.lect-grid h5 { margin: 0 0 6px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.lect-grid ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.lect-grid li small { color: var(--faint); margin-left: 6px; }
+.ver-row { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.ver-row:last-child { border-bottom: 0; }
+.ver-row span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.ver-row small { color: var(--muted); display: block; }
+.chk { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; accent-color: var(--accent); cursor: pointer; }
+.chk input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+.chk small { display: block; color: var(--muted); font-size: 12.5px; }
+
 /* Equipo, avisos y estados de validación */
 .pill.ok { color: var(--comp); background: var(--comp-soft); }
 .pill.warn { color: var(--media); background: color-mix(in srgb, var(--media) 13%, var(--surface)); }
@@ -733,7 +755,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 
 <nav class="side" id="side" hidden aria-label="Secciones">
   <button type="button" data-view="board" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="16.5" y="4" width="4" height="13" rx="1.5"/></svg>Tablero</button>
-  <button type="button" data-view="lib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>Biblioteca</button>
+  <button type="button" data-view="lib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>Biblioteca<span class="nb" id="lib-n" hidden></span></button>
   <button type="button" data-view="gest" id="side-gest" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5M16.5 5.2a3.2 3.2 0 0 1 0 5.6M18.5 14.8c1.6.7 2.6 2.2 3 4.5"/></svg>Gestión</button>
   <button type="button" data-view="guia"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 1 1 3.4 2.2c-.7.4-1.1.9-1.1 1.8M12 16.6v.1"/></svg>Guía</button>
 </nav>
@@ -1974,6 +1996,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     $('side').hidden = false; document.body.classList.add('has-side');
     loadProyectos();
     loadEqProy();
+    refreshLecturas();
     loadEquipo().then(loadDeleg);
     if (cmChannel) sb.removeChannel(cmChannel);
     cmChannel = sb.channel('cm-' + me).on('postgres_changes', { event: '*', schema: 'public', table: 'comentarios' }, function () {
@@ -2073,7 +2096,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } comentarios = {}; threadRefreshers = {}; closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } comentarios = {}; threadRefreshers = {}; closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -2333,6 +2356,79 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   var libros = [], eqProy = [], eqMiem = [], eqLib = [];
   var libQ = '', libProj = '', libCat = '', libOpen = '', libPage = 0, libEdit = null, gestMsg = '';
   var CATS = { power_automate: 'Power Automate', merlin: 'Merlin', general: 'Información general', ayuda: 'Ayuda' };
+  var lecturasMias = {}, pendLect = [], libPick = false, libPreview = null, libHist = false, libVers = [], libAud = [], libLect = [], libAudFor = '', libOnlyPend = false;
+  var PLANTILLAS = [
+    { id: 'blanco', nombre: 'En blanco', desc: 'Empezás de cero con una página.', categoria: 'general', paginas: [{ t: 'Introducción', b: '' }] },
+    { id: 'flujo', nombre: 'Documentar un flujo', desc: 'Para explicar un flujo de Power Automate: qué hace, cómo se activa y cómo se resuelven los errores.', categoria: 'power_automate', resumen: 'Qué hace este flujo y cómo usarlo.',
+      paginas: [
+        { t: 'Qué hace', b: '# Objetivo\nExplicá en una o dos frases qué automatiza este flujo.\n\n## Quién lo usa\n- Equipo o área\n- Cada cuánto se ejecuta' },
+        { t: 'Cómo se activa', b: '# Disparador\nDescribí qué lo inicia (un correo, un formulario, un horario).\n\n## Requisitos\n- Permisos necesarios\n- Datos que tienen que estar completos' },
+        { t: 'Pasos del flujo', b: '# Paso a paso\n- Paso 1: \n- Paso 2: \n- Paso 3: ' },
+        { t: 'Errores comunes', b: '# Si algo falla\n- Síntoma: \n  Qué hacer: \n\n## A quién consultar\nNombre y contacto.' }
+      ] },
+    { id: 'merlin', nombre: 'Guía de Merlin', desc: 'Cómo se usa Merlin: para qué sirve, primeros pasos y casos frecuentes.', categoria: 'merlin', resumen: 'Guía rápida para usar Merlin.',
+      paginas: [
+        { t: 'Para qué sirve', b: '# Qué es\nExplicá para qué se usa Merlin en el equipo.' },
+        { t: 'Primeros pasos', b: '# Cómo entrar\n- Dónde se accede\n- Qué permisos hacen falta\n\n## Primer uso\n- Paso 1: \n- Paso 2: ' },
+        { t: 'Casos frecuentes', b: '# Casos que se repiten\n- Caso 1: \n- Caso 2: ' }
+      ] },
+    { id: 'faq', nombre: 'Preguntas frecuentes', desc: 'Respuestas cortas a lo que más se consulta.', categoria: 'ayuda', resumen: 'Respuestas rápidas a dudas comunes.',
+      paginas: [
+        { t: 'Preguntas y respuestas', b: '# ¿Pregunta 1?\nRespuesta.\n\n# ¿Pregunta 2?\nRespuesta.' },
+        { t: 'A quién consultar', b: '# Contactos\n- Tema: persona o canal' }
+      ] },
+    { id: 'procedimiento', nombre: 'Procedimiento paso a paso', desc: 'Un proceso con pasos, responsables y controles.', categoria: 'general', resumen: 'Cómo se hace, paso a paso.',
+      paginas: [
+        { t: 'Objetivo y alcance', b: '# Para qué sirve\nQué resuelve este procedimiento y cuándo se aplica.' },
+        { t: 'Pasos', b: '# Pasos\n- Paso 1: \n- Paso 2: \n- Paso 3: ' },
+        { t: 'Controles', b: '# Cómo verificar que está bien\n- Qué revisar\n- Quién valida' }
+      ] },
+    { id: 'onboarding', nombre: 'Onboarding del equipo', desc: 'Bienvenida para personas nuevas. Pide confirmar la lectura.', categoria: 'general', resumen: 'Todo lo que necesitás saber en tu primera semana.', requiere_lectura: true,
+      paginas: [
+        { t: 'Bienvenida', b: '# Bienvenido/a\nQué hace el equipo y cómo trabajamos.' },
+        { t: 'Herramientas', b: '# Accesos y herramientas\n- Herramienta: para qué sirve' },
+        { t: 'Primera semana', b: '# Qué hacer los primeros días\n- Día 1: \n- Día 2: ' }
+      ] }
+  ];
+  function libMatch(l, tokens) {
+    var pages = l.paginas || [], enl = l.enlaces || [];
+    var blob = (l.titulo + ' ' + (l.resumen || '') + ' ' + pages.map(function (p) { return p.t + ' ' + p.b; }).join(' ') + ' ' + enl.map(function (e) { return e.l + ' ' + e.u; }).join(' ')).toLowerCase();
+    if (!tokens.every(function (t) { return blob.indexOf(t) !== -1; })) return null;
+    var hit = { page: 0, snip: '' };
+    if ((l.titulo + ' ' + (l.resumen || '')).toLowerCase().indexOf(tokens[0]) !== -1) return hit;
+    for (var i = 0; i < pages.length; i++) {
+      var tx = (pages[i].b || ''), k = tx.toLowerCase().indexOf(tokens[0]);
+      if (k !== -1 || (pages[i].t || '').toLowerCase().indexOf(tokens[0]) !== -1) {
+        hit.page = i;
+        if (k !== -1) hit.snip = (k > 50 ? '…' : '') + tx.slice(Math.max(0, k - 50), k + 90).replace(/\s+/g, ' ') + (k + 90 < tx.length ? '…' : '');
+        hit.where = pages[i].t || ('Página ' + (i + 1));
+        return hit;
+      }
+    }
+    return hit;
+  }
+  function pintarBadge() {
+    var b = $('lib-n'); b.hidden = !pendLect.length; b.textContent = String(pendLect.length);
+  }
+  async function refreshLecturas() {
+    if (!sb || !me) return;
+    var a = await sb.from('libros').select('id,user_id,version,requiere_lectura').eq('requiere_lectura', true).neq('user_id', me);
+    var b = await sb.from('libro_lecturas').select('libro_id,version,leido_at').eq('persona_id', me);
+    lecturasMias = {};
+    (b.error ? [] : b.data).forEach(function (x) { lecturasMias[x.libro_id] = x; });
+    pendLect = (a.error ? [] : a.data).filter(function (l) { return !lecturasMias[l.id] || lecturasMias[l.id].version < l.version; }).map(function (l) { return l.id; });
+    pintarBadge();
+    if (view === 'lib') renderLib();
+  }
+  async function loadLecturasLibro(id) {
+    var r = await Promise.all([sb.rpc('libro_audiencia', { p_libro: id }), sb.from('libro_lecturas').select('*').eq('libro_id', id)]);
+    libAud = r[0].error ? [] : r[0].data; libLect = r[1].error ? [] : r[1].data; libAudFor = id;
+    if (libOpen === id) renderLib();
+  }
+  async function loadVersiones(id) {
+    var r = await sb.from('libro_versiones').select('*').eq('libro_id', id).order('version', { ascending: false });
+    libVers = r.error ? [] : r.data; if (libOpen === id) renderLib();
+  }
   var KIND = { automatismo: 'Automatismo', ejemplo: 'Ejemplo', ayuda: 'Ayuda' };
 
   function setView(v) {
@@ -2373,6 +2469,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       sb.from('equipo_proyecto_libros').select('*')
     ]);
     libros = rs[0].error ? [] : rs[0].data;
+    refreshLecturas();
     eqProy = rs[1].error ? [] : rs[1].data;
     eqMiem = rs[2].error ? [] : rs[2].data;
     eqLib = rs[3].error ? [] : rs[3].data;
@@ -2418,32 +2515,53 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   }
 
   /* --- lista --- */
+  var libSnip = {};
   function bookCard(l) {
     var c = mk('button', 'lib-card'); c.type = 'button';
     c.appendChild(mk('h4', '', l.titulo));
     if (l.resumen) c.appendChild(mk('p', '', l.resumen));
+    if (libSnip[l.id] && libSnip[l.id].snip) c.appendChild(mk('p', 'snip', 'En «' + libSnip[l.id].where + '»: ' + libSnip[l.id].snip));
     var meta = mk('div', 'meta');
     meta.appendChild(pill('', esc(CATS[l.categoria] || CATS.general)));
+    if (l.requiere_lectura && l.user_id !== me) {
+      if (pendLect.indexOf(l.id) !== -1) meta.appendChild(pill('warn', lecturasMias[l.id] ? 'Actualizado: confirmá de nuevo' : 'Lectura pendiente'));
+      else meta.appendChild(pill('ok', ICON_OK + 'Leído'));
+    } else if (l.requiere_lectura) meta.appendChild(pill('', 'Pide confirmar lectura'));
     var by = l.user_id === me ? scopeText(l) : 'De ' + nameOf(l.user_id);
     meta.appendChild(pill('', esc(by)));
     meta.appendChild(pill('', (l.paginas || []).length + ((l.paginas || []).length === 1 ? ' página' : ' páginas')));
     if ((l.enlaces || []).length) meta.appendChild(pill('', (l.enlaces || []).length + ((l.enlaces || []).length === 1 ? ' enlace' : ' enlaces')));
     libProjects(l.id).forEach(function (pid) { var n = projName(pid); if (n) meta.appendChild(pill('ok', esc(n))); });
     c.appendChild(meta);
-    c.addEventListener('click', function () { libOpen = l.id; libPage = 0; renderLib(); window.scrollTo(0, 0); });
+    c.addEventListener('click', function () { libOpen = l.id; libPage = (libSnip[l.id] && libSnip[l.id].page) || 0; libPreview = null; libHist = false; libAudFor = ''; renderLib(); window.scrollTo(0, 0); });
     return c;
   }
   function renderLib() {
     var v = $('lib-view');
     if (libEdit) return renderEditor(v);
+    if (libPick) {
+      var ph = mk('div', 'v-head'), pt = mk('div'); pt.appendChild(mk('h1', '', 'Nuevo libro')); pt.appendChild(mk('p', '', 'Elegí una plantilla para arrancar más rápido. Después editás todo.')); ph.appendChild(pt);
+      var gr = mk('div', 'lib-pick');
+      PLANTILLAS.forEach(function (pl) {
+        var c = mk('button', 'lib-card'); c.type = 'button'; c.appendChild(mk('h4', '', pl.nombre)); c.appendChild(mk('p', '', pl.desc));
+        var mt = mk('div', 'meta'); mt.appendChild(pill('', esc(CATS[pl.categoria]))); mt.appendChild(pill('', pl.paginas.length + (pl.paginas.length === 1 ? ' página' : ' páginas'))); c.appendChild(mt);
+        c.addEventListener('click', function () {
+          libPick = false;
+          libEdit = { id: '', titulo: '', resumen: pl.resumen || '', categoria: pl.categoria, paginas: JSON.parse(JSON.stringify(pl.paginas)), enlaces: [], alcance: 'equipo', destinatarios: [], requiere_lectura: !!pl.requiere_lectura };
+          renderLib(); window.scrollTo(0, 0);
+        });
+        gr.appendChild(c);
+      });
+      return v.replaceChildren(backBtn('← Biblioteca', function () { libPick = false; renderLib(); }), ph, gr);
+    }
     if (libOpen) { var cur = libros.filter(function (x) { return x.id === libOpen; })[0]; if (cur) return renderReader(v, cur); libOpen = ''; }
     var head = mk('div', 'v-head'), t = mk('div');
     t.appendChild(mk('h1', '', 'Biblioteca')); t.appendChild(mk('p', '', 'Mini libros con información, ejemplos y enlaces para el equipo.'));
     var nb = mk('button', 'btn-p'); nb.type = 'button'; nb.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo libro';
-    nb.addEventListener('click', function () { libEdit = { id: '', titulo: '', resumen: '', categoria: 'general', paginas: [{ t: 'Introducción', b: '' }], enlaces: [], alcance: 'equipo', destinatarios: [] }; renderLib(); window.scrollTo(0, 0); });
+    nb.addEventListener('click', function () { libPick = true; renderLib(); window.scrollTo(0, 0); });
     head.appendChild(t); head.appendChild(nb);
     var tools = mk('div', 'lib-tools');
-    var q = mk('input', 'txt'); q.type = 'search'; q.placeholder = 'Buscar en la biblioteca'; q.value = libQ; q.setAttribute('aria-label', 'Buscar libros');
+    var q = mk('input', 'txt'); q.type = 'search'; q.placeholder = 'Buscar en títulos, textos y enlaces'; q.value = libQ; q.setAttribute('aria-label', 'Buscar libros');
     q.addEventListener('input', function () { libQ = q.value; var pos = q.selectionStart; renderLib(); var n = $('lib-view').querySelector('input[type=search]'); n.focus(); n.setSelectionRange(pos, pos); });
     tools.appendChild(q);
     var fc = mk('div', 'filters'); fc.setAttribute('role', 'group'); fc.setAttribute('aria-label', 'Filtrar por categoría');
@@ -2461,11 +2579,18 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       });
       tools.appendChild(fx);
     }
-    var qq = libQ.trim().toLowerCase();
+    if (pendLect.length || libOnlyPend) {
+      var pb = mk('button', 'fchip', 'Lectura pendiente (' + pendLect.length + ')'); pb.type = 'button'; pb.setAttribute('aria-pressed', String(libOnlyPend));
+      pb.addEventListener('click', function () { libOnlyPend = !libOnlyPend; renderLib(); }); tools.appendChild(pb);
+    }
+    var tokens = libQ.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    libSnip = {};
     var shown = libros.filter(function (l) {
       if (libProj && libProjects(l.id).indexOf(libProj) === -1) return false;
       if (libCat && (l.categoria || 'general') !== libCat) return false;
-      return !qq || (l.titulo + ' ' + l.resumen).toLowerCase().indexOf(qq) !== -1;
+      if (libOnlyPend && pendLect.indexOf(l.id) === -1) return false;
+      if (!tokens.length) return true;
+      var m = libMatch(l, tokens); if (m) libSnip[l.id] = m; return !!m;
     });
     var mine = shown.filter(function (l) { return l.user_id === me; }), other = shown.filter(function (l) { return l.user_id !== me; });
     function sec(title, items, empty) {
@@ -2479,19 +2604,70 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 
   /* --- lectura --- */
   function renderReader(v, l) {
-    var parts = [backBtn('← Biblioteca', function () { libOpen = ''; renderLib(); })];
+    var real = l, src = libPreview || l;
+    var parts = [backBtn('← Biblioteca', function () { libOpen = ''; libPreview = null; libHist = false; renderLib(); })];
+    if (libPreview) {
+      var pv = mk('div', 'banner'); pv.appendChild(mk('p', '', 'Estás viendo la versión ' + libPreview.version + ' (' + fmtStamp(libPreview.guardada_at) + '). Nadie más la ve: es una vista previa.'));
+      var pa = mk('div', 'banner-acts'), rb = mk('button', '', 'Restaurar esta versión'); rb.type = 'button';
+      var bk = mk('button', 'alt', 'Volver a la actual'); bk.type = 'button';
+      bk.addEventListener('click', function () { libPreview = null; renderLib(); });
+      rb.addEventListener('click', async function () {
+        rb.disabled = true;
+        var r = await sb.from('libros').update({ titulo: libPreview.titulo, resumen: libPreview.resumen, categoria: libPreview.categoria, paginas: libPreview.paginas, enlaces: libPreview.enlaces }).eq('id', real.id);
+        if (r.error) { say('No se pudo restaurar la versión.', r.error); rb.disabled = false; return; }
+        libPreview = null; libHist = false; libAudFor = ''; say(''); await loadBiblioteca();
+      });
+      pa.appendChild(bk); pa.appendChild(rb); pv.appendChild(pa); parts.push(pv);
+    }
     var head = mk('div', 'v-head'), t = mk('div');
-    t.appendChild(mk('h1', '', l.titulo));
-    t.appendChild(mk('p', '', (l.user_id === me ? 'Tuyo' : 'De ' + nameOf(l.user_id)) + ' · ' + (CATS[l.categoria] || CATS.general) + ' · ' + scopeText(l) + ' · actualizado ' + ago(l.updated_at)));
+    t.appendChild(mk('h1', '', src.titulo));
+    t.appendChild(mk('p', '', (real.user_id === me ? 'Tuyo' : 'De ' + nameOf(real.user_id)) + ' · ' + (CATS[src.categoria] || CATS.general) + ' · ' + scopeText(real) + ' · versión ' + (libPreview ? libPreview.version : real.version) + ' · actualizado ' + ago(real.updated_at)));
     head.appendChild(t);
-    if (l.user_id === me) {
+    if (real.user_id === me && !libPreview) {
+      var hb = mk('div', 'banner-acts');
+      var vb = mk('button', 'btn-s', libHist ? 'Ocultar historial' : 'Historial'); vb.type = 'button';
+      vb.addEventListener('click', function () { libHist = !libHist; if (libHist) loadVersiones(real.id); renderLib(); });
       var eb = mk('button', 'btn-s', 'Editar'); eb.type = 'button';
-      eb.addEventListener('click', function () { libEdit = JSON.parse(JSON.stringify(l)); renderLib(); window.scrollTo(0, 0); });
-      head.appendChild(eb);
+      eb.addEventListener('click', function () { libEdit = JSON.parse(JSON.stringify(real)); renderLib(); window.scrollTo(0, 0); });
+      hb.appendChild(vb); hb.appendChild(eb); head.appendChild(hb);
     }
     parts.push(head);
-    if (l.resumen) parts.push(mk('p', 'a-help', l.resumen));
-    var pages = l.paginas || [];
+
+    // Confirmación de lectura (para quien lee)
+    if (real.user_id !== me && real.requiere_lectura && !libPreview) {
+      var lm = lecturasMias[real.id], al = lm && lm.version >= real.version;
+      if (al) parts.push(mk('p', 'read-ok', '✓ Confirmaste la lectura el ' + fmtStamp(lm.leido_at) + '.'));
+      else {
+        var bn = mk('div', 'banner');
+        bn.appendChild(mk('p', '', lm ? 'Este libro se actualizó desde que lo leíste. Volvé a revisarlo y confirmá.' : 'El autor pide que confirmes que leíste este libro.'));
+        var ba = mk('div', 'banner-acts'), cb = mk('button', '', 'Marcar como leído'); cb.type = 'button';
+        cb.addEventListener('click', async function () {
+          cb.disabled = true;
+          var r = await sb.rpc('confirmar_lectura', { p_libro: real.id });
+          if (r.error) { say('No se pudo confirmar la lectura.', r.error); cb.disabled = false; return; }
+          say(''); await refreshLecturas();
+        });
+        ba.appendChild(cb); bn.appendChild(ba); parts.push(bn);
+      }
+    }
+
+    // Historial de versiones (autor)
+    if (libHist && real.user_id === me && !libPreview) {
+      var hs = mk('section', 'lib-sec'); hs.appendChild(mk('h3', '', 'Versiones anteriores (se guardan las últimas 20)'));
+      var hc = mk('div', 'm-card');
+      if (!libVers.length) hc.appendChild(mk('p', 'lib-empty', 'Todavía no hay versiones anteriores: se guardan cuando editás el contenido.'));
+      libVers.forEach(function (ver) {
+        var row = mk('div', 'ver-row'), sp = mk('span', '', 'Versión ' + ver.version);
+        sp.appendChild(mk('small', '', fmtStamp(ver.guardada_at) + ' · ' + (ver.paginas || []).length + ' páginas'));
+        var vv = mk('button', 'btn-s', 'Ver'); vv.type = 'button';
+        vv.addEventListener('click', function () { libPreview = ver; libPage = 0; renderLib(); window.scrollTo(0, 0); });
+        row.appendChild(sp); row.appendChild(vv); hc.appendChild(row);
+      });
+      hs.appendChild(hc); parts.push(hs);
+    }
+
+    if (src.resumen) parts.push(mk('p', 'a-help', src.resumen));
+    var pages = src.paginas || [];
     if (libPage >= pages.length) libPage = 0;
     var book = mk('div', 'book');
     var toc = mk('div', 'book-toc'); toc.setAttribute('role', 'tablist');
@@ -2508,17 +2684,41 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     });
     if (pages.length) book.appendChild(toc);
     book.appendChild(pageBox); parts.push(book); show();
-    if ((l.enlaces || []).length) {
+    if ((src.enlaces || []).length) {
       var ul = mk('ul', 'links');
-      l.enlaces.forEach(function (e) {
+      src.enlaces.forEach(function (e) {
         var li = mk('li', 'link-row'); li.appendChild(mk('span', 'k ' + e.k, KIND[e.k] || e.k));
         var d = mk('div'), a = mk('a', '', e.l || e.u); a.href = e.u; a.target = '_blank'; a.rel = 'noopener noreferrer';
         d.appendChild(a); d.appendChild(mk('small', '', host(e.u))); li.appendChild(d); ul.appendChild(li);
       });
       var s = mk('section', 'lib-sec'); s.appendChild(mk('h3', '', 'Enlaces: automatismos, ejemplos y ayudas')); s.appendChild(ul); parts.push(s);
     }
-    var pj = libProjects(l.id).map(projName).filter(Boolean);
+    var pj = libProjects(real.id).map(projName).filter(Boolean);
     if (pj.length) parts.push(mk('p', 'a-help', 'Parte de: ' + pj.join(', ')));
+
+    // Quién confirmó la lectura (autor)
+    if (real.user_id === me && real.requiere_lectura && !libPreview) {
+      if (libAudFor !== real.id) loadLecturasLibro(real.id);
+      var ls = mk('section', 'lib-sec'); ls.appendChild(mk('h3', '', 'Confirmaciones de lectura'));
+      var lc = mk('div', 'm-card');
+      if (libAudFor !== real.id) lc.appendChild(mk('p', 'lib-empty', 'Cargando…'));
+      else if (!libAud.length) lc.appendChild(mk('p', 'lib-empty', 'Nadie más puede ver este libro todavía. Compartilo con tu equipo o asignalo a un proyecto.'));
+      else {
+        var byP = {}; libLect.forEach(function (x) { byP[x.persona_id] = x; });
+        var ok = libAud.filter(function (p) { return byP[p.id] && byP[p.id].version >= real.version; });
+        var falta = libAud.filter(function (p) { return !(byP[p.id] && byP[p.id].version >= real.version); });
+        lc.appendChild(mk('div', '', ok.length + ' de ' + libAud.length + ' confirmaron la versión actual'));
+        var st = mk('div', 'stk'); st.style.marginTop = '8px'; var si = mk('i', 's-comp'); si.style.width = (ok.length / libAud.length * 100) + '%'; st.appendChild(si); lc.appendChild(st);
+        var gr = mk('div', 'lect-grid'), c1 = mk('div'), c2 = mk('div'), u1 = mk('ul'), u2 = mk('ul');
+        c1.appendChild(mk('h5', '', 'Faltan confirmar')); c2.appendChild(mk('h5', '', 'Al día'));
+        falta.forEach(function (p) { var li = mk('li', '', p.nombre); if (byP[p.id]) li.appendChild(mk('small', '', 'leyó una versión anterior')); u1.appendChild(li); });
+        if (!falta.length) u1.appendChild(mk('li', 't-empty', 'Todos al día.'));
+        ok.forEach(function (p) { var li = mk('li', '', p.nombre); li.appendChild(mk('small', '', fmtStamp(byP[p.id].leido_at))); u2.appendChild(li); });
+        if (!ok.length) u2.appendChild(mk('li', 't-empty', 'Todavía nadie.'));
+        c1.appendChild(u1); c2.appendChild(u2); gr.appendChild(c1); gr.appendChild(c2); lc.appendChild(gr);
+      }
+      ls.appendChild(lc); parts.push(ls);
+    }
     v.replaceChildren.apply(v, parts);
   }
 
@@ -2536,6 +2736,10 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     Object.keys(CATS).forEach(function (k) { var o = mk('option', '', CATS[k]); o.value = k; ct.appendChild(o); });
     ct.value = d.categoria || 'general'; ct.addEventListener('change', function () { d.categoria = ct.value; });
     ed.appendChild(field('Título', ti)); ed.appendChild(field('Categoría', ct)); ed.appendChild(field('Resumen', rs));
+    var rl = mk('label', 'chk'), rc = mk('input'); rc.type = 'checkbox'; rc.checked = !!d.requiere_lectura;
+    rc.addEventListener('change', function () { d.requiere_lectura = rc.checked; });
+    var rsp = mk('span', '', 'Pedir confirmación de lectura'); rsp.appendChild(mk('small', '', 'Cada persona que lo ve marca que lo leyó y vos ves quién falta. Si cambiás el contenido, tienen que confirmar de nuevo.'));
+    rl.appendChild(rc); rl.appendChild(rsp); ed.appendChild(rl);
 
     var pg = mk('div', 'field'); pg.appendChild(mk('label', '', 'Páginas (hasta 12). Podés usar # título, ## subtítulo, - viñetas, **negrita**, `código` y enlaces.'));
     d.paginas.forEach(function (p, i) {
@@ -2598,7 +2802,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       }
       if (d.alcance === 'personas' && !d.destinatarios.length) { msg.textContent = 'Elegí al menos una persona.'; return; }
       var row = {
-        titulo: titulo, categoria: d.categoria || 'general', resumen: d.resumen.trim(), alcance: d.alcance, destinatarios: d.alcance === 'personas' ? d.destinatarios : [],
+        titulo: titulo, categoria: d.categoria || 'general', requiere_lectura: !!d.requiere_lectura, resumen: d.resumen.trim(), alcance: d.alcance, destinatarios: d.alcance === 'personas' ? d.destinatarios : [],
         paginas: d.paginas.filter(function (p) { return p.t.trim() || p.b.trim(); }).map(function (p) { return { t: p.t.trim(), b: p.b }; }),
         enlaces: d.enlaces.map(function (e) { return { l: e.l.trim(), u: e.u.trim(), k: e.k }; })
       };
@@ -2606,7 +2810,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
       var r = d.id ? await sb.from('libros').update(row).eq('id', d.id).select().single() : await sb.from('libros').insert(row).select().single();
       save.disabled = false;
       if (r.error) { msg.textContent = r.error.message; return; }
-      libEdit = null; libOpen = r.data.id; libPage = 0; await loadBiblioteca();
+      libEdit = null; libOpen = r.data.id; libPage = 0; libPreview = null; libAudFor = ''; await loadBiblioteca();
     });
     foot.appendChild(save);
     if (d.id) {
@@ -2820,7 +3024,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 '## Leer\n' +
 'Elegí un libro; las páginas están en el índice de la izquierda. Los enlaces están al pie, marcados como **Automatismo**, **Ejemplo** o **Ayuda**, y abren en otra pestaña.\n\n' +
 '## Crear un libro\n' +
-'Tocá «Nuevo libro». Cualquier persona puede crear libros. Completá:\n' +
+'Tocá «Nuevo libro» y elegí una plantilla para arrancar más rápido (en blanco, documentar un flujo de Power Automate, guía de Merlin, preguntas frecuentes, procedimiento u onboarding). Cualquier persona puede crear libros. Completá:\n' +
 '- **Título**, **resumen** y **categoría**: Power Automate, Merlin, Información general o Ayuda.\n' +
 '- **Páginas** (hasta 12): título y texto. Podés usar # para un título, ## para un subtítulo, - para viñetas, **negrita**, y los links se vuelven clickeables solos.\n' +
 '- **Enlaces** (hasta 20): nombre, URL (tiene que empezar con http o https) y tipo.\n\n' +
@@ -2829,7 +3033,11 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 '- **Todo mi equipo**: tu responsable, tus compañeros y tus directos.\n' +
 '- **Personas puntuales**: elegís quiénes dentro de tu equipo.\n\n' +
 'Solo el autor edita o elimina un libro. Un líder puede asignar sus libros a un proyecto de equipo, y entonces los miembros del proyecto lo ven aunque no esté compartido de otra forma.\n\n' +
-'Para encontrar algo: usá el buscador y los filtros por categoría y proyecto.' },
+'## Confirmación de lectura\n' +
+'Al crear o editar un libro podés marcar «Pedir confirmación de lectura». Quienes lo ven tienen un botón **Marcar como leído** y, mientras falten, aparece un número en «Biblioteca» y el aviso «Lectura pendiente». Vos ves cuántos confirmaron y quién falta. Si después cambiás el contenido, tienen que confirmar de nuevo.\n\n' +
+'## Historial de versiones\n' +
+'Cada vez que cambiás el contenido se guarda la versión anterior (las últimas 20). Con el botón **Historial** podés verlas y **restaurar** una; solo el autor ve el historial.\n\n' +
+'Para encontrar algo: el buscador mira títulos, resúmenes, el texto de las páginas y los enlaces, y te muestra el fragmento donde aparece. También podés filtrar por categoría, por proyecto o por lectura pendiente.' },
 
     { id: 'metricas', t: 'Métricas', b:
 'El botón **Métricas** de arriba muestra cómo venís trabajando. Se calcula con tus tareas, sin que cargues nada extra.\n\n' +
