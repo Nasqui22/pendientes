@@ -4,3 +4,4 @@
 .impeccable/questions/
 .impeccable/hook.cache.json
 .DS_Store
+dev/*.log

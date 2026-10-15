@@ -18,6 +18,12 @@ Tablero personal de tareas en tres estados (Pendiente, En proceso, Completado) c
   - `responsables` (`responsable_id`, `persona_id`): varios responsables por persona y cadenas de responsables, sin ciclos (trigger). Solo el admin asigna y quita.
   - El admin es un usuario aparte ("Administrador") que gestiona usuarios y relaciones; no ve las tareas de los demás.
 
+## Desarrollo local (no toca producción)
+- `supabase start -x storage-api,imgproxy,logflare,vector,supavisor,studio,mailpit,postgres-meta` levanta una base local (Docker) con todas las migraciones; `python3 dev/seed.py` carga usuarios y datos de prueba (clave `DevPendientes1`) y `python3 dev/serve.py` sirve la web en http://127.0.0.1:8001 contra esa base. Detalle en `dev/README.md`.
+- `python3 dev/test.py` corre las pruebas de reglas y seguridad de `supabase/tests/*.sql` contra la base local. Correrlas antes de aplicar cualquier migración a producción y agregar una prueba por cada regla nueva de permisos.
+- Cambios nuevos se desarrollan en una rama (no en `main`) y se prueban en local; recién después de revisarlos se aplican las migraciones con `supabase db push` y se publica en `main`.
+- `supabase/config.toml` solo configura el entorno local: no se sube a producción (no usar `supabase config push`).
+
 ## Flujo de trabajo
 1. Probar en local: `python3 -m http.server 8000` y abrir http://localhost:8000. Usa la misma base que producción.
 2. Si el cambio toca la base: crear una migración nueva en `supabase/migrations/` (nombre `AAAAMMDDHHMMSS_descripcion.sql`), mostrarla al usuario y aplicar con `supabase db push` solo después de su OK.
@@ -48,6 +54,8 @@ Tablero personal de tareas en tres estados (Pendiente, En proceso, Completado) c
 - Todo texto de usuarios se pinta con `textContent`; `innerHTML` solo recibe íconos fijos o texto pasado por `esc()`. No agregar `innerHTML` con datos de la base.
 - Cambio de contraseña obligatorio: `perfiles.debe_cambiar_clave` (migración `20261015260000`). La Edge Function lo activa al crear un usuario o restablecer su clave (no al cambiar la propia); la web muestra una pantalla que bloquea el uso hasta elegir una clave nueva (mínimo 10, letras y números) y llama a `clave_cambiada()`. Es una barrera de uso, no de seguridad de datos. Cualquier usuario puede cambiar su clave con el botón de la llave.
 - Pendiente en el panel de Supabase (no se maneja desde el repo): largo mínimo de contraseña de Auth, límites de intentos de login, protección de contraseñas filtradas y, si se quiere, MFA. La conexión a la base ya exige SSL.
+- Tareas (migración `20261016100000`): comentarios por tarea (`comentarios`, los ven y escriben quienes ven la tarea; `puede_ver_tarea`), subtarea que se tilda sola al completar la tarea delegada, tareas recurrentes (`recurrencia`, `siguiente_id` solo lo escribe el servidor; al completar se crea la siguiente una vez) y archivo (`archivada`, solo para completadas). La web tiene vistas Tablero/Hoy/Esta semana/Archivo.
+- Métricas: filtros de período y proyecto, carga de trabajo por persona y exportación a CSV (separador `;`, con BOM, neutralizando fórmulas). Mi equipo y las métricas de equipo solo muestran tareas de los directos.
 
 ## Historia
 La primera versión fue un artifact de Claude ("Pendientes") con la base interna de Claude. Ya no se usa; este repo es el proyecto real.
