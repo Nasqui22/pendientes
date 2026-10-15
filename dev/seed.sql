@@ -3,7 +3,7 @@ do $$
 declare
   ms bigint := (extract(epoch from now()) * 1000)::bigint;
   day bigint := 86400000;
-  u record; i int; st text; cr bigint; dn bigint; due text;
+  u record; i int; st text; cr bigint; dn bigint; due text; pid uuid;
   ids uuid[] := array[
     '00000000-0000-0000-0000-00000000a001','00000000-0000-0000-0000-00000000a002','00000000-0000-0000-0000-00000000a003',
     '00000000-0000-0000-0000-00000000a004','00000000-0000-0000-0000-00000000a005'];
@@ -38,6 +38,17 @@ begin
               case when j % 4 = 0 then 'Notas de ejemplo para la tarea ' || j else '' end, j * 1000, cr, dn, case when st = 'completado' then dn else cr end, j % 7 <> 0);
     end loop;
   end loop;
+  -- Proyecto de equipo de Virginia con hitos, miembros y tareas vinculadas
+  delete from public.equipo_proyectos where lider_id = ids[2];
+  insert into public.equipo_proyectos (lider_id, nombre, descripcion, inicio, fin)
+  values (ids[2], 'Lanzamiento Q4', 'Campaña de fin de año', to_char(now() - interval '20 days', 'YYYY-MM-DD'), to_char(now() + interval '40 days', 'YYYY-MM-DD')) returning id into pid;
+  insert into public.equipo_proyecto_miembros values (pid, ids[3]), (pid, ids[4]);
+  insert into public.proyecto_hitos (proyecto_id, titulo, fecha, hecho, orden) values
+    (pid, 'Brief aprobado', to_char(now() - interval '10 days', 'YYYY-MM-DD'), true, 0),
+    (pid, 'Primera entrega', to_char(now() + interval '3 days', 'YYYY-MM-DD'), false, 1),
+    (pid, 'Revisión final', to_char(now() + interval '25 days', 'YYYY-MM-DD'), false, 2),
+    (pid, 'Lanzamiento', to_char(now() + interval '40 days', 'YYYY-MM-DD'), false, 3);
+  update public.tareas set equipo_proyecto_id = pid where user_id in (ids[3], ids[4]) and substring(text from 'Tarea ([0-9]+)')::int <= 8;
   insert into public.libros (user_id, titulo, resumen, categoria, alcance, paginas, enlaces)
   values (ids[2], 'Guía de bienvenida', 'Qué hacer la primera semana', 'general', 'equipo',
           '[{"t":"Introducción","b":"# Hola\nEste es un libro de ejemplo.\n- Punto uno\n- Punto dos"}]', '[{"l":"Mesa de ayuda","u":"https://ejemplo.com","k":"ayuda"}]');
