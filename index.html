@@ -208,9 +208,9 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
 .add-row button .i { width: 17px; height: 17px; stroke-width: 2.2; }
 
 /* Paneles laterales */
-#scrim, #a-scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); border: 0; padding: 0; margin: 0; }
-#panel:focus, #admin:focus { outline: none; }
-#panel, #admin {
+#scrim, #a-scrim, #t-scrim, #m-scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); border: 0; padding: 0; margin: 0; }
+#panel:focus, #admin:focus, #team:focus, #met:focus { outline: none; }
+#panel, #admin, #team, #met {
   position: fixed; z-index: 21; top: 0; right: 0; bottom: 0;
   width: min(480px, 100%);
   background: var(--surface); border-left: 1px solid var(--line);
@@ -221,7 +221,8 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spac
   padding-right: env(safe-area-inset-right, 0px);
   overflow: hidden;
 }
-#admin { width: min(560px, 100%); }
+#admin, #team { width: min(560px, 100%); }
+#met { width: min(720px, 100%); }
 .p-head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 20px; border-bottom: 1px solid var(--line); }
 .p-state { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500; padding: 3px 10px; border-radius: 7px; }
 .p-state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
@@ -314,6 +315,14 @@ textarea { resize: vertical; min-height: 120px; padding: 10px 12px; line-height:
 .lbl.x button .i { width: 12px; height: 12px; }
 .sub-prog { height: 4px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin: 2px 0 6px; }
 .sub-prog > i { display: block; height: 100%; width: 0; background: var(--accent); }
+.avs { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; }
+.avs li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.avs li:last-child { border-bottom: 0; }
+.avs .av-b { flex: 1; min-width: 0; }
+.avs .av-x { font-size: 14.5px; overflow-wrap: anywhere; white-space: pre-wrap; }
+.avs .av-d { font-size: 12.5px; color: var(--muted); }
+.avs .av-del { width: 32px; height: 32px; flex: none; display: grid; place-items: center; background: none; color: var(--muted); border-radius: 8px; }
+.avs .av-del:hover:not(:disabled) { background: var(--accent-soft); color: var(--ink); }
 .hist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .hist li { position: relative; display: grid; grid-template-columns: 14px 1fr; gap: 10px; padding-bottom: 14px; }
 .hist li:last-child { padding-bottom: 0; }
@@ -383,11 +392,74 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 .chip button .i { width: 13px; height: 13px; }
 .none { font-size: 13px; color: var(--faint); }
 
+/* Métricas */
+.kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.kpi { border: 1px solid var(--line); background: var(--bg); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kpi b { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+.kpi span { font-size: 12.5px; color: var(--muted); }
+.kpi.bad b { color: var(--alta); }
+.kpi.good b { color: var(--comp); }
+.m-sec { display: flex; flex-direction: column; gap: 10px; }
+.m-sec h3 { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .01em; }
+.m-card { border: 1px solid var(--line); background: var(--bg); border-radius: var(--r); padding: 14px; }
+.m-card svg { display: block; width: 100%; height: auto; overflow: visible; }
+.m-card .bar-c { fill: var(--accent); }
+.m-card .bar-n { fill: var(--line-strong); }
+.m-card text { fill: var(--muted); font-size: 11px; font-family: var(--font); }
+.m-card text.v { fill: var(--ink); font-weight: 600; }
+.m-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+.m-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.stk { display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--surface-2); }
+.stk i { display: block; height: 100%; }
+.stk .s-pend { background: var(--pend); } .stk .s-proc { background: var(--proc); } .stk .s-comp { background: var(--comp); }
+.m-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.m-list li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.m-list li:last-child { border-bottom: 0; }
+.m-list .m-v { color: var(--muted); white-space: nowrap; font-size: 13px; }
+.m-list .m-v.bad { color: var(--alta); }
+.m-people { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.m-people th { text-align: right; font-weight: 500; font-size: 12px; color: var(--muted); padding: 0 6px 8px; }
+.m-people th:first-child, .m-people td:first-child { text-align: left; }
+.m-people td { text-align: right; padding: 9px 6px; border-top: 1px solid var(--line); }
+.m-people td:first-child { font-weight: 500; }
+.m-people tr.go { cursor: pointer; }
+.m-people tr.go:hover td { background: var(--surface-2); }
+.m-people td.bad { color: var(--alta); font-weight: 600; }
+.m-scroll { overflow-x: auto; }
+.m-back { align-self: flex-start; }
+@media (min-width: 640px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
+
+/* Equipo, avisos y estados de validación */
+.pill.ok { color: var(--comp); background: var(--comp-soft); }
+.pill.warn { color: var(--media); background: color-mix(in srgb, var(--media) 13%, var(--surface)); }
+.banner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 0 0 16px; padding: 12px 14px; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); border-radius: var(--r); font-size: 14px; }
+.banner[hidden] { display: none; }
+.banner p { margin: 0; flex: 1 1 260px; }
+.banner .banner-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.banner button { height: 36px; padding: 0 14px; font-size: 13.5px; font-weight: 600; background: var(--accent); color: var(--accent-ink); }
+.banner button.alt { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.p-note { margin: 0; font-size: 13.5px; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); color: var(--ink); overflow-wrap: anywhere; }
+.p-note[hidden] { display: none; }
+.vis-row { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; color: var(--ink); accent-color: var(--accent); cursor: pointer; }
+.vis-row input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+.vis-row small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+.t-sec h3 { margin: 0 0 8px; font-size: 13px; font-weight: 600; letter-spacing: .01em; color: var(--muted); }
+.t-sec { display: flex; flex-direction: column; }
+.t-item { border: 1px solid var(--line); border-radius: var(--r); padding: 12px; background: var(--bg); display: flex; flex-direction: column; gap: 8px; }
+.t-item .t-title { font-weight: 500; overflow-wrap: anywhere; }
+.t-item .t-sub { font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.t-item .t-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.t-item .t-acts .a-btn, .t-item .t-acts .btn-s { height: 34px; font-size: 13px; padding: 0 12px; }
+.t-item form { display: flex; gap: 8px; }
+.t-empty { margin: 0; font-size: 13.5px; color: var(--faint); }
+.t-new { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
+.t-new .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
 @media (prefers-reduced-motion: no-preference) {
   button, .card, .col, .add-row input, .tick, .sub-box { transition: background-color .15s, border-color .15s, box-shadow .15s, color .15s, filter .15s; }
   .bar > i { transition: width .4s cubic-bezier(.16, 1, .3, 1); }
-  #panel, #admin { animation: slide .24s cubic-bezier(.16, 1, .3, 1); }
-  #scrim, #a-scrim { animation: fade .2s ease-out; }
+  #panel, #admin, #team, #met { animation: slide .24s cubic-bezier(.16, 1, .3, 1); }
+  #scrim, #a-scrim, #t-scrim, #m-scrim { animation: fade .2s ease-out; }
   @keyframes slide { from { transform: translateX(20px); opacity: 0; } }
   @keyframes fade { from { opacity: 0; } }
 }
@@ -434,6 +506,8 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     </span>
     <div class="top-actions">
       <span class="who" id="who"></span>
+      <button type="button" class="btn ghost" id="met-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Métricas</button>
+      <button type="button" class="btn ghost" id="team-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Mi equipo</button>
       <button type="button" class="btn ghost" id="admin-btn" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Usuarios</button>
       <button type="button" class="btn ghost" id="logout" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 8l-4 4 4 4M6 12h10"/></svg>Salir</button>
     </div>
@@ -452,7 +526,15 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     </div>
   </div>
   <p class="note" id="note" role="status"></p>
+  <div class="banner" id="banner" hidden>
+    <p id="banner-t"></p>
+    <div class="banner-acts">
+      <button type="button" class="alt" id="banner-see">Ver lo compartido</button>
+      <button type="button" id="banner-ok">Confirmar</button>
+    </div>
+  </div>
   <div class="filters" id="filters" role="group" aria-label="Filtrar por etiqueta" hidden></div>
+  <div class="filters" id="pfilters" role="group" aria-label="Filtrar por proyecto" hidden></div>
 
   <div class="seg" id="seg" role="tablist" aria-label="Estado de las tareas">
     <button type="button" role="tab" aria-selected="true" data-seg="pendiente">Pendiente <span data-segn="pendiente">0</span></button>
@@ -520,6 +602,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   </div>
   <div class="p-body">
     <textarea class="p-title" id="p-title" rows="1" aria-label="Título de la tarea" maxlength="300"></textarea>
+    <p class="p-note" id="p-note" hidden></p>
     <div class="fields">
       <div class="field">
         <label for="p-status">Estado</label>
@@ -574,6 +657,25 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
         </form>
       </div>
       <div class="field wide">
+        <label for="p-proj">Proyecto</label>
+        <select id="p-proj"></select>
+        <form class="sub-add" id="p-proj-add" autocomplete="off">
+          <input type="text" id="p-proj-new" placeholder="Nuevo proyecto" maxlength="40">
+          <button type="submit">Crear</button>
+        </form>
+      </div>
+      <div class="field wide" id="p-vis-f">
+        <label class="vis-row"><input type="checkbox" id="p-vis"><span>Visible para mis responsables<small id="p-vis-s">Quienes responden por vos ven esta tarea y la validan cuando la completás. Si no la marcás, es solo tuya.</small></span></label>
+      </div>
+      <div class="field wide">
+        <div class="sub-head"><label for="p-av-new">Avances</label><span class="sub-count" id="p-av-count"></span></div>
+        <form class="sub-add av-add" id="p-av-add" autocomplete="off">
+          <input type="text" id="p-av-new" placeholder="Anotar un avance" maxlength="500">
+          <button type="submit">Agregar</button>
+        </form>
+        <ul class="avs" id="p-avs"></ul>
+      </div>
+      <div class="field wide">
         <span class="lbl-f">Historia</span>
         <ol class="hist" id="p-hist"></ol>
       </div>
@@ -618,6 +720,46 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   </div>
 </aside>
 
+<div id="m-scrim" hidden></div>
+<aside id="met" hidden tabindex="-1" aria-label="Métricas">
+  <div class="p-head">
+    <h2 class="a-h">Métricas</h2>
+    <button type="button" class="p-close" id="m-close" aria-label="Cerrar métricas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Alcance">
+    <button type="button" class="tab" role="tab" id="tab-m-mias" aria-selected="true">Mías</button>
+    <button type="button" class="tab" role="tab" id="tab-m-eq" aria-selected="false" hidden>Equipo</button>
+  </div>
+  <div class="p-body" id="m-body"></div>
+</aside>
+
+<div id="t-scrim" hidden></div>
+<aside id="team" hidden tabindex="-1" aria-label="Mi equipo">
+  <div class="p-head">
+    <h2 class="a-h">Mi equipo</h2>
+    <button type="button" class="p-close" id="t-close" aria-label="Cerrar Mi equipo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="p-body">
+    <p class="a-help">Solo ves lo que tus directos marcaron como visible o lo que les asignaste vos. Lo demás es privado.</p>
+    <p class="a-msg" id="t-msg" role="status"></p>
+    <details>
+      <summary class="btn-s">+ Asignar una tarea</summary>
+      <form class="t-new" id="t-new" autocomplete="off">
+        <select id="t-who" aria-label="Asignar a" required></select>
+        <input class="txt" type="text" id="t-text" placeholder="Qué hay que hacer" aria-label="Título" maxlength="300" required>
+        <div class="row2">
+          <select id="t-prio" aria-label="Prioridad"><option value="">Sin prioridad</option><option value="alta">Alta</option><option value="media">Media</option><option value="baja">Baja</option></select>
+          <input type="date" id="t-due" aria-label="Fecha límite">
+        </div>
+        <button type="submit" class="a-btn" id="t-create">Asignar</button>
+      </form>
+    </details>
+    <section class="t-sec" aria-labelledby="t-h1"><h3 id="t-h1">Para validar</h3><ul class="u-list" id="t-validar"></ul></section>
+    <section class="t-sec" aria-labelledby="t-h2"><h3 id="t-h2">Asignadas por vos y vencidas</h3><ul class="u-list" id="t-vencidas"></ul></section>
+    <section class="t-sec" aria-labelledby="t-h3"><h3 id="t-h3">Asignadas y compartidas</h3><ul class="u-list" id="t-resto"></ul></section>
+  </div>
+</aside>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script>
@@ -634,6 +776,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   var ICON_X = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
   var col = null;            // CollectionReference
+  var me = '', proyectos = [], misResp = [], directos = [], names = {};
   var byId = {};             // id -> task
   var openId = null;         // task open in the panel
   var canWrite = true;
@@ -736,7 +879,15 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       createdAt: typeof d.createdAt === 'number' ? d.createdAt : 0,
       doneAt: typeof d.doneAt === 'number' ? d.doneAt : 0,
       statusAt: typeof d.statusAt === 'number' ? d.statusAt : 0,
-      labels: cleanLabels(d.labels)
+      labels: cleanLabels(d.labels),
+      visible: !!d.visible,
+      proyectoId: typeof d.proyectoId === 'string' ? d.proyectoId : '',
+      asignadaPor: typeof d.asignadaPor === 'string' ? d.asignadaPor : '',
+      validadaPor: typeof d.validadaPor === 'string' ? d.validadaPor : '',
+      validadaAt: typeof d.validadaAt === 'number' ? d.validadaAt : 0,
+      motivo: typeof d.motivo === 'string' ? d.motivo : '',
+      avances: Array.isArray(d.avances) ? d.avances.filter(function (a) { return a && typeof a.x === 'string' && a.x; })
+        .map(function (a) { return { t: Number(a.t) || 0, x: a.x }; }) : []
     };
   }
   // Full-document write: every save sends the complete body, so there is no
@@ -745,7 +896,8 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     return {
       text: t.text, status: t.status, prio: t.prio, due: t.due, notes: t.notes,
       subs: t.subs, order: t.order, createdAt: t.createdAt, doneAt: t.doneAt,
-      statusAt: t.statusAt, labels: t.labels,
+      statusAt: t.statusAt, labels: t.labels, avances: t.avances,
+      visible: t.visible, proyectoId: t.proyectoId,
       done: t.status === 'completado'
     };
   }
@@ -775,6 +927,8 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 
   /* ---------- board ---------- */
 
+  var ICON_OK = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+  function nameOf(id) { return names[id] || 'tu responsable'; }
   function pill(cls, html) {
     var s = document.createElement('span');
     s.className = 'pill' + (cls ? ' ' + cls : '');
@@ -789,7 +943,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     li.dataset.id = t.id;
     li.tabIndex = 0;
     li.setAttribute('role', 'button');
-    if (canWrite) li.draggable = true;
+    if (canWrite && !t.validadaPor) li.draggable = true;
 
     var top = document.createElement('div');
     top.className = 'card-top';
@@ -798,7 +952,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     tick.type = 'checkbox'; tick.className = 'tick';
     tick.checked = t.status === 'completado';
     tick.setAttribute('aria-label', 'Marcar como completado');
-    tick.disabled = !canWrite;
+    tick.disabled = !canWrite || !!t.validadaPor;
 
     var txt = document.createElement('span');
     txt.className = 'card-txt'; txt.textContent = t.text;
@@ -836,6 +990,12 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       pills.push(pill('subs', '<span class="mini"><i style="width:' + pct + '%"></i></span>' + sdone + '/' + t.subs.length));
     }
     t.labels.forEach(function (l) { pills.push(lblEl(l)); });
+    if (t.asignadaPor) pills.push(pill('', 'Asignada por ' + esc(nameOf(t.asignadaPor))));
+    if (t.validadaPor) pills.push(pill('ok', ICON_OK + 'Validada'));
+    else if (t.motivo && t.status !== 'completado') pills.push(pill('warn', 'Devuelta'));
+    else if (t.status === 'completado' && (t.visible || t.asignadaPor)) pills.push(pill('warn', 'Esperando validación'));
+    else if (t.visible) pills.push(pill('', 'Compartida'));
+    if (t.proyectoId) { var pj = proyectos.filter(function (x) { return x.id === t.proyectoId; })[0]; if (pj) pills.push(pill('', esc(pj.nombre))); }
     if (pills.length) {
       var meta = document.createElement('div');
       meta.className = 'meta';
@@ -846,7 +1006,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     // Un toque para pasar al estado siguiente (en celular no hay arrastre).
     var nx = NEXT[t.status];
     var mv = document.createElement('button');
-    mv.type = 'button'; mv.className = 'mv'; mv.disabled = !canWrite;
+    mv.type = 'button'; mv.className = 'mv'; mv.disabled = !canWrite; mv.hidden = !!t.validadaPor;
     mv.innerHTML = ICON_ARROW + esc(nx[1]);
     mv.setAttribute('aria-label', nx[1] + ': pasar a ' + LABEL[nx[0]]);
     mv.addEventListener('click', async function (e) {
@@ -885,7 +1045,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     return li;
   }
 
-  var filterLabel = '';
+  var filterLabel = '', filterProj = '';
   function mkFilter(val, text) {
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'fchip';
@@ -906,11 +1066,34 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     box.replaceChildren.apply(box, [mkFilter('', 'Todas')].concat(names.map(function (n) { return mkFilter(n, n); })));
   }
 
+  function mkPFilter(val, text) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'fchip';
+    b.setAttribute('aria-pressed', String(filterProj === val));
+    b.textContent = text;
+    b.addEventListener('click', function () { filterProj = val; render(); });
+    return b;
+  }
+  function renderPFilters() {
+    var box = $('pfilters'), items = [];
+    if (proyectos.length) items = items.concat(proyectos.map(function (x) { return mkPFilter(x.id, x.nombre); }));
+    if (misResp.length) items.push(mkPFilter('__shared', 'Compartidas'));
+    if (!items.length) { box.hidden = true; box.replaceChildren(); return; }
+    box.hidden = false;
+    box.replaceChildren.apply(box, [mkPFilter('', 'Todo')].concat(items));
+  }
+  function inProj(t) {
+    if (!filterProj) return true;
+    return filterProj === '__shared' ? (t.visible || !!t.asignadaPor) : t.proyectoId === filterProj;
+  }
+
   function render() {
     var all = Object.keys(byId).map(function (k) { return byId[k]; });
     if (filterLabel && !all.some(function (t) { return t.labels.indexOf(filterLabel) !== -1; })) filterLabel = '';
-    renderFilters();
-    var shown = filterLabel ? all.filter(function (t) { return t.labels.indexOf(filterLabel) !== -1; }) : all;
+    if (filterProj && filterProj !== '__shared' && !proyectos.some(function (x) { return x.id === filterProj; })) filterProj = '';
+    renderFilters(); renderPFilters(); renderBanner();
+    if (!$('met').hidden && metTab === 'mias') renderMet();
+    var shown = all.filter(function (t) { return (!filterLabel || t.labels.indexOf(filterLabel) !== -1) && inProj(t); });
     STATES.forEach(function (st) {
       var items = shown.filter(function (t) { return t.status === st; }).sort(function (a, b) {
         if (st === 'completado') return (b.doneAt || b.order) - (a.doneAt || a.order);
@@ -922,7 +1105,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       } else {
         var li = document.createElement('li');
         li.className = 'empty';
-        li.textContent = filterLabel ? 'Ninguna tarea con esta etiqueta acá.' : (st === 'completado' ? 'Cuando termines algo, aparece acá.' : (st === 'proceso' ? 'Nada en marcha. Pasá una tarea acá cuando la empieces.' : 'Todo al día. Sumá lo próximo abajo.'));
+        li.textContent = (filterLabel || filterProj) ? 'Ninguna tarea con este filtro acá.' : (st === 'completado' ? 'Cuando termines algo, aparece acá.' : (st === 'proceso' ? 'Nada en marcha. Pasá una tarea acá cuando la empieces.' : 'Todo al día. Sumá lo próximo abajo.'));
         ul.replaceChildren(li);
       }
       document.querySelector('[data-n="' + st + '"]').textContent = items.length;
@@ -931,7 +1114,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     var open = all.filter(function (t) { return t.status !== 'completado'; }).length;
     var done = all.length - open;
     var proc = all.filter(function (t) { return t.status === 'proceso'; }).length;
-    tallyEl.textContent = all.length + (all.length === 1 ? ' tarea · ' : ' tareas · ') + open + (open === 1 ? ' abierta' : ' abiertas') + (filterLabel ? ' · mostrando «' + filterLabel + '»' : '');
+    tallyEl.textContent = all.length + (all.length === 1 ? ' tarea · ' : ' tareas · ') + open + (open === 1 ? ' abierta' : ' abiertas') + (filterLabel ? ' · mostrando «' + filterLabel + '»' : '') + (filterProj ? ' · filtrado' : '');
     var pc = all.length ? Math.round(done / all.length * 100) : 0;
     $('pct').textContent = pc + '%';
     $('bar-c').style.width = (all.length ? done / all.length * 100 : 0) + '%';
@@ -968,7 +1151,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       colEl.classList.remove('drop-on');
       var id = dragId || (function () { try { return e.dataTransfer.getData('text/plain'); } catch (err) { return null; } })();
       var t = id && byId[id];
-      if (!t || t.status === st) return;
+      if (!t || t.status === st || t.validadaPor) return;
       await save(moveTo(t, st), 'No se pudo mover la tarea.');
     });
   });
@@ -988,7 +1171,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
         await col.add({
           text: text, status: st, prio: '', due: '', notes: '', subs: [],
           order: endOf(st), createdAt: now, doneAt: st === 'completado' ? now : 0,
-          statusAt: now, labels: [],
+          statusAt: now, labels: [], avances: [], visible: false, proyectoId: '',
           done: st === 'completado'
         });
         inp.value = ''; say('');
@@ -1016,6 +1199,22 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     var hint = $('p-due-hint');
     hint.textContent = t.due ? relDue(t.due, t.status === 'completado') : 'Sin fecha límite';
     hint.className = 'hint' + (t.due && t.status !== 'completado' && t.due < todayISO() ? ' late' : '');
+
+    var pj = $('p-proj');
+    if (document.activeElement !== pj) {
+      pj.replaceChildren.apply(pj, [['', 'Sin proyecto']].concat(proyectos.map(function (x) { return [x.id, x.nombre]; })).map(function (o) {
+        var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; return op;
+      }));
+      pj.value = t.proyectoId;
+    }
+    var asig = !!t.asignadaPor, lock = !!t.validadaPor;
+    $('p-vis').checked = asig || t.visible;
+    $('p-vis-f').hidden = !asig && !misResp.length && !t.visible;
+    var pn = $('p-note'), msg = '';
+    if (lock) msg = 'Validada por ' + nameOf(t.validadaPor) + (t.validadaAt ? ' el ' + fmtStamp(t.validadaAt) : '') + '. Ya no se puede cambiar el estado.';
+    else if (t.motivo && t.status !== 'completado') msg = 'Devuelta por tu responsable: «' + t.motivo + '»';
+    else if (asig) msg = 'Asignada por ' + nameOf(t.asignadaPor) + '. La fecha y la prioridad las fija quien la asignó.';
+    pn.hidden = !msg; pn.textContent = msg;
 
     var lb = $('p-lbls');
     lb.replaceChildren.apply(lb, t.labels.map(function (l) {
@@ -1084,6 +1283,30 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     $('p-sub-prog').hidden = !t.subs.length;
     $('p-sub-bar').style.width = (t.subs.length ? sd / t.subs.length * 100 : 0) + '%';
 
+    // Avances: notas con fecha, la más reciente primero.
+    $('p-av-count').textContent = t.avances.length ? String(t.avances.length) : '';
+    var avl = $('p-avs');
+    avl.replaceChildren.apply(avl, t.avances.map(function (a, i) { return [a, i]; })
+      .sort(function (x, y) { return y[0].t - x[0].t || y[1] - x[1]; })
+      .map(function (pair) {
+        var a = pair[0], idx = pair[1];
+        var li = document.createElement('li');
+        var b = document.createElement('div'), x = document.createElement('div'), d = document.createElement('div');
+        b.className = 'av-b'; x.className = 'av-x'; d.className = 'av-d';
+        x.textContent = a.x; d.textContent = a.t ? fmtStamp(a.t) + ' · ' + ago(a.t) : '';
+        b.appendChild(x); b.appendChild(d);
+        var del = document.createElement('button');
+        del.type = 'button'; del.className = 'av-del'; del.setAttribute('aria-label', 'Quitar avance');
+        del.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+        del.disabled = !canWrite;
+        del.addEventListener('click', function () {
+          var cur = byId[t.id]; if (!cur) return;
+          save(Object.assign({}, cur, { avances: cur.avances.filter(function (_, j) { return j !== idx; }) }), 'No se pudo quitar el avance.');
+        });
+        li.appendChild(b); li.appendChild(del);
+        return li;
+      }));
+
     // Historia: cuándo se creó, desde cuándo está en este estado y cuándo se cerró.
     var rows = [['Creada', fmtStamp(t.createdAt) + ' · ' + ago(t.createdAt), false]];
     var since = t.statusAt || t.createdAt;
@@ -1109,12 +1332,16 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 
     var del = $('p-del');
     del.innerHTML = ICON_TRASH + 'Eliminar'; del.classList.remove('armed');
-    [$('p-title'), $('p-status'), $('p-due'), $('p-notes'), $('p-sub-new'), $('p-lbl-new')].forEach(function (el) {
+    [$('p-title'), $('p-status'), $('p-due'), $('p-notes'), $('p-sub-new'), $('p-lbl-new'), $('p-av-new')].forEach(function (el) {
       el.disabled = !canWrite;
     });
-    $('p-prio').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite; });
-    $('p-quick').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite; });
-    del.disabled = !canWrite;
+    $('p-status').disabled = !canWrite || lock;
+    $('p-due').disabled = !canWrite || asig;
+    $('p-prio').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite || asig; });
+    $('p-quick').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite || asig; });
+    $('p-vis').disabled = !canWrite || asig;
+    $('p-proj').disabled = !canWrite; $('p-proj-new').disabled = !canWrite;
+    del.hidden = asig; del.disabled = !canWrite || asig;
   }
 
   function openPanel(id) {
@@ -1202,6 +1429,34 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     save(Object.assign({}, t, { subs: t.subs.concat([{ t: v, d: false }]) }), 'No se pudo agregar la subtarea.');
     inp.focus();
   });
+  $('p-vis').addEventListener('change', function () {
+    var c = edit('visible', this.checked); if (c) save(c, 'No se pudo guardar la visibilidad.');
+  });
+  $('p-proj').addEventListener('change', function () {
+    var c = edit('proyectoId', this.value); if (c) save(c, 'No se pudo cambiar el proyecto.');
+  });
+  $('p-proj-add').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var inp = $('p-proj-new'), t = openId && byId[openId], v = inp.value.trim();
+    if (!v || !t || !sb) return;
+    var dup = proyectos.filter(function (x) { return x.nombre.toLowerCase() === v.toLowerCase(); })[0];
+    var pr = dup;
+    if (!pr) {
+      var r = await sb.from('proyectos').insert({ nombre: v }).select().single();
+      if (r.error) { say('No se pudo crear el proyecto.', r.error); return; }
+      pr = r.data; proyectos.push({ id: pr.id, nombre: pr.nombre });
+    }
+    inp.value = '';
+    save(Object.assign({}, t, { proyectoId: pr.id }), 'No se pudo asignar el proyecto.');
+  });
+  $('p-av-add').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var inp = $('p-av-new'), t = openId && byId[openId], v = inp.value.trim();
+    if (!v || !t) return;
+    inp.value = '';
+    save(Object.assign({}, t, { avances: t.avances.concat([{ t: Date.now(), x: v }]) }), 'No se pudo guardar el avance.');
+    inp.focus();
+  });
   $('p-del').addEventListener('click', async function () {
     var btn = this;
     if (!btn.classList.contains('armed')) {
@@ -1236,14 +1491,17 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
     return {
       text: d.text, status: d.status, prio: d.prio, due: d.due, notes: d.notes,
       subs: d.subs, ord: d.order, created_at: d.createdAt, done_at: d.doneAt,
-      status_at: d.statusAt, labels: d.labels
+      status_at: d.statusAt, labels: d.labels, avances: d.avances,
+      visible: !!d.visible, proyecto_id: d.proyectoId || null
     };
   }
   function fromRow(r) {
     return {
       text: r.text, status: r.status, prio: r.prio, due: r.due, notes: r.notes,
       subs: r.subs, order: Number(r.ord), createdAt: Number(r.created_at), doneAt: Number(r.done_at),
-      statusAt: Number(r.status_at) || 0, labels: r.labels
+      statusAt: Number(r.status_at) || 0, labels: r.labels, avances: r.avances,
+      visible: !!r.visible, proyectoId: r.proyecto_id || '', asignadaPor: r.asignada_por || '',
+      validadaPor: r.validada_por || '', validadaAt: Number(r.validada_at) || 0, motivo: r.motivo_devolucion || ''
     };
   }
   function fail(r) { if (r.error) { var e = new Error(r.error.message); e.code = r.error.code; throw e; } return r; }
@@ -1265,7 +1523,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       },
       onSnapshot: function (ok, bad) {
         async function load() {
-          var r = await sb.from(T).select('*');
+          var r = await sb.from(T).select('*').eq('user_id', userId);
           if (r.error) { bad(r.error); return; }
           ok({ docs: r.data.map(function (row) { return { id: row.id, data: function () { return fromRow(row); } }; }) });
         }
@@ -1281,7 +1539,11 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
 
   function boot(session) {
     showLogin(false);
+    $('met-btn').hidden = false;
+    me = session.user.id;
     loadPerfil(session);
+    loadProyectos();
+    loadEquipo();
     col = makeCollection(session.user.id);
     canWrite = true;
     col.onSnapshot(function (snap) {
@@ -1294,6 +1556,39 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
       say('No se pudo cargar la lista. Recargá la página.', e);
     });
   }
+
+  async function loadProyectos() {
+    var r = await sb.from('proyectos').select('id,nombre').order('created_at');
+    proyectos = r.error ? [] : r.data;
+    render();
+  }
+  async function loadEquipo() {
+    var a = await sb.from('responsables').select('responsable_id,persona_id,confirmado');
+    var rows = a.error ? [] : a.data;
+    misResp = rows.filter(function (r) { return r.persona_id === me; });
+    directos = rows.filter(function (r) { return r.responsable_id === me; }).map(function (r) { return r.persona_id; });
+    var p = await sb.from('perfiles').select('id,nombre,email');
+    names = {};
+    (p.error ? [] : p.data).forEach(function (u) { names[u.id] = u.nombre || u.email; });
+    $('team-btn').hidden = !directos.length;
+    $('tab-m-eq').hidden = !directos.length;
+    render();
+  }
+  function renderBanner() {
+    var pend = misResp.filter(function (r) { return !r.confirmado; });
+    $('banner').hidden = !pend.length;
+    if (!pend.length) return;
+    var who = pend.map(function (r) { return nameOf(r.responsable_id); }).join(', ');
+    var n = Object.keys(byId).filter(function (k) { return byId[k].visible; }).length;
+    $('banner-t').textContent = who + (pend.length > 1 ? ' fueron sumados como responsables' : ' fue sumado como responsable') +
+      ' tuyo. Todavía no ve nada de lo que marcaste como visible (hoy: ' + n + '). Revisalo y confirmá.';
+  }
+  $('banner-see').addEventListener('click', function () { filterProj = '__shared'; render(); });
+  $('banner-ok').addEventListener('click', async function () {
+    var r = await sb.rpc('confirmar_responsables');
+    if (r.error) { say('No se pudo confirmar.', r.error); return; }
+    await loadEquipo();
+  });
 
   async function start() {
     render();
@@ -1325,7 +1620,7 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; closePanel(); closeAdmin(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; closeMet(); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -1514,6 +1809,293 @@ details[open] > summary.btn-s { color: var(--accent); border-color: var(--accent
   $('a-close').addEventListener('click', closeAdmin);
   $('a-scrim').addEventListener('click', closeAdmin);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('admin').hidden) closeAdmin(); });
+
+  /* ---------- Métricas ---------- */
+
+  var metTab = 'mias', metPerson = '';
+  function isoOf(ms) {
+    var d = new Date(ms);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function fmtDays(x) {
+    if (x === null || x === undefined) return '—';
+    if (x < 1) return '< 1 día';
+    var r = Math.round(x * 10) / 10;
+    return String(r).replace('.', ',') + (r === 1 ? ' día' : ' días');
+  }
+  function mStats(tasks) {
+    var now = Date.now(), today = todayISO();
+    var open = tasks.filter(function (t) { return t.status !== 'completado'; });
+    var done = tasks.filter(function (t) { return t.status === 'completado'; });
+    var done30 = done.filter(function (t) { return (t.doneAt || t.statusAt) >= now - 30 * DAY; });
+    var late = open.filter(function (t) { return t.due && t.due < today; });
+    var stuck = open.filter(function (t) { return now - (t.statusAt || t.createdAt || now) > 7 * DAY; });
+    var times = done.filter(function (t) { return t.doneAt && t.createdAt && t.doneAt >= t.createdAt; })
+      .map(function (t) { return (t.doneAt - t.createdAt) / DAY; }).sort(function (a, b) { return a - b; });
+    var n = times.length;
+    var med = n ? (n % 2 ? times[(n - 1) / 2] : (times[n / 2 - 1] + times[n / 2]) / 2) : null;
+    var wd = done.filter(function (t) { return t.due && t.doneAt; });
+    var ontime = wd.filter(function (t) { return isoOf(t.doneAt) <= t.due; }).length;
+    var waiting = done.filter(function (t) { return !t.validadaPor && (t.visible || t.asignadaPor); });
+    return {
+      total: tasks.length, open: open, done: done, done30: done30, late: late, stuck: stuck, med: med,
+      ontimePct: wd.length ? Math.round(ontime / wd.length * 100) : null,
+      pend: tasks.filter(function (t) { return t.status === 'pendiente'; }).length,
+      proc: tasks.filter(function (t) { return t.status === 'proceso'; }).length,
+      waiting: waiting
+    };
+  }
+  function weekly(tasks, n) {
+    var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    var start = d.getTime(), out = [];
+    for (var i = n - 1; i >= 0; i--) {
+      var a = new Date(start); a.setDate(a.getDate() - i * 7);
+      var b = new Date(a); b.setDate(b.getDate() + 7);
+      out.push({ a: a.getTime(), b: b.getTime(), label: a.getDate() + '/' + (a.getMonth() + 1), done: 0, made: 0 });
+    }
+    tasks.forEach(function (t) {
+      out.forEach(function (w) {
+        if (t.status === 'completado' && t.doneAt >= w.a && t.doneAt < w.b) w.done++;
+        if (t.createdAt >= w.a && t.createdAt < w.b) w.made++;
+      });
+    });
+    return out;
+  }
+  function chartWeekly(ws) {
+    var W = 560, H = 170, pad = 22, base = H - 22, mx = Math.max(1, Math.max.apply(null, ws.map(function (w) { return Math.max(w.done, w.made); })));
+    var gw = (W - pad) / ws.length, bw = Math.min(18, gw / 3), g = '';
+    ws.forEach(function (w, i) {
+      var x = pad / 2 + i * gw + gw / 2;
+      var h1 = w.made / mx * (base - 18), h2 = w.done / mx * (base - 18);
+      g += '<rect class="bar-n" x="' + (x - bw - 1.5).toFixed(1) + '" y="' + (base - h1).toFixed(1) + '" width="' + bw + '" height="' + Math.max(h1, w.made ? 2 : 0).toFixed(1) + '" rx="3"/>' +
+        '<rect class="bar-c" x="' + (x + 1.5).toFixed(1) + '" y="' + (base - h2).toFixed(1) + '" width="' + bw + '" height="' + Math.max(h2, w.done ? 2 : 0).toFixed(1) + '" rx="3"/>' +
+        (w.done ? '<text class="v" x="' + (x + 1.5 + bw / 2).toFixed(1) + '" y="' + (base - h2 - 5).toFixed(1) + '" text-anchor="middle">' + w.done + '</text>' : '') +
+        '<text x="' + x.toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle">' + w.label + '</text>';
+    });
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Tareas creadas y completadas por semana, últimas ' + ws.length + ' semanas">' +
+      '<line x1="0" x2="' + W + '" y1="' + base + '" y2="' + base + '" stroke="var(--line)"/>' + g + '</svg>';
+  }
+  function kpi(v, l, cls) {
+    var d = mk('div', 'kpi' + (cls ? ' ' + cls : '')); d.appendChild(mk('b', '', String(v))); d.appendChild(mk('span', '', l)); return d;
+  }
+  function msec(title, child) {
+    var s = mk('section', 'm-sec'); s.appendChild(mk('h3', '', title)); s.appendChild(child); return s;
+  }
+  function card(html) { var c = mk('div', 'm-card'); c.innerHTML = html; return c; } // html armado solo con números y fechas propias
+  function mList(rows, empty) {
+    var ul = mk('ul', 'm-list');
+    if (!rows.length) { ul.appendChild(mk('li', 't-empty', empty)); return ul; }
+    rows.forEach(function (r) {
+      var li = mk('li'); li.appendChild(mk('span', '', r[0])); li.appendChild(mk('span', 'm-v' + (r[2] ? ' bad' : ''), r[1])); ul.appendChild(li);
+    });
+    return ul;
+  }
+  function personalView(tasks, scopeLabel) {
+    var st = mStats(tasks), box = mk('div'), frag = [];
+    box.style.display = 'flex'; box.style.flexDirection = 'column'; box.style.gap = '20px';
+    var k = mk('div', 'kpis');
+    k.appendChild(kpi(st.open.length, 'Abiertas'));
+    k.appendChild(kpi(st.done30.length, 'Completadas en 30 días', st.done30.length ? 'good' : ''));
+    k.appendChild(kpi(st.late.length, 'Vencidas', st.late.length ? 'bad' : ''));
+    k.appendChild(kpi(fmtDays(st.med), 'Tiempo medio de resolución'));
+    k.appendChild(kpi(st.ontimePct === null ? '—' : st.ontimePct + '%', 'Cerradas a tiempo'));
+    k.appendChild(kpi(st.stuck.length, 'Sin moverse hace +7 días', st.stuck.length ? 'bad' : ''));
+    box.appendChild(k);
+    var ws = weekly(tasks, 8);
+    var wc = card(chartWeekly(ws) + '<div class="m-legend"><span><i style="background:var(--line-strong)"></i>Creadas</span><span><i style="background:var(--accent)"></i>Completadas</span></div>');
+    box.appendChild(msec('Ritmo semanal · últimas 8 semanas', wc));
+    var tot = Math.max(1, st.total);
+    box.appendChild(msec('Cómo está el trabajo', card(
+      '<div class="stk" role="img" aria-label="' + st.pend + ' pendientes, ' + st.proc + ' en proceso, ' + st.done.length + ' completadas">' +
+      '<i class="s-pend" style="width:' + (st.pend / tot * 100) + '%"></i><i class="s-proc" style="width:' + (st.proc / tot * 100) + '%"></i><i class="s-comp" style="width:' + (st.done.length / tot * 100) + '%"></i></div>' +
+      '<div class="m-legend"><span><i style="background:var(--pend)"></i>Pendiente ' + st.pend + '</span><span><i style="background:var(--proc)"></i>En proceso ' + st.proc + '</span><span><i style="background:var(--comp)"></i>Completado ' + st.done.length + '</span></div>')));
+    var now = Date.now();
+    var oldest = st.open.slice().sort(function (a, b) { return (a.statusAt || a.createdAt) - (b.statusAt || b.createdAt); }).slice(0, 5)
+      .map(function (t) {
+        var d = Math.max(0, Math.round((now - (t.statusAt || t.createdAt || now)) / DAY));
+        return [t.text, d + (d === 1 ? ' día · ' : ' días · ') + LABEL[t.status].toLowerCase(), d > 7];
+      });
+    box.appendChild(msec('Lo que más tiempo lleva abierto', mList(oldest, 'No hay tareas abiertas.')));
+    return box;
+  }
+  function teamView() {
+    var box = mk('div'); box.style.display = 'flex'; box.style.flexDirection = 'column'; box.style.gap = '20px';
+    var all = teamTasks;
+    if (metPerson) {
+      var back = mk('button', 'btn-s m-back', '← Todo el equipo'); back.type = 'button';
+      back.addEventListener('click', function () { metPerson = ''; renderMet(); });
+      box.appendChild(back);
+      var h = mk('h3', 'a-h', nameOf(metPerson)); box.appendChild(h);
+      box.appendChild(personalView(all.filter(function (t) { return t.userId === metPerson; })));
+      return box;
+    }
+    box.appendChild(mk('p', 'a-help', 'Incluye solo lo que tu equipo marcó como visible y lo que asignaste vos. Lo privado no entra en las cuentas.'));
+    var st = mStats(all), now = Date.now();
+    var k = mk('div', 'kpis');
+    k.appendChild(kpi(st.open.length, 'Abiertas'));
+    k.appendChild(kpi(st.done30.length, 'Completadas en 30 días', st.done30.length ? 'good' : ''));
+    k.appendChild(kpi(st.late.length, 'Vencidas', st.late.length ? 'bad' : ''));
+    k.appendChild(kpi(fmtDays(st.med), 'Tiempo medio de resolución'));
+    k.appendChild(kpi(st.ontimePct === null ? '—' : st.ontimePct + '%', 'Cerradas a tiempo'));
+    k.appendChild(kpi(st.waiting.length, 'Esperando validación', st.waiting.length ? 'bad' : ''));
+    box.appendChild(k);
+    box.appendChild(msec('Ritmo semanal del equipo', card(chartWeekly(weekly(all, 8)) +
+      '<div class="m-legend"><span><i style="background:var(--line-strong)"></i>Creadas</span><span><i style="background:var(--accent)"></i>Completadas</span></div>')));
+    // Cuellos de botella
+    var cb = [];
+    if (st.waiting.length) {
+      var oldW = Math.max.apply(null, st.waiting.map(function (t) { return Math.round((now - (t.doneAt || now)) / DAY); }));
+      cb.push(['Completadas sin validar', st.waiting.length + ' · la más vieja hace ' + oldW + (oldW === 1 ? ' día' : ' días'), oldW > 3]);
+    }
+    if (st.stuck.length) cb.push(['Sin moverse hace más de 7 días', String(st.stuck.length), true]);
+    if (st.late.length) cb.push(['Vencidas', String(st.late.length), true]);
+    var porPersona = {};
+    st.open.forEach(function (t) { porPersona[t.userId] = (porPersona[t.userId] || 0) + 1; });
+    var top = Object.keys(porPersona).sort(function (a, b) { return porPersona[b] - porPersona[a]; })[0];
+    if (top && Object.keys(porPersona).length > 1) cb.push(['Más tareas abiertas', nameOf(top) + ' · ' + porPersona[top], false]);
+    box.appendChild(msec('Cuellos de botella', mList(cb, 'Sin cuellos de botella a la vista.')));
+    // Por persona
+    var tbl = mk('table', 'm-people');
+    tbl.innerHTML = '<thead><tr><th>Persona</th><th>Abiertas</th><th>Vencidas</th><th>30 días</th><th>Tiempo</th></tr></thead>';
+    var tb = mk('tbody');
+    directos.forEach(function (id) {
+      var ps = mStats(all.filter(function (t) { return t.userId === id; }));
+      var tr = mk('tr', 'go'); tr.tabIndex = 0; tr.setAttribute('role', 'button'); tr.setAttribute('aria-label', 'Ver métricas de ' + nameOf(id));
+      [nameOf(id), ps.open.length, ps.late.length, ps.done30.length, fmtDays(ps.med)].forEach(function (v, i) {
+        var td = mk('td', i === 2 && v ? 'bad' : '', String(v)); tr.appendChild(td);
+      });
+      function go() { metPerson = id; renderMet(); }
+      tr.addEventListener('click', go);
+      tr.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      tb.appendChild(tr);
+    });
+    tbl.appendChild(tb);
+    var sc = mk('div', 'm-scroll'); sc.appendChild(tbl);
+    box.appendChild(msec('Por persona', directos.length ? sc : mk('p', 't-empty', 'Todavía no tenés directos.')));
+    return box;
+  }
+  function renderMet() {
+    $('tab-m-mias').setAttribute('aria-selected', String(metTab === 'mias'));
+    $('tab-m-eq').setAttribute('aria-selected', String(metTab === 'eq'));
+    var body = $('m-body');
+    body.replaceChildren(metTab === 'mias'
+      ? personalView(Object.keys(byId).map(function (k) { return byId[k]; }))
+      : teamView());
+  }
+  function openMet() {
+    metTab = 'mias'; metPerson = '';
+    $('m-scrim').hidden = false; $('met').hidden = false; $('met').focus();
+    renderMet();
+  }
+  function closeMet() { $('met').hidden = true; $('m-scrim').hidden = true; }
+  $('met-btn').addEventListener('click', openMet);
+  $('m-close').addEventListener('click', closeMet);
+  $('m-scrim').addEventListener('click', closeMet);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('met').hidden) closeMet(); });
+  $('tab-m-mias').addEventListener('click', function () { metTab = 'mias'; metPerson = ''; renderMet(); });
+  $('tab-m-eq').addEventListener('click', function () { metTab = 'eq'; metPerson = ''; renderMet(); loadTeam(); });
+
+  /* ---------- Mi equipo ---------- */
+
+  var teamTasks = [];
+  function tSay(msg, ok) { var m = $('t-msg'); m.textContent = msg || ''; m.className = 'a-msg' + (ok ? ' ok' : ''); }
+  async function loadTeam() {
+    var r = await sb.from('tareas').select('*').neq('user_id', me);
+    if (r.error) { tSay('No se pudo cargar el equipo.'); return; }
+    teamTasks = r.data.map(function (row) {
+      var t = norm(row.id, fromRow(row)); t.userId = row.user_id; return t;
+    });
+    renderTeam();
+    if (!$('met').hidden) renderMet();
+  }
+  async function teamCall(fn, args, okMsg) {
+    tSay('');
+    var r = await sb.rpc(fn, args);
+    if (r.error) { tSay(r.error.message); return false; }
+    if (okMsg) tSay(okMsg, true);
+    await loadTeam();
+    return true;
+  }
+  function tItem(t, kind) {
+    var li = document.createElement('li'); li.className = 't-item';
+    li.appendChild(mk('div', 't-title', t.text));
+    var sub = mk('div', 't-sub');
+    sub.appendChild(mk('span', '', names[t.userId] || 'Persona'));
+    sub.appendChild(mk('span', '', LABEL[t.status]));
+    if (t.prio) sub.appendChild(mk('span', '', 'Prioridad ' + PRIO[t.prio].toLowerCase()));
+    if (t.due) sub.appendChild(mk('span', '', relDue(t.due, t.status === 'completado')));
+    if (t.status === 'completado' && t.doneAt) sub.appendChild(mk('span', '', 'completada ' + ago(t.doneAt)));
+    if (t.validadaPor) sub.appendChild(mk('span', '', 'validada por ' + (t.validadaPor === me ? 'vos' : nameOf(t.validadaPor))));
+    li.appendChild(sub);
+    var acts = mk('div', 't-acts');
+    if (kind === 'validar') {
+      var ok = mk('button', 'a-btn', 'Validar'); ok.type = 'button';
+      ok.addEventListener('click', function () { ok.disabled = true; teamCall('validar_tarea', { p_id: t.id }, 'Tarea validada.'); });
+      var back = mk('button', 'btn-s', 'Devolver'); back.type = 'button';
+      var form = mk('form'); form.hidden = true; form.className = 'sub-add'; form.autocomplete = 'off';
+      var inp = mk('input'); inp.type = 'text'; inp.maxLength = 500; inp.placeholder = 'Motivo (obligatorio)'; inp.setAttribute('aria-label', 'Motivo de la devolución');
+      var go = mk('button', '', 'Devolver'); go.type = 'submit';
+      form.appendChild(inp); form.appendChild(go);
+      back.addEventListener('click', function () { form.hidden = !form.hidden; if (!form.hidden) inp.focus(); });
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!inp.value.trim()) { tSay('Escribí el motivo de la devolución.'); return; }
+        go.disabled = true; teamCall('devolver_tarea', { p_id: t.id, p_motivo: inp.value.trim() }, 'Tarea devuelta.').then(function (o) { if (!o) go.disabled = false; });
+      });
+      acts.appendChild(ok); acts.appendChild(back); li.appendChild(acts); li.appendChild(form);
+      return li;
+    }
+    if (t.asignadaPor === me && !t.validadaPor) {
+      var rt = mk('button', 'btn-s', 'Retirar'); rt.type = 'button';
+      rt.addEventListener('click', function () {
+        if (!rt.classList.contains('armed')) { rt.classList.add('armed'); rt.textContent = 'Confirmar retiro'; return; }
+        rt.disabled = true; teamCall('retirar_tarea', { p_id: t.id }, 'Tarea retirada.');
+      });
+      acts.appendChild(rt); li.appendChild(acts);
+    }
+    return li;
+  }
+  function fillList(id, items, kind, empty) {
+    var ul = $(id);
+    if (!items.length) { var e = mk('li', 't-empty', empty); ul.replaceChildren(e); return; }
+    ul.replaceChildren.apply(ul, items.map(function (t) { return tItem(t, kind); }));
+  }
+  function byDue(a, b) { return (a.due || '9999') < (b.due || '9999') ? -1 : (a.due || '9999') > (b.due || '9999') ? 1 : 0; }
+  function renderTeam() {
+    var today = todayISO();
+    var validar = teamTasks.filter(function (t) { return t.status === 'completado' && !t.validadaPor; })
+      .sort(function (a, b) { return (a.doneAt || 0) - (b.doneAt || 0); });
+    var venc = teamTasks.filter(function (t) { return t.asignadaPor === me && t.status !== 'completado' && t.due && t.due < today; }).sort(byDue);
+    var resto = teamTasks.filter(function (t) { return validar.indexOf(t) === -1 && venc.indexOf(t) === -1 && !t.validadaPor; }).sort(byDue);
+    var vals = teamTasks.filter(function (t) { return t.validadaPor; }).sort(function (a, b) { return b.validadaAt - a.validadaAt; }).slice(0, 5);
+    fillList('t-validar', validar, 'validar', 'Nada para validar.');
+    fillList('t-vencidas', venc, 'venc', 'Ninguna vencida.');
+    fillList('t-resto', resto.concat(vals), 'resto', 'Todavía no hay tareas asignadas ni compartidas.');
+    var w = $('t-who');
+    var keep = w.value;
+    w.replaceChildren.apply(w, directos.map(function (id) {
+      var o = document.createElement('option'); o.value = id; o.textContent = nameOf(id); return o;
+    }));
+    if (keep && directos.indexOf(keep) !== -1) w.value = keep;
+  }
+  function openTeam() {
+    tSay(''); $('t-scrim').hidden = false; $('team').hidden = false; $('team').focus();
+    renderTeam(); loadTeam();
+  }
+  function closeTeam() { $('team').hidden = true; $('t-scrim').hidden = true; }
+  $('team-btn').addEventListener('click', openTeam);
+  $('t-close').addEventListener('click', closeTeam);
+  $('t-scrim').addEventListener('click', closeTeam);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('team').hidden) closeTeam(); });
+  $('t-new').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var btn = $('t-create'); btn.disabled = true;
+    var ok = await teamCall('asignar_tarea', {
+      p_persona: $('t-who').value, p_text: $('t-text').value, p_prio: $('t-prio').value, p_due: $('t-due').value, p_notes: ''
+    }, 'Tarea asignada.');
+    if (ok) { $('t-text').value = ''; $('t-prio').value = ''; $('t-due').value = ''; }
+    btn.disabled = false;
+  });
 
   $('a-new').addEventListener('submit', async function (e) {
     e.preventDefault();

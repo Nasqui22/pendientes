@@ -32,7 +32,8 @@ Tablero personal de tareas en tres estados (Pendiente, En proceso, Completado) c
 - Los usuarios se crean solo desde el panel de administración (Edge Function). Nunca crear usuarios con la `service_role` desde la web.
 - La carpeta `supabase/.temp` no se versiona.
 - Diseño: seguir `DESIGN.md` (un solo acento, Hanken Grotesk, tokens en `:root` con claro y oscuro sincronizados). Los cambios visuales grandes pasan por `/impeccable`.
-- Pendiente de construir: proyectos, asignación de tareas a directos, estado Validado y vista "Mi equipo".
+- Equipo (migración `20261015180000`): un responsable ve las tareas de sus DIRECTOS solo si las asignó él o la persona las marcó `visible` y confirmó a ese responsable (`responsables.confirmado`). Asignar, validar, devolver y retirar pasan por funciones `security definer` (`asignar_tarea`, `validar_tarea`, `devolver_tarea`, `retirar_tarea`, `confirmar_responsables`); el trigger `tareas_proteger` impide escribir `asignada_por`, `validada_*`, `motivo_devolucion` y cambiar fecha/prioridad de una tarea asignada, y cierra el estado de una tarea validada. Validado = `validada_por` no nulo (no hay un cuarto estado). El tablero propio filtra `user_id` en la consulta porque RLS también deja pasar tareas del equipo.
+- `avances` (jsonb `[{t, x}]`) y `proyectos` (tabla propia, `tareas.proyecto_id`) son personales. Las métricas se calculan en la web con las tareas ya cargadas; el equipo solo cuenta lo visible o asignado.
 
 ## Historia
 La primera versión fue un artifact de Claude ("Pendientes") con la base interna de Claude. Ya no se usa; este repo es el proyecto real.
