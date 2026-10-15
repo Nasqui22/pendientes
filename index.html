@@ -338,17 +338,19 @@ textarea { resize: vertical; min-height: 120px; padding: 10px 12px; line-height:
 .hist span { font-size: 12.5px; color: var(--muted); }
 
 /* Acceso */
-#login { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center; padding: 16px; }
-#login form { width: min(380px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-up); padding: 28px; display: flex; flex-direction: column; gap: 14px; }
-#login .brand { margin-bottom: 4px; }
-#login h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
-#login p { margin: -6px 0 4px; color: var(--muted); font-size: 14px; }
-#login input { font: inherit; font-size: 15px; height: 44px; padding: 0 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; width: 100%; }
-#login input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-#login button { height: 44px; background: var(--accent); color: var(--accent-ink); font-weight: 600; }
-#login button:hover:not(:disabled) { filter: brightness(1.08); }
-#login .err { color: var(--alta); font-size: 13px; }
-#login .err:empty { display: none; }
+#login, #chpw { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center; padding: 16px; }
+#login form, #chpw form { width: min(380px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-up); padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+#login .brand, #chpw .brand { margin-bottom: 4px; }
+#login h2, #chpw h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+#login p, #chpw p { margin: -6px 0 4px; color: var(--muted); font-size: 14px; }
+#login input, #chpw input { font: inherit; font-size: 15px; height: 44px; padding: 0 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; width: 100%; }
+#login input:focus, #chpw input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+#chpw ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+#chpw .alt { background: transparent; color: var(--muted); border-color: var(--line); }
+#login button, #chpw button { height: 44px; background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+#login button:hover:not(:disabled), #chpw button:hover:not(:disabled) { filter: brightness(1.08); }
+#login .err, #chpw .err { color: var(--alta); font-size: 13px; }
+#login .err:empty, #chpw .err:empty { display: none; }
 
 /* Administración */
 .txt { font: inherit; font-size: 14.5px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 0 12px; height: 42px; width: 100%; min-width: 0; }
@@ -606,6 +608,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     </span>
     <div class="top-actions">
       <span class="who" id="who"></span>
+      <button type="button" class="btn ghost" id="pass-btn" hidden aria-label="Cambiar contraseña"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3.5"/><path d="M10.5 12.5 19 4M16 7l2.5 2.5M13.5 9.5 15.5 11.5"/></svg><span class="bl">Contraseña</span></button>
       <button type="button" class="btn ghost bell" id="bell-btn" hidden aria-label="Notificaciones"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><span class="n" id="bell-n" hidden></span></button>
       <button type="button" class="btn ghost" id="met-btn" hidden aria-label="Métricas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span class="bl">Métricas</span></button>
       <button type="button" class="btn ghost" id="team-btn" hidden aria-label="Mi equipo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="bl">Mi equipo</span></button>
@@ -703,6 +706,23 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password" aria-label="Contraseña" required>
     <button type="submit" id="login-btn">Entrar</button>
     <span class="err" id="login-err" role="alert"></span>
+  </form>
+</div>
+
+<div id="chpw" hidden>
+  <form id="chpw-form" autocomplete="off">
+    <span class="brand">
+      <span class="brand-mark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12.5 4 4 8-9"/></svg></span>
+      Pendientes
+    </span>
+    <h2 id="chpw-h">Elegí tu contraseña</h2>
+    <p id="chpw-p">La que te dieron es temporal. Para entrar, creá una contraseña propia.</p>
+    <input type="password" id="chpw-1" placeholder="Contraseña nueva" aria-label="Contraseña nueva" autocomplete="new-password" minlength="10" maxlength="72" required>
+    <input type="password" id="chpw-2" placeholder="Repetí la contraseña" aria-label="Repetí la contraseña" autocomplete="new-password" minlength="10" maxlength="72" required>
+    <ul><li>Al menos 10 caracteres, con letras y números.</li><li>Distinta de la que tenías y de tu email.</li></ul>
+    <button type="submit" id="chpw-btn">Guardar contraseña</button>
+    <button type="button" class="alt" id="chpw-cancel" hidden>Cancelar</button>
+    <span class="err" id="chpw-err" role="alert"></span>
   </form>
 </div>
 
@@ -1721,7 +1741,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     $('met-btn').hidden = false;
     me = session.user.id;
     loadPerfil(session);
-    $('bell-btn').hidden = false;
+    $('bell-btn').hidden = false; $('pass-btn').hidden = false;
     $('side').hidden = false; document.body.classList.add('has-side');
     loadProyectos();
     loadEqProy();
@@ -1819,7 +1839,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -1852,7 +1872,50 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     var first = perfil && perfil.nombre ? perfil.nombre.trim().split(/\s+/)[0] : '';
     $('title').textContent = first ? 'Hola, ' + first : 'Mi tablero';
     $('admin-btn').hidden = !(perfil && perfil.es_admin);
+    if (perfil && perfil.debe_cambiar_clave) showChPw(true);
   }
+
+  /* ---------- cambio de contraseña ---------- */
+  var chForced = false;
+  function showChPw(forced) {
+    chForced = !!forced;
+    $('chpw-h').textContent = forced ? 'Elegí tu contraseña' : 'Cambiar contraseña';
+    $('chpw-p').textContent = forced ? 'La que te dieron es temporal. Para entrar, creá una contraseña propia.' : 'Elegí una contraseña nueva para tu cuenta.';
+    $('chpw-cancel').hidden = forced;
+    $('chpw-err').textContent = ''; $('chpw-form').reset();
+    $('chpw').hidden = false; $('chpw-1').focus();
+  }
+  function closeChPw() { $('chpw').hidden = true; }
+  function claveError(p1, p2) {
+    if (p1.length < 10) return 'Usá al menos 10 caracteres.';
+    if (p1.length > 72) return 'Usá como máximo 72 caracteres.';
+    if (!/[A-Za-z]/.test(p1) || !/[0-9]/.test(p1)) return 'Combiná letras y números.';
+    var em = ((perfil && perfil.email) || '').toLowerCase();
+    if (em && p1.toLowerCase().indexOf(em.split('@')[0]) !== -1 && em.split('@')[0].length > 3) return 'No uses tu email o tu usuario dentro de la contraseña.';
+    if (p1 !== p2) return 'Las contraseñas no coinciden.';
+    return '';
+  }
+  $('chpw-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var err = claveError($('chpw-1').value, $('chpw-2').value);
+    if (err) { $('chpw-err').textContent = err; return; }
+    var btn = $('chpw-btn'); btn.disabled = true; $('chpw-err').textContent = '';
+    var r = await sb.auth.updateUser({ password: $('chpw-1').value });
+    if (r.error) {
+      btn.disabled = false;
+      $('chpw-err').textContent = /different from the old/i.test(r.error.message) ? 'La contraseña nueva tiene que ser distinta de la actual.'
+        : /weak|least|characters/i.test(r.error.message) ? 'La contraseña es muy débil. Probá con una más larga.'
+        : 'No se pudo cambiar la contraseña: ' + r.error.message;
+      return;
+    }
+    var c = await sb.rpc('clave_cambiada');
+    btn.disabled = false;
+    if (c.error) { $('chpw-err').textContent = 'La contraseña se cambió, pero no se pudo registrar. Recargá la página.'; return; }
+    if (perfil) perfil.debe_cambiar_clave = false;
+    closeChPw(); say(chForced ? '' : 'Contraseña actualizada.');
+  });
+  $('chpw-cancel').addEventListener('click', closeChPw);
+  $('pass-btn').addEventListener('click', function () { showChPw(false); });
 
   // Los cambios de usuarios pasan por la Edge Function, que verifica que seas admin.
   async function adminCall(payload) {
@@ -2411,7 +2474,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     { id: 'inicio', t: 'Primeros pasos', b:
 'Pendientes es tu tablero de tareas personal, con herramientas para trabajar en equipo: responsables que validan, subtareas que se pasan entre compañeros, una biblioteca compartida y métricas.\n\n' +
 '## Cómo entrar\n' +
-'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). Si no recordás tu contraseña, pedile una nueva al administrador.\n\n' +
+'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras con el botón de la llave, arriba. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
 '## Dónde está cada cosa\n' +
 '- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Guía y, si tenés gente a cargo, Gestión.\n' +
 '- **Barra de arriba**: la campana de notificaciones, Métricas, Mi equipo (solo líderes), Usuarios (solo administradores) y Salir.\n\n' +
@@ -2543,7 +2606,7 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
     { id: 'admin', admin: true, t: 'Administración', b:
 'El botón **Usuarios** de arriba abre el panel de administración. Tiene dos pestañas.\n\n' +
 '## Usuarios\n' +
-'- **Nuevo usuario**: nombre, email y contraseña inicial (mínimo 8 caracteres). Podés marcarlo como administrador.\n' +
+'- **Nuevo usuario**: nombre, email y contraseña inicial (mínimo 8 caracteres). Podés marcarlo como administrador. La persona tendrá que cambiar esa contraseña en su primer ingreso, y lo mismo cuando le restablezcas la clave.\n' +
 '- Por usuario: **Editar** (nombre, rol), **desactivar/activar** y **cambiar contraseña**. Sobre tu propia cuenta solo podés editar.\n\n' +
 '## Responsables\n' +
 'Elegí quién responde por cada persona. Una persona puede tener varios responsables, y un responsable puede tener a su vez los suyos (cadena). No se permiten ciclos. Cuando sumás un responsable, la persona debe confirmarlo antes de que él vea sus tareas.\n\n' +
@@ -2562,8 +2625,10 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
 'No. En la Biblioteca y en las tareas podés poner enlaces (por ejemplo a un archivo en la nube), pero no subir archivos.\n\n' +
 '## Cambié algo y no se refleja en otro dispositivo\n' +
 'El tablero se actualiza solo. Si algo no aparece, recargá la página.\n\n' +
+'## Quiero cambiar mi contraseña\n' +
+'Tocá el botón de la llave, arriba a la derecha, y elegí una nueva.\n\n' +
 '## Olvidé mi contraseña\n' +
-'Pedile una nueva al administrador.' }
+'Pedile al administrador que la restablezca. Al entrar con la temporal, el sistema te pide elegir una nueva.' }
   ];
 
   function renderGuia() {

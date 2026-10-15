@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
     if (error || !data.user) return json({ error: error?.message ?? "No se pudo crear el usuario" }, 400);
     // El trigger ya creó el perfil; acá se completan los datos elegidos.
     const { error: ep } = await sb.from("perfiles")
-      .update({ ...(nombre ? { nombre } : {}), es_admin: p.es_admin === true })
+      .update({ ...(nombre ? { nombre } : {}), es_admin: p.es_admin === true, debe_cambiar_clave: true })
       .eq("id", data.user.id);
     if (ep) return json({ error: ep.message }, 500);
     await registrar(p.es_admin === true ? "crear_admin" : "crear", data.user.id);
@@ -85,6 +85,8 @@ Deno.serve(async (req) => {
       if (!password || password.length < 8 || password.length > 72) return json({ error: "La contraseña debe tener entre 8 y 72 caracteres" }, 400);
       const { error } = await sb.auth.admin.updateUserById(id, { password });
       if (error) return json({ error: error.message }, 400);
+      // La contraseña la eligió un admin: la persona debe cambiarla al entrar (salvo que el admin cambie la suya).
+      if (id !== u.user.id) await sb.from("perfiles").update({ debe_cambiar_clave: true }).eq("id", id);
       await registrar("clave", id);
       return json({ ok: true });
     }
