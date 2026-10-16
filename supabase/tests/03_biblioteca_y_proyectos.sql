@@ -16,7 +16,10 @@ begin
   select count(*) into n from libros; if n <> 1 then raise exception 'FALLA: B ve % libros', n; end if;
   perform set_config('request.jwt.claims', json_build_object('sub', x, 'role', 'authenticated')::text, true);
   select count(*) into n from libros; if n <> 0 then raise exception 'FALLA: ajeno ve libros'; end if;
-  begin insert into equipo_proyectos (nombre) values ('p'); raise exception 'FALLA: no líder creó proyecto'; exception when others then if sqlerrm like 'FALLA%' then raise; end if; end;
+  -- cualquiera crea sus proyectos (aunque no tenga gente a cargo), pero no a nombre de otro
+  insert into equipo_proyectos (nombre) values ('p de ajeno');
+  begin insert into equipo_proyectos (nombre, lider_id) values ('falso', l); raise exception 'FALLA: creó proyecto a nombre de otro'; exception when others then if sqlerrm like 'FALLA%' then raise; end if; end;
+  select count(*) into n from equipo_proyectos; if n <> 1 then raise exception 'FALLA: ajeno ve % proyectos', n; end if;
   -- B no puede editar libro de A
   perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
   update libros set titulo = 'hack' where id = lib2; get diagnostics n = row_count; if n <> 0 then raise exception 'FALLA: B editó libro ajeno'; end if;

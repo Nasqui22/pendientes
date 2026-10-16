@@ -2289,9 +2289,11 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     });
   }
 
+  function puedeGestionar() { return !!directos.length || eqProy.some(function (x) { return x.lider_id === me; }); }
   async function loadEqProy() {
     var r = await sb.from('equipo_proyectos').select('*').order('created_at');
     eqProy = r.error ? [] : r.data;
+    $('side-gest').hidden = !puedeGestionar();
     render();
   }
   async function loadProyectos() {
@@ -2309,7 +2311,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     (p.error ? [] : p.data).forEach(function (u) { names[u.id] = u.nombre || u.email; });
     $('team-btn').hidden = !directos.length;
     $('tab-m-eq').hidden = !directos.length;
-    $('side-gest').hidden = !directos.length;
+    $('side-gest').hidden = !puedeGestionar();
     var c = await sb.rpc('mis_companeros');
     companeros = c.error ? [] : c.data;
     companeros.forEach(function (x) { names[x.id] = x.nombre; });
@@ -2727,7 +2729,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   var KIND = { automatismo: 'Automatismo', ejemplo: 'Ejemplo', ayuda: 'Ayuda' };
 
   function setView(v) {
-    if (v === 'gest' && !directos.length) v = 'board';
+    if (v === 'gest' && !puedeGestionar()) v = 'board';
     view = v;
     document.getElementById('board-view').hidden = v !== 'board';
     $('guia-view').hidden = v !== 'guia';
@@ -2774,7 +2776,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     if (rs[0].error) say('No se pudo cargar la biblioteca.', rs[0].error);
     renderViews();
   }
-  function renderViews() { if (view === 'lib') renderLib(); if (view === 'gest') renderGest(); if (view === 'proy') renderProyectos(); }
+  function renderViews() { if (view === 'lib') renderLib(); if (view === 'gest') renderGest(); if (view === 'proy') renderProyectos(); $('side-gest').hidden = !puedeGestionar(); }
 
   // Texto con formato mínimo: # título, ## subtítulo, - viñetas, **negrita**, `código` y enlaces http(s).
   function inline(text, parent) {
@@ -3291,12 +3293,12 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var v = $('gest-view');
     var head = mk('div', 'v-head'), t = mk('div');
     t.appendChild(mk('h1', '', 'Gestión de equipo'));
-    t.appendChild(mk('p', '', 'Armá proyectos, asigná libros y definí en qué proyecto trabaja cada colaborador.'));
+    t.appendChild(mk('p', '', directos.length ? 'Armá proyectos, asigná libros y definí en qué proyecto trabaja cada colaborador.' : 'Editá tus proyectos de equipo: fechas, hitos y libros.'));
     head.appendChild(t);
     var msg = mk('p', 'a-msg'); msg.id = 'gest-msg'; msg.setAttribute('role', 'status'); msg.textContent = gestMsg;
     var mine = eqProy.filter(function (p) { return p.lider_id === me; });
 
-    var cc = mk('section', 'lib-sec'); cc.id = 'ctl-box'; renderCtl(cc);
+    var cc = mk('section', 'lib-sec'); cc.id = 'ctl-box'; if (directos.length) renderCtl(cc);
 
     var cs = mk('section', 'lib-sec'); cs.appendChild(mk('h3', '', 'Colaboradores'));
     var grid = mk('div', 'collab-grid');
@@ -3353,6 +3355,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       c.appendChild(mk('p', 'a-help', lk.length ? lk.length + (lk.length === 1 ? ' tarea vinculada' : ' tareas vinculadas') + ' · ' + lkOpen + (lkOpen === 1 ? ' abierta' : ' abiertas') + ' · ' + (lk.length - lkOpen) + ' completadas' : 'Todavía no hay tareas vinculadas.'));
       var cols = mk('div', 'proj-cols');
       var cm = mk('div'); cm.appendChild(mk('h5', '', 'Colaboradores en este proyecto'));
+      if (!directos.length) cm.appendChild(mk('p', 'a-help', 'Lo ve todo tu equipo mientras esté abierto. Sumás miembros puntuales solo si tenés gente a cargo.'));
       var ck = mk('div', 'checks');
       directos.forEach(function (id) {
         var lb = mk('label'), cb = mk('input'); cb.type = 'checkbox';
@@ -3392,6 +3395,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       });
       c.appendChild(del); ps.appendChild(c);
     });
+    if (!directos.length) { cs = document.createDocumentFragment(); }
     v.replaceChildren(head, msg, cc, cs, ps);
   }
 
@@ -3404,7 +3408,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Cómo entrar\n' +
 'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras desde la tuerca de arriba a la derecha (junto a la campana), que también tiene el fondo claro u oscuro, las preferencias de avisos y «Salir»; el sistema recuerda el tema que elegís. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
 '## Dónde está cada cosa\n' +
-'- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Proyectos, Gestión (si tenés gente a cargo) y Guía.\n' +
+'- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Proyectos, Gestión (si tenés gente a cargo o creaste proyectos) y Guía.\n' +
 '- **Barra de arriba**: Métricas, Mi equipo (solo líderes), Usuarios (solo administradores), la campana de notificaciones y la **tuerca** con tus opciones: tema claro u oscuro, cambiar contraseña, preferencias de avisos y Salir.\n\n' +
 '## Tu primer día\n' +
 '- Cargá tus tareas en el Tablero con el botón «Nueva tarea».\n' +
@@ -3452,7 +3456,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Proyecto personal\n' +
 'Lo creás vos, desde el detalle de cualquier tarea (campo «Nuevo proyecto»). Es solo para ordenar tu tablero: nadie más lo ve, y sirve para filtrar. Desde el detalle de una tarea con proyecto podés renombrarlo o eliminarlo (las tareas quedan sin proyecto).\n\n' +
 '## Proyecto de equipo\n' +
-'Lo crea un líder en Gestión. Por defecto está **abierto a todo su equipo** (sus colaboradores, su responsable y los compañeros de este): todos pueden verlo, con sus hitos, y vincular sus propias tareas desde el detalle («Proyecto de equipo»). Solo el líder lo edita. Si el líder lo desmarca como abierto, lo ven solo los colaboradores que sumó. En el tablero del proyecto ves tus tareas y las que tus compañeros dejaron visibles. Así tu líder ve en qué trabaja cada uno. Si el proyecto se borra, tus tareas no se pierden: quedan sin proyecto.\n\n' +
+'Lo crea cualquier persona desde **Proyectos** («Crear proyecto») y la edita quien lo creó, desde el botón «Editar en Gestión». Por defecto está **abierto a todo su equipo** (sus colaboradores, su responsable y los compañeros de este): todos pueden verlo, con sus hitos, y vincular sus propias tareas desde el detalle («Proyecto de equipo»). Solo el líder lo edita. Si el líder lo desmarca como abierto, lo ven solo los colaboradores que sumó. En el tablero del proyecto ves tus tareas y las que tus compañeros dejaron visibles. Así tu líder ve en qué trabaja cada uno. Si el proyecto se borra, tus tareas no se pierden: quedan sin proyecto.\n\n' +
 'En la barra lateral, **Proyectos** muestra cada proyecto con su estado, fechas, hitos, el tablero de tareas vinculadas, el equipo y los libros. Los hitos los marca el líder; vos ves tus tareas vinculadas y las que tus compañeros dejaron visibles, y el líder ve las de sus directos que sean visibles.\n\n' +
 '## Etiquetas\n' +
 'Son palabras libres que agregás a la tarea (máximo 8). No son proyectos: sirven para filtrar por tema, y tienen su propio filtro arriba del tablero.' },
@@ -3868,9 +3872,23 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     return { txt: txt, pct: pct, late: late };
   }
   function estadoPill(e) { return pill('estado-' + e, esc({ activo: 'Activo', pausado: 'En pausa', cerrado: 'Cerrado' }[e] || e)); }
+  function proyNuevo() {
+    var f = mk('form', 'sub-add'); f.autocomplete = 'off';
+    var i = mk('input'); i.maxLength = 60; i.placeholder = 'Nuevo proyecto de equipo (nombre)'; i.setAttribute('aria-label', 'Nombre del nuevo proyecto');
+    var b = mk('button', '', 'Crear proyecto'); b.type = 'submit'; f.appendChild(i); f.appendChild(b);
+    f.addEventListener('submit', async function (e) {
+      e.preventDefault(); var n = i.value.trim(); if (!n) return;
+      b.disabled = true;
+      var r = await sb.from('equipo_proyectos').insert({ nombre: n }).select().single();
+      b.disabled = false;
+      if (r.error) { say(r.error.message, r.error); return; }
+      say(''); proyOpen = r.data.id; await loadBiblioteca(); renderProyectos();
+    });
+    return f;
+  }
   function renderProyectos() {
     var v = $('proy-view');
-    if (!eqProy.length) { v.replaceChildren(mk('p', 'lib-empty', directos.length ? 'Todavía no hay proyectos de equipo. Creá el primero en Gestión.' : 'Todavía no hay proyectos de equipo. Los crea tu líder en Gestión y van a aparecer acá.')); return; }
+    if (!eqProy.length) { v.replaceChildren(proyNuevo(), mk('p', 'lib-empty', 'Todavía no hay proyectos de equipo. Creá el primero con el formulario de arriba.')); return; }
     var p = proyOpen && eqProy.filter(function (x) { return x.id === proyOpen; })[0];
     if (p) return renderProyDetalle(v, p);
     proyOpen = '';
@@ -3888,7 +3906,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       c.addEventListener('click', function () { proyOpen = pr.id; renderProyectos(); window.scrollTo(0, 0); });
       grid.appendChild(c);
     });
-    v.replaceChildren(head, grid);
+    v.replaceChildren(head, proyNuevo(), grid);
   }
   function renderProyDetalle(v, p) {
     var parts = [backBtn('← Proyectos', function () { proyOpen = ''; renderProyectos(); })], lider = p.lider_id === me;

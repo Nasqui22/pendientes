@@ -51,7 +51,7 @@ begin
    ['crear libro a nombre de otro',     format('insert into libros (user_id, titulo) values (%L, ''x'')', o)],
    ['insertar perfil',                  format('insert into perfiles (id, email) values (%L, ''x'')', gen_random_uuid())],
    ['asignarse como responsable',       format('insert into responsables (responsable_id, persona_id) values (%L, %L)', n, o)],
-   ['crear proyecto de equipo (no líder)', 'insert into equipo_proyectos (nombre) values (''x'')'],
+   ['crear proyecto de equipo a nombre de otro', format('insert into equipo_proyectos (nombre, lider_id) values (''x'', %L)', o)],
    ['crear delegación directa',         format('insert into delegaciones (de_id, a_id, texto) values (%L, %L, ''x'')', n, o)],
    ['asignar tarea a quien no es directo', format('select asignar_tarea(%L, ''x'')', o)],
    ['validar tarea ajena',              format('select validar_tarea(%L)', tid)],
