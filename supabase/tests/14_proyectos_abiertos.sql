@@ -6,7 +6,7 @@ begin
   insert into responsables (responsable_id, persona_id, confirmado) values (l,a,true),(l,b,true);
   perform set_config('request.jwt.claims', json_build_object('sub', l, 'role', 'authenticated')::text, true);
   set local role authenticated;
-  insert into equipo_proyectos (nombre) values ('Plan de cambio') returning id into pid;
+  insert into equipo_proyectos (nombre, abierto) values ('Plan de cambio', true) returning id into pid;
   insert into equipo_proyecto_miembros values (pid, b);              -- A no es miembro
   insert into proyecto_hitos (proyecto_id, titulo) values (pid, 'Hito 1');
   insert into libros (titulo) values ('Guia') returning id into lib;

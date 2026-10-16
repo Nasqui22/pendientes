@@ -3349,15 +3349,16 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       var abl = mk('label', 'vis-row'), ab = mk('input'); ab.type = 'checkbox'; ab.checked = p.abierto !== false;
       var abt = mk('span', '', 'Abierto a todo el equipo'); abt.appendChild(mk('small', '', 'Tu equipo ve el proyecto, sus hitos y el trabajo visible, y puede vincular sus tareas. Solo vos lo editás. Si lo desmarcás, lo ven solo sus miembros.'));
       abl.appendChild(ab); abl.appendChild(abt);
-      row.appendChild(pn); row.appendChild(sv); c.appendChild(row); c.appendChild(ds); c.appendChild(dr); c.appendChild(abl); c.appendChild(hitosEditor(p));
+      row.appendChild(pn); row.appendChild(sv); c.appendChild(row); c.appendChild(proyRevisionInfo(p)); c.appendChild(ds); c.appendChild(dr); c.appendChild(abl); c.appendChild(hitosEditor(p));
       var lk = Object.keys(byId).map(function (k) { return byId[k]; }).concat(teamTasks).filter(function (t) { return t.equipoProyectoId === p.id; });
       var lkOpen = lk.filter(function (t) { return t.status !== 'completado'; }).length;
       c.appendChild(mk('p', 'a-help', lk.length ? lk.length + (lk.length === 1 ? ' tarea vinculada' : ' tareas vinculadas') + ' · ' + lkOpen + (lkOpen === 1 ? ' abierta' : ' abiertas') + ' · ' + (lk.length - lkOpen) + ' completadas' : 'Todavía no hay tareas vinculadas.'));
       var cols = mk('div', 'proj-cols');
-      var cm = mk('div'); cm.appendChild(mk('h5', '', 'Colaboradores en este proyecto'));
-      if (!directos.length) cm.appendChild(mk('p', 'a-help', 'Lo ve todo tu equipo mientras esté abierto. Sumás miembros puntuales solo si tenés gente a cargo.'));
+      var cm = mk('div'); cm.appendChild(mk('h5', '', 'Participan en este proyecto'));
+      cm.appendChild(mk('p', 'a-help', 'Ven el proyecto, vinculan sus tareas y crean tareas nuevas. Elegí entre tu equipo.'));
       var ck = mk('div', 'checks');
-      directos.forEach(function (id) {
+      if (!teamPeople().length) ck.appendChild(mk('span', 'none', 'Todavía no tenés compañeros ni responsable asignados.'));
+      teamPeople().map(function (x) { return x.id; }).forEach(function (id) {
         var lb = mk('label'), cb = mk('input'); cb.type = 'checkbox';
         cb.checked = eqMiem.some(function (m) { return m.proyecto_id === p.id && m.persona_id === id; });
         cb.addEventListener('change', async function () {
@@ -3456,8 +3457,12 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Proyecto personal\n' +
 'Lo creás vos, desde el detalle de cualquier tarea (campo «Nuevo proyecto»). Es solo para ordenar tu tablero: nadie más lo ve, y sirve para filtrar. Desde el detalle de una tarea con proyecto podés renombrarlo o eliminarlo (las tareas quedan sin proyecto).\n\n' +
 '## Proyecto de equipo\n' +
-'Lo crea cualquier persona desde **Proyectos** («Crear proyecto») y la edita quien lo creó, desde el botón «Editar en Gestión». Por defecto está **abierto a todo su equipo** (sus colaboradores, su responsable y los compañeros de este): todos pueden verlo, con sus hitos, y vincular sus propias tareas desde el detalle («Proyecto de equipo»). Solo el líder lo edita. Si el líder lo desmarca como abierto, lo ven solo los colaboradores que sumó. En el tablero del proyecto ves tus tareas y las que tus compañeros dejaron visibles. Así tu líder ve en qué trabaja cada uno. Si el proyecto se borra, tus tareas no se pierden: quedan sin proyecto.\n\n' +
-'En la barra lateral, **Proyectos** muestra cada proyecto con su estado, fechas, hitos, el tablero de tareas vinculadas, el equipo y los libros. Los hitos los marca el líder; vos ves tus tareas vinculadas y las que tus compañeros dejaron visibles, y el líder ve las de sus directos que sean visibles.\n\n' +
+'Los proyectos son del equipo: los crea cualquier persona desde **Proyectos** («Crear proyecto») y quien lo crea es su **responsable**.\n' +
+'- **Participantes**: el responsable elige en Gestión («Editar en Gestión») quiénes participan, entre su equipo (compañeros, su responsable y sus directos). Los participantes ven el proyecto, vinculan sus tareas desde el detalle («Proyecto de equipo») y crean tareas nuevas con «Agregar tarea», directo desde el proyecto.\n' +
+'- **Revisión**: el responsable de equipo de quien lo creó recibe un aviso y puede **aceptarlo o rechazarlo** (con un motivo). Si no hace nada, el proyecto sigue activo. Si lo rechaza, los participantes dejan de verlo y no se le pueden vincular tareas nuevas; el responsable ve el motivo y puede **pedir una nueva revisión**. El revisor puede cambiar su decisión.\n' +
+'- **Abierto a todo el equipo**: opción del responsable para que cualquiera de su equipo lo vea y vincule tareas sin tener que sumarlo.\n' +
+'En el tablero del proyecto ves tus tareas y las que tus compañeros dejaron visibles. Si el proyecto se borra, tus tareas no se pierden: quedan sin proyecto.\n\n' +
+'En la barra lateral, **Proyectos** muestra cada proyecto con su estado, fechas, hitos, el tablero de tareas vinculadas, el equipo y los libros. Los hitos los marca el responsable del proyecto; vos ves tus tareas vinculadas y las que tus compañeros dejaron visibles, y el líder ve las de sus directos que sean visibles.\n\n' +
 '## Etiquetas\n' +
 'Son palabras libres que agregás a la tarea (máximo 8). No son proyectos: sirven para filtrar por tema, y tienen su propio filtro arriba del tablero.' },
 
@@ -3569,7 +3574,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 'Cada tarjeta muestra los proyectos en los que trabaja esa persona y un atajo a sus métricas.\n\n' +
 '## Proyectos de equipo\n' +
 '- Creá un proyecto con nombre y descripción.\n' +
-'- Marcá qué colaboradores participan: solo podés sumar a tus directos.\n' +
+'- Elegí quiénes participan entre tu equipo (compañeros, tu responsable y tus directos). Cualquier persona puede crear proyectos; el responsable de equipo de quien lo crea puede aceptarlos o rechazarlos.\n' +
 '- Marcá qué libros tuyos incluye. Los miembros los ven en su Biblioteca.\n' +
 '- Definí las **fechas** de inicio y fin, el **estado** (activo, en pausa o cerrado) y los **hitos** (con fecha); al marcar un hito como cumplido se avisa al equipo.\n' +
 '- Mirá cuántas tareas tiene vinculadas el proyecto, cuántas abiertas y cuántas completadas, y abrí la vista **Proyectos** para ver el tablero completo.\n\n' +
@@ -3872,6 +3877,56 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     return { txt: txt, pct: pct, late: late };
   }
   function estadoPill(e) { return pill('estado-' + e, esc({ activo: 'Activo', pausado: 'En pausa', cerrado: 'Cerrado' }[e] || e)); }
+  // Estado de revisión del proyecto (quién lo creó, quién lo revisa). Cada botón llama a una función del servidor.
+  function proyRevisionInfo(p, detalle) {
+    var rev = p.revision || 'aceptado', soyLider = p.lider_id === me, revisor = !soyLider && directos.indexOf(p.lider_id) !== -1;
+    var box = mk('div', 'banner'); box.style.margin = '0';
+    var msg = mk('span', ''), acts = mk('div', 'cc-acts');
+    function call(fn, args) {
+      acts.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+      sb.rpc(fn, args).then(async function (r) {
+        if (r.error) { say(r.error.message, r.error); acts.querySelectorAll('button').forEach(function (b) { b.disabled = false; }); return; }
+        say(''); await loadBiblioteca();
+      });
+    }
+    function btn(txt, cls, fn) { var b = mk('button', cls, txt); b.type = 'button'; b.addEventListener('click', fn); acts.appendChild(b); return b; }
+    if (revisor) {
+      if (rev === 'pendiente') msg.textContent = nameOf(p.lider_id) + ' creó este proyecto. Podés aceptarlo o rechazarlo; si no hacés nada, sigue activo.';
+      else if (rev === 'aceptado') msg.textContent = 'Aceptaste este proyecto. Podés cambiar tu decisión.';
+      else msg.textContent = 'Rechazaste este proyecto: ' + (p.motivo_rechazo || 'sin motivo') + '. Sus participantes ya no lo ven.';
+      if (rev !== 'aceptado') btn('Aceptar', 'a-btn', function () { call('revisar_proyecto', { p_id: p.id, p_decision: 'aceptado', p_motivo: '' }); });
+      if (rev !== 'rechazado') {
+        var form = mk('form', 'sub-add'); form.hidden = true; form.autocomplete = 'off';
+        var inp = mk('input'); inp.maxLength = 500; inp.placeholder = 'Motivo del rechazo (obligatorio)'; inp.setAttribute('aria-label', 'Motivo del rechazo');
+        var go = mk('button', '', 'Rechazar'); go.type = 'submit'; form.appendChild(inp); form.appendChild(go);
+        form.addEventListener('submit', function (e) { e.preventDefault(); if (!inp.value.trim()) { say('Escribí el motivo del rechazo.'); return; } call('revisar_proyecto', { p_id: p.id, p_decision: 'rechazado', p_motivo: inp.value.trim() }); });
+        btn('Rechazar', 'btn-s', function () { form.hidden = !form.hidden; if (!form.hidden) inp.focus(); });
+        box.appendChild(msg); box.appendChild(acts); box.appendChild(form); return box;
+      }
+    } else if (soyLider && rev === 'pendiente' && misResp.length) {
+      msg.textContent = 'Lo está revisando tu responsable de equipo. Mientras no lo rechace, el proyecto sigue activo.';
+    } else if (soyLider && rev === 'rechazado') {
+      msg.textContent = 'Tu responsable rechazó este proyecto: ' + (p.motivo_rechazo || 'sin motivo') + '. Los participantes ya no lo ven y no se le pueden vincular tareas nuevas.';
+      btn('Pedir revisión de nuevo', 'btn-s', function () { call('reenviar_proyecto', { p_id: p.id }); });
+    } else if (soyLider && rev === 'aceptado' && p.revisado_por) {
+      msg.textContent = 'Aceptado por ' + nameOf(p.revisado_por) + '.';
+    } else return document.createDocumentFragment();
+    box.appendChild(msg); if (acts.childNodes.length) box.appendChild(acts);
+    return box;
+  }
+  function proyPuedeUsar(p) {
+    if ((p.revision || 'aceptado') === 'rechazado') return false;
+    return p.lider_id === me || p.abierto === true || eqMiem.some(function (m) { return m.proyecto_id === p.id && m.persona_id === me; });
+  }
+  async function addTaskToProject(text, pid) {
+    var now = Date.now();
+    var row = await col.add({
+      text: text, status: 'pendiente', prio: '', due: '', notes: '', subs: [],
+      order: startOf('pendiente'), createdAt: now, doneAt: 0, statusAt: now, labels: [], avances: [],
+      visible: true, proyectoId: '', equipoProyectoId: pid, recurrencia: '', archivada: false, done: false
+    });
+    if (row && row.id) { byId[row.id] = norm(row.id, fromRow(row)); render(); }
+  }
   function proyNuevo() {
     var f = mk('form', 'sub-add'); f.autocomplete = 'off';
     var i = mk('input'); i.maxLength = 60; i.placeholder = 'Nuevo proyecto de equipo (nombre)'; i.setAttribute('aria-label', 'Nombre del nuevo proyecto');
@@ -3896,7 +3951,8 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var grid = mk('div', 'proy-grid');
     eqProy.slice().sort(function (a, b) { return (a.estado === 'cerrado') - (b.estado === 'cerrado'); }).forEach(function (pr) {
       var c = mk('button', 'proy-card'); c.type = 'button';
-      var top = mk('div', 'meta'); top.style.paddingLeft = '0'; top.appendChild(estadoPill(pr.estado)); if (pr.lider_id === me) top.appendChild(pill('', 'Sos el líder')); else if (pr.abierto !== false && !eqMiem.some(function (m) { return m.proyecto_id === pr.id && m.persona_id === me; })) top.appendChild(pill('', 'Del equipo'));
+      var top = mk('div', 'meta'); top.style.paddingLeft = '0'; top.appendChild(estadoPill(pr.estado)); if (pr.lider_id === me) top.appendChild(pill('', 'Sos responsable')); else if (eqMiem.some(function (m) { return m.proyecto_id === pr.id && m.persona_id === me; })) top.appendChild(pill('', 'Participás')); else if (pr.abierto === true) top.appendChild(pill('', 'Del equipo'));
+      if ((pr.revision || 'aceptado') === 'rechazado') top.appendChild(pill('late', 'Rechazado')); else if (pr.revision === 'pendiente' && directos.indexOf(pr.lider_id) !== -1) top.appendChild(pill('warn', 'Para revisar'));
       c.appendChild(top); c.appendChild(mk('h4', '', pr.nombre)); if (pr.descripcion) c.appendChild(mk('p', '', pr.descripcion));
       var f = proyFechas(pr); c.appendChild(mk('p', '', f.txt));
       var hs = hitos.filter(function (h) { return h.proyecto_id === pr.id; }), hd = hs.filter(function (h) { return h.hecho; }).length;
@@ -3911,10 +3967,11 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   function renderProyDetalle(v, p) {
     var parts = [backBtn('← Proyectos', function () { proyOpen = ''; renderProyectos(); })], lider = p.lider_id === me;
     var head = mk('div', 'v-head'), t = mk('div'); t.appendChild(mk('h1', '', p.nombre));
-    var f = proyFechas(p), sub = mk('p', '', ''); sub.appendChild(estadoPill(p.estado)); sub.appendChild(document.createTextNode('  ' + f.txt + ' · Líder: ' + (lider ? 'vos' : nameOf(p.lider_id))));
+    var f = proyFechas(p), sub = mk('p', '', ''); sub.appendChild(estadoPill(p.estado)); sub.appendChild(document.createTextNode('  ' + f.txt + ' · Responsable: ' + (lider ? 'vos' : nameOf(p.lider_id))));
     t.appendChild(sub); head.appendChild(t);
     if (lider) { var eg = mk('button', 'btn-s', 'Editar en Gestión'); eg.type = 'button'; eg.addEventListener('click', function () { setView('gest'); }); head.appendChild(eg); }
     parts.push(head);
+    var rv = proyRevisionInfo(p); if (rv.nodeType === 1) parts.push(rv);
     if (p.descripcion) parts.push(mk('p', 'a-help', p.descripcion));
     if (f.pct !== null) { var tb = mk('div', 'pbar time'), ti = mk('i'); ti.style.width = f.pct + '%'; tb.appendChild(ti); tb.setAttribute('role', 'img'); tb.setAttribute('aria-label', 'Tiempo transcurrido del proyecto: ' + Math.round(f.pct) + '%'); parts.push(tb); }
 
@@ -3937,6 +3994,19 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     });
     if (hs.length) hc.appendChild(ul);
     var hsec = mk('section', 'lib-sec'); hsec.appendChild(mk('h3', '', 'Hitos' + (hs.length ? ' · ' + hs.filter(function (h) { return h.hecho; }).length + ' de ' + hs.length : ''))); hsec.appendChild(hc); parts.push(hsec);
+
+    // Nueva tarea en el proyecto (quien participa)
+    if (proyPuedeUsar(p)) {
+      var nf = mk('form', 'sub-add'); nf.autocomplete = 'off';
+      var ni = mk('input'); ni.maxLength = 300; ni.placeholder = 'Nueva tarea para este proyecto'; ni.setAttribute('aria-label', 'Título de la nueva tarea del proyecto');
+      var nb = mk('button', '', 'Agregar tarea'); nb.type = 'submit'; nf.appendChild(ni); nf.appendChild(nb);
+      nf.addEventListener('submit', async function (e) {
+        e.preventDefault(); var tx = ni.value.trim(); if (!tx) return;
+        nb.disabled = true;
+        try { await addTaskToProject(tx, p.id); say(''); renderProyectos(); } catch (err) { say('No se pudo agregar la tarea.', err); nb.disabled = false; }
+      });
+      parts.push(nf);
+    }
 
     // Tablero del proyecto
     var ts = proyTareas(p.id), tsec = mk('section', 'lib-sec'); tsec.appendChild(mk('h3', '', 'Tablero del proyecto'));
