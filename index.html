@@ -797,6 +797,111 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 .dep.pend .dep-t { font-style: italic; }
 .dep-acts { display: flex; gap: 8px; margin-top: 6px; }
 .dep-acts .a-btn, .dep-acts .btn-s { height: 32px; font-size: 13px; padding: 0 12px; }
+
+/* Métricas: panel principal */
+.mx { display: flex; flex-direction: column; gap: 28px; }
+.mx-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.mx-bar select { width: auto; min-width: 150px; height: 36px; font-size: 13.5px; }
+.mx-bar .btn-s { margin-left: auto; height: 36px; }
+.mx-top { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 16px; align-items: stretch; }
+.mx-hero { display: flex; flex-direction: column; gap: 10px; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.mx-hero > b { font-size: 56px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+.mx-hero p { margin: 0; font-size: 13.5px; color: var(--muted); }
+.mx-hero .mx-hc { color: var(--ink); font-weight: 500; }
+.mx-tl { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.mx-meter { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.mx-meter i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.mx-meter.bad i { background: var(--alta); }
+.mx-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; align-content: start; }
+.mx-tile { display: flex; flex-direction: column; gap: 3px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); min-width: 0; }
+.mx-tile > b { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+.mx-tile small { font-size: 12.5px; color: var(--muted); }
+.mx-tile.bad > b { color: var(--alta); }
+.mx-tile.good > b { color: var(--comp); }
+.mx-tile.warn > b { color: var(--proc); }
+.mx-d.good { color: var(--comp); } .mx-d.bad { color: var(--alta); } .mx-d.flat { color: var(--muted); }
+.mx-spark { width: 84px; height: 22px; margin-top: 4px; }
+.mx-sp { fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mx-spd { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.mx-sec { display: flex; flex-direction: column; gap: 14px; }
+.mx-sh h2 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
+.mx-sh p { margin: 3px 0 0; color: var(--muted); font-size: 13.5px; }
+.mx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 430px), 1fr)); gap: 16px; align-items: start; }
+.mx-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; min-width: 0; }
+.mx-card.wide { grid-column: 1 / -1; }
+.mx-ch { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.mx-ch h3 { margin: 0; font-size: 14.5px; font-weight: 600; }
+.mx-ch p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+.mx-tg { flex: none; height: 28px; padding: 0 10px; background: transparent; border: 1px solid var(--line); color: var(--muted); font-size: 12px; font-weight: 500; border-radius: 8px; }
+.mx-tg:hover { color: var(--ink); border-color: var(--line-strong); }
+.mx-body svg { display: block; width: 100%; height: auto; overflow: visible; }
+.mx-t { fill: var(--faint); font-size: 11px; font-family: var(--font); }
+.mx-lbl { fill: var(--muted); font-size: 12px; }
+.mx-lbl.on { fill: var(--accent); font-weight: 600; }
+.mx-v { fill: var(--ink); font-size: 11.5px; font-weight: 600; font-family: var(--font); }
+.mx-gl { stroke: var(--line); stroke-width: 1; }
+.mx-ax { stroke: var(--line-strong); stroke-width: 1; }
+.mx-m { stroke: none; }
+.mx-hit { fill: transparent; outline: none; }
+.mx-hit:hover, .mx-hit:focus-visible { fill: color-mix(in srgb, var(--surface-2) 70%, transparent); }
+.mx-hit.go { cursor: pointer; }
+.mx-ov { fill: transparent; }
+.mx-line { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mx-area { opacity: .1; }
+.mx-dot { stroke: var(--surface); stroke-width: 2; }
+.mx-cross { stroke: var(--line-strong); stroke-width: 1; }
+.mx-cell { stroke: none; }
+.mx-cell:hover, .mx-cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 1.5; }
+.mx-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 12.5px; color: var(--muted); }
+.mx-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.mx-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.mx-table th { text-align: right; font-weight: 500; font-size: 12px; color: var(--muted); padding: 0 8px 8px; white-space: nowrap; }
+.mx-table td { text-align: right; padding: 8px; border-top: 1px solid var(--line); }
+.mx-table th:first-child, .mx-table td:first-child { text-align: left; font-weight: 500; }
+.mx-table.mx-people { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.mx-table.mx-people th { padding: 10px 8px; }
+.mx-table.mx-people tr.go { cursor: pointer; }
+.mx-table.mx-people tr.go:hover td, .mx-table.mx-people tr.on td { background: var(--surface-2); }
+.mx-table td.bad { color: var(--alta); font-weight: 600; }
+.mx-table .mx-spark { margin: 0; }
+.mx-tip { position: fixed; z-index: 60; pointer-events: none; min-width: 120px; max-width: 280px; padding: 9px 11px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: var(--shadow-pop); font-size: 12.5px; }
+.mx-tip[hidden] { display: none; }
+.mx-tip-t { color: var(--muted); margin-bottom: 4px; font-size: 12px; }
+.mx-tip-r { display: flex; align-items: center; gap: 8px; }
+.mx-tip-r i { flex: none; width: 12px; height: 3px; border-radius: 2px; }
+.mx-tip-r b { font-weight: 600; font-size: 14px; }
+.mx-tip-r span { color: var(--muted); }
+.mx-bns { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; align-items: start; }
+.mx-bn { display: flex; flex-direction: column; gap: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-left-width: 4px; border-radius: var(--r); }
+.mx-bn.s0 { border-left-color: var(--alta); } .mx-bn.s1 { border-left-color: var(--proc); } .mx-bn.s2 { border-left-color: var(--line-strong); }
+.mx-bn-t { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.mx-bn-t b { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+.mx-sev { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+.mx-bn.s0 .mx-sev { color: var(--alta); } .mx-bn.s1 .mx-sev { color: var(--proc); } .mx-bn.s2 .mx-sev { color: var(--muted); }
+.mx-sev .i { width: 15px; height: 15px; }
+.mx-bn h4 { margin: 0; font-size: 15px; font-weight: 600; }
+.mx-bn p { margin: 0; font-size: 13px; color: var(--muted); }
+.mx-bn ul { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; }
+.mx-bn li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.mx-bn li span { min-width: 0; overflow-wrap: anywhere; }
+.mx-bn li em { font-style: normal; color: var(--muted); white-space: nowrap; }
+.mx-bn .btn-s { align-self: flex-start; height: 32px; }
+.mx-ok { margin: 0; padding: 16px; background: var(--comp-soft); color: var(--comp); border-radius: var(--r); font-weight: 500; grid-column: 1 / -1; }
+.mx-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.mx-list li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.mx-list li.click { cursor: pointer; }
+.mx-list li.click:hover span { color: var(--accent); }
+.mx-list li span { min-width: 0; overflow-wrap: anywhere; font-weight: 500; }
+.mx-list li em { font-style: normal; color: var(--muted); text-align: right; font-size: 12.5px; }
+.mx-pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.mx-pc { display: flex; flex-direction: column; gap: 9px; text-align: left; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; color: var(--ink); }
+.mx-pc:hover { border-color: var(--line-strong); }
+.mx-pc h4 { margin: 0; font-size: 15px; font-weight: 600; }
+.mx-pr { display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 10px; font-size: 12.5px; color: var(--muted); }
+.mx-pr em { font-style: normal; white-space: nowrap; }
+.mx-pm { margin: 0; font-size: 12.5px; color: var(--muted); }
+.mx-pm.bad { color: var(--alta); }
+@media (max-width: 900px) { .mx-top { grid-template-columns: 1fr; } .mx-hero > b { font-size: 48px; } }
 </style>
 </head>
 <body>
@@ -807,7 +912,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       Pendientes
     </span>
     <div class="top-actions">
-      <button type="button" class="btn ghost" id="met-btn" hidden aria-label="Métricas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span class="bl">Métricas</span></button>
       <button type="button" class="btn ghost" id="team-btn" hidden aria-label="Mi equipo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="bl">Mi equipo</span></button>
       <button type="button" class="btn ghost" id="admin-btn" hidden aria-label="Usuarios"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg><span class="bl">Usuarios</span></button>
       <button type="button" class="btn ghost bell" id="bell-btn" hidden aria-label="Notificaciones"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><span class="n" id="bell-n" hidden></span></button>
@@ -891,6 +995,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 
 <nav class="side" id="side" hidden aria-label="Secciones">
   <button type="button" data-view="board" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="16.5" y="4" width="4" height="13" rx="1.5"/></svg>Tablero</button>
+  <button type="button" data-view="met" id="side-met"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Métricas</button>
   <button type="button" data-view="lib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>Biblioteca<span class="nb" id="lib-n" hidden></span></button>
   <button type="button" data-view="proy" id="side-proy"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V4M5 5h11l-2 4 2 4H5"/></svg>Proyectos</button>
   <button type="button" data-view="gest" id="side-gest" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5M16.5 5.2a3.2 3.2 0 0 1 0 5.6M18.5 14.8c1.6.7 2.6 2.2 3 4.5"/></svg>Gestión</button>
@@ -900,6 +1005,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 <main class="wrap" id="lib-view" hidden></main>
 <main class="wrap" id="gest-view" hidden></main>
 <main class="wrap" id="proy-view" hidden></main>
+<main class="wrap" id="met-view" hidden></main>
 <main class="wrap" id="guia-view" hidden></main>
 
 <div id="login" hidden>
@@ -1132,19 +1238,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     <section class="n-sec" aria-labelledby="n-h3"><h3 id="n-h3">Esperando respuesta</h3><ul class="u-list" id="n-wait"></ul></section>
     <section class="n-sec" aria-labelledby="n-hp"><h3 id="n-hp">Qué avisos querés recibir</h3><div class="n-prefs" id="n-prefs"></div></section>
   </div>
-</aside>
-
-<div id="m-scrim" hidden></div>
-<aside id="met" hidden tabindex="-1" aria-label="Métricas">
-  <div class="p-head">
-    <h2 class="a-h">Métricas</h2>
-    <button type="button" class="p-close" id="m-close" aria-label="Cerrar métricas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-  </div>
-  <div class="tabs" role="tablist" aria-label="Alcance">
-    <button type="button" class="tab" role="tab" id="tab-m-mias" aria-selected="true">Mías</button>
-    <button type="button" class="tab" role="tab" id="tab-m-eq" aria-selected="false" hidden>Equipo</button>
-  </div>
-  <div class="p-body" id="m-body"></div>
 </aside>
 
 <div id="t-scrim" hidden></div>
@@ -1622,7 +1715,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     if (filterLabel && !all.some(function (t) { return t.labels.indexOf(filterLabel) !== -1; })) filterLabel = '';
     if (filterProj && filterProj !== '__shared' && !eqProy.some(function (x) { return x.id === filterProj; })) filterProj = '';
     renderFilters(); renderPFilters(); renderBanner();
-    if (!$('met').hidden && metTab === 'mias') renderMet();
+    if (view === 'met' && metTab === 'mias') renderMet();
     var shown = all.filter(function (t) { return (!filterLabel || t.labels.indexOf(filterLabel) !== -1) && inProj(t); });
     var tablero = boardMode === 'board';
     $('board').hidden = !tablero; $('agenda').hidden = tablero;
@@ -1740,7 +1833,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       if ((e.key === 'n' || e.key === 'N') && !e.ctrlKey && !e.metaKey && !e.altKey && dlg.hidden) {
         var a = document.activeElement, tag = a && a.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (a && a.isContentEditable)) return;
-        if (view !== 'board' || !panel.hidden || !$('login').hidden || !$('admin').hidden || !$('team').hidden || !$('met').hidden || !$('notif').hidden) return;
+        if (view !== 'board' || !panel.hidden || !$('login').hidden || !$('admin').hidden || !$('team').hidden || !$('notif').hidden) return;
         e.preventDefault(); open();
       }
     });
@@ -2188,7 +2281,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 
   function boot(session) {
     showLogin(false);
-    $('met-btn').hidden = false;
     me = session.user.id;
     loadPerfil(session);
     $('bell-btn').hidden = false; $('pass-btn').hidden = false;
@@ -2236,7 +2328,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     names = {};
     (p.error ? [] : p.data).forEach(function (u) { names[u.id] = u.nombre || u.email; });
     $('team-btn').hidden = !directos.length;
-    $('tab-m-eq').hidden = !directos.length;
     $('side-gest').hidden = !puedeGestionar();
     var c = await sb.rpc('mis_companeros');
     companeros = c.error ? [] : c.data;
@@ -2295,7 +2386,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; comentarios = {}; threadRefreshers = {}; deps = []; depTasks = {}; closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; comentarios = {}; threadRefreshers = {}; deps = []; depTasks = {}; closeNotif(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('who-mail').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -2660,12 +2751,14 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     document.getElementById('board-view').hidden = v !== 'board';
     $('guia-view').hidden = v !== 'guia';
     $('proy-view').hidden = v !== 'proy';
+    $('met-view').hidden = v !== 'met';
     $('lib-view').hidden = v !== 'lib';
     $('gest-view').hidden = v !== 'gest';
     $('side').querySelectorAll('[data-view]').forEach(function (b) {
       if (b.dataset.view === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
     if (v === 'guia') renderGuia();
+    if (v === 'met') enterMet();
     if (v === 'proy') { proyOpen = ''; loadProyectosVista(); }
     if (v === 'lib') { libOpen = ''; libEdit = null; loadBiblioteca(); }
     if (v === 'gest') { loadBiblioteca(); loadTeam(); loadHitos(); }
@@ -3232,7 +3325,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       var c = mk('div', 'collab'), top = mk('div', 'collab-top');
       top.appendChild(mk('span', 'av', initials(nameOf(id)))); top.appendChild(mk('span', 'u-name', nameOf(id)));
       var mb = mk('button', 'btn-s', 'Métricas'); mb.type = 'button';
-      mb.addEventListener('click', function () { openMet(); metTab = 'eq'; metPerson = id; renderMet(); loadTeam(); });
+      mb.addEventListener('click', function () { openMetPerson(id); });
       top.appendChild(mb); c.appendChild(top);
       var ps = mine.filter(function (p) { return eqMiem.some(function (m) { return m.proyecto_id === p.id && m.persona_id === id; }); });
       var chips = mk('div', 'meta');
@@ -3335,8 +3428,8 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Cómo entrar\n' +
 'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras desde la tuerca de arriba a la derecha (junto a la campana), que también tiene el fondo claro u oscuro, las preferencias de avisos y «Salir»; el sistema recuerda el tema que elegís. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
 '## Dónde está cada cosa\n' +
-'- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Proyectos, Gestión (si tenés gente a cargo o creaste proyectos) y Guía.\n' +
-'- **Barra de arriba**: Métricas, Mi equipo (solo líderes), Usuarios (solo administradores), la campana de notificaciones y la **tuerca** con tus opciones: tema claro u oscuro, cambiar contraseña, preferencias de avisos y Salir.\n\n' +
+'- **Barra lateral** (abajo en el celular): Tablero, Métricas, Biblioteca, Proyectos, Gestión (si tenés gente a cargo o creaste proyectos) y Guía.\n' +
+'- **Barra de arriba**: Mi equipo (solo líderes), Usuarios (solo administradores), la campana de notificaciones y la **tuerca** con tus opciones: tema claro u oscuro, cambiar contraseña, preferencias de avisos y Salir.\n\n' +
 '## Tu primer día\n' +
 '- Cargá tus tareas en el Tablero con el botón «Nueva tarea».\n' +
 '- Leé la sección «Quién ve tus tareas»: por defecto tus responsables ven tu trabajo.\n' +
@@ -3461,18 +3554,23 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 'Para encontrar algo: el buscador mira títulos, resúmenes, el texto de las páginas y los enlaces, y te muestra el fragmento donde aparece. También podés filtrar por categoría, por proyecto o por lectura pendiente.' },
 
     { id: 'metricas', t: 'Métricas', b:
-'El botón **Métricas** de arriba muestra cómo venís trabajando. Se calcula con tus tareas, sin que cargues nada extra.\n\n' +
-'## Indicadores\n' +
-'- **Abiertas**: tareas que no están completadas.\n' +
-'- **Completadas en 30 días**: lo que cerraste en el último mes.\n' +
-'- **Vencidas**: abiertas con fecha límite pasada.\n' +
-'- **Tiempo medio de resolución**: típicamente cuánto pasa desde que creás una tarea hasta que la completás (es la mediana, para que una tarea eterna no distorsione).\n' +
-'- **Cerradas a tiempo**: de las completadas que tenían fecha, cuántas se cerraron hasta ese día.\n' +
-'- **Sin moverse hace +7 días**: abiertas que llevan más de una semana en el mismo estado.\n\n' +
-'## Período, proyecto y exportación\n' +
-'Arriba elegís el período (7, 30, 90 días o todo el histórico) y, si usás proyectos, filtrás por uno. «Exportar CSV» baja todas las tareas del alcance elegido para abrirlas en una planilla.\n\n' +
+'**Métricas** (barra lateral) es tu panel: cómo venís trabajando, en un vistazo. Se calcula con tus tareas, sin que cargues nada extra. En cada gráfico, **Ver tabla** muestra los mismos números en una tabla, y al pasar el mouse (o con el teclado) ves el valor exacto.\n\n' +
+'## Arriba de todo\n' +
+'- **Al día**: qué porcentaje de tus tareas abiertas no está vencido, estancado ni bloqueado por otra tarea. Debajo ves qué pesa más.\n' +
+'- **Abiertas**, **Completadas** (con la diferencia contra el período anterior y su tendencia), **Vencidas**, **Cerradas a tiempo**, **Tiempo medio de cierre** (la mediana, para que una tarea eterna no distorsione) y **Sin moverse hace +7 días**.\n\n' +
 '## Gráficos\n' +
-'El **ritmo semanal** compara tareas creadas y completadas en las últimas 8 semanas. La barra de estados muestra cuánto hay en cada columna. Abajo, la lista de lo que más tiempo lleva abierto: buen punto de partida para destrabar.' },
+'- **Ritmo semanal**: tareas creadas contra completadas por semana.\n' +
+'- **Trabajo abierto en el tiempo**: si la línea sube, entra más de lo que sale.\n' +
+'- **Lo abierto, por prioridad**, con cuántas están vencidas.\n' +
+'- **Vencimientos de los próximos 14 días**, con lo ya vencido aparte.\n' +
+'- **Cuánto llevan en su estado actual**: lo que se acumula a la derecha se estancó.\n' +
+'- **Cuánto tardan en cerrarse**: la mediana y el tiempo en el que se cierra el 85%.\n\n' +
+'## Tareas relacionadas\n' +
+'Las tuyas que **esperan a otra tarea** (y cuál, de quién y en qué estado está), las tuyas que **frenan a otras**, y los pedidos de dependencia por responder o esperando respuesta. Tocá una para abrirla.\n\n' +
+'## Mis proyectos\n' +
+'Una tarjeta por proyecto de equipo en el que participás: avance de tareas, hitos (los atrasados en rojo), cuántas tareas abiertas y vencidas hay y el próximo hito. Tocá una para abrir el proyecto.\n\n' +
+'## Período, proyecto y exportación\n' +
+'Arriba elegís el período (7, 30, 90 días o todo el histórico) y un proyecto de equipo para filtrar todo. «Exportar CSV» baja las tareas del alcance elegido para abrirlas en una planilla.' },
 
     { id: 'equipo', lider: true, t: 'Mi equipo (líderes)', b:
 'Si sos responsable de otras personas, arriba aparece el botón **Mi equipo**. Ahí ves la cola de trabajo de tus directos, sin agrupar por persona.\n\n' +
@@ -3484,8 +3582,13 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '- **Asignadas y compartidas**: el resto del trabajo visible, más las últimas validadas.\n\n' +
 '## Asignar una tarea\n' +
 'Tocá «+ Asignar una tarea», elegí a la persona (uno de tus directos), el título, prioridad, fecha y, si querés, un proyecto de equipo. Le llega a su Pendiente con la marca «Asignada por».\n\n' +
-'## Métricas del equipo\n' +
-'En Métricas, la pestaña **Equipo** consolida los indicadores de todos tus directos, marca los cuellos de botella (sin validar, estancadas, vencidas) y permite abrir las métricas de cada persona. Solo cuentan tareas visibles o asignadas. Ahí también ves la **carga de trabajo** por persona (abiertas, vencidas y por vencer) y se avisa si el reparto está muy desparejo. Podés filtrar por proyecto de equipo y exportar a CSV.' },
+'## Centro de control del equipo\n' +
+'En **Métricas** aparece la pestaña **Mi equipo**: es tu centro principal. Arriba, **Al día** (qué porcentaje de las tareas abiertas del equipo está sin riesgo) y los indicadores clave: abiertas, completadas contra el período anterior, cierres por semana, vencidas, esperando tu validación, estancadas, bloqueadas, cumplimiento y tiempo de cierre.\n' +
+'- **Qué necesita tu atención**: los cuellos de botella ordenados por gravedad (crítico, atención, a tener en cuenta) y cuántas tareas afectan: completadas que esperan tu validación, tareas frenadas por otras (quién frena a más gente), vencidas, estancadas, carga despareja, personas sin cierres en 14 días, hitos atrasados, proyectos por revisar y tareas sin fecha o prioridad.\n' +
+'- **Carga y flujo**: carga por persona (tocá una barra para ver solo a esa persona), ritmo semanal, trabajo abierto en el tiempo, mapa de cierres por persona y semana, vencimientos próximos, antigüedad en el estado actual, tiempo de cierre, prioridad, quién frena a más tareas y trabajo por proyecto.\n' +
+'- **Por persona**: tabla con abiertas, vencidas, estancadas, completadas, cumplimiento y tendencia; tocá una fila para filtrar. También podés filtrar por período, proyecto de equipo o persona y exportar a CSV.\n' +
+'Solo cuentan tareas visibles o asignadas: lo que cada uno marcó como privado no entra en las cuentas.' },
+
 
     { id: 'gestion', lider: true, t: 'Gestión de equipo (líderes)', b:
 'En **Gestión** (barra lateral) está tu centro de control: ves el trabajo de tus colaboradores y los organizás por proyecto.\n\n' +
@@ -3599,6 +3702,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     if (openId && byId[openId]) renderDeps(byId[openId]);
     if (view === 'gest') renderCtl();
     if (view === 'proy') renderProyectos();
+    if (view === 'met') renderMet();
   }
   function depWhere(t) {
     var parts = [];
@@ -4090,6 +4194,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     hitos = r.error ? [] : r.data;
     if (view === 'proy') renderProyectos();
     if (view === 'gest') renderGest();
+    if (view === 'met') renderMet();
     if (!$('notif').hidden) renderAgenda();
   }
   async function marcarLeida(id) {
@@ -4158,7 +4263,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     await sb.from('notificaciones').update({ leida: true }).eq('leida', false);
   });
 
-  /* ---------- Métricas ---------- */
+  /* ---------- Métricas (panel principal) ---------- */
 
   var metTab = 'mias', metPerson = '';
   function isoOf(ms) {
@@ -4189,7 +4294,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var ontime = wd.filter(function (t) { return isoOf(t.doneAt) <= t.due; }).length;
     var waiting = done.filter(function (t) { return !t.validadaPor && (t.visible || t.asignadaPor || t.delegadaPor); });
     return {
-      total: tasks.length, open: open, done: done, doneP: doneP, late: late, soon: soon, stuck: stuck, med: med,
+      total: tasks.length, open: open, done: done, doneP: doneP, late: late, soon: soon, stuck: stuck, med: med, times: times,
       ontimePct: wd.length ? Math.round(ontime / wd.length * 100) : null,
       pend: tasks.filter(function (t) { return t.status === 'pendiente'; }).length,
       proc: tasks.filter(function (t) { return t.status === 'proceso'; }).length,
@@ -4207,63 +4312,11 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     }
     tasks.forEach(function (t) {
       out.forEach(function (w) {
-        if (t.status === 'completado' && t.doneAt >= w.a && t.doneAt < w.b) w.done++;
+        if (t.status === 'completado' && (t.doneAt || t.statusAt) >= w.a && (t.doneAt || t.statusAt) < w.b) w.done++;
         if (t.createdAt >= w.a && t.createdAt < w.b) w.made++;
       });
     });
     return out;
-  }
-  function chartWeekly(ws) {
-    var W = 560, H = 170, pad = 22, base = H - 22, mx = Math.max(1, Math.max.apply(null, ws.map(function (w) { return Math.max(w.done, w.made); })));
-    var gw = (W - pad) / ws.length, bw = Math.min(18, gw / 3), g = '', every = ws.length > 13 ? 3 : ws.length > 8 ? 2 : 1;
-    ws.forEach(function (w, i) {
-      var x = pad / 2 + i * gw + gw / 2;
-      var h1 = w.made / mx * (base - 18), h2 = w.done / mx * (base - 18);
-      g += '<rect class="bar-n" x="' + (x - bw - 1.5).toFixed(1) + '" y="' + (base - h1).toFixed(1) + '" width="' + bw + '" height="' + Math.max(h1, w.made ? 2 : 0).toFixed(1) + '" rx="3"/>' +
-        '<rect class="bar-c" x="' + (x + 1.5).toFixed(1) + '" y="' + (base - h2).toFixed(1) + '" width="' + bw + '" height="' + Math.max(h2, w.done ? 2 : 0).toFixed(1) + '" rx="3"/>' +
-        (w.done && ws.length <= 13 ? '<text class="v" x="' + (x + 1.5 + bw / 2).toFixed(1) + '" y="' + (base - h2 - 5).toFixed(1) + '" text-anchor="middle">' + w.done + '</text>' : '') +
-        ((ws.length - 1 - i) % every === 0 ? '<text x="' + x.toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle">' + w.label + '</text>' : '');
-    });
-    return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Tareas creadas y completadas por semana, últimas ' + ws.length + ' semanas">' +
-      '<line x1="0" x2="' + W + '" y1="' + base + '" y2="' + base + '" stroke="var(--line)"/>' + g + '</svg>';
-  }
-  function kpi(v, l, cls) {
-    var d = mk('div', 'kpi' + (cls ? ' ' + cls : '')); d.appendChild(mk('b', '', String(v))); d.appendChild(mk('span', '', l)); return d;
-  }
-  function msec(title, child) {
-    var s = mk('section', 'm-sec'); s.appendChild(mk('h3', '', title)); s.appendChild(child); return s;
-  }
-  function card(html) { var c = mk('div', 'm-card'); c.innerHTML = html; return c; } // html armado solo con números y fechas propias
-  function mList(rows, empty) {
-    var ul = mk('ul', 'm-list');
-    if (!rows.length) { ul.appendChild(mk('li', 't-empty', empty)); return ul; }
-    rows.forEach(function (r) {
-      var li = mk('li'); li.appendChild(mk('span', '', r[0])); li.appendChild(mk('span', 'm-v' + (r[2] ? ' bad' : ''), r[1])); ul.appendChild(li);
-    });
-    return ul;
-  }
-
-  // Filtros de período y proyecto, y exportación.
-  function inMetProj(t) { return !metProj || t.equipoProyectoId === metProj; }
-  function metControls(projOpts, onExport) {
-    var bar = mk('div', 'm-ctl');
-    var sp = mk('select'); sp.setAttribute('aria-label', 'Período');
-    [[7, 'Últimos 7 días'], [30, 'Últimos 30 días'], [90, 'Últimos 90 días'], [0, 'Todo el histórico']].forEach(function (o) {
-      var op = mk('option', '', o[1]); op.value = String(o[0]); sp.appendChild(op);
-    });
-    sp.value = String(metDays); sp.addEventListener('change', function () { metDays = Number(sp.value); renderMet(); });
-    bar.appendChild(sp);
-    if (projOpts.length) {
-      var pp = mk('select'); pp.setAttribute('aria-label', 'Proyecto');
-      [['', 'Todos los proyectos']].concat(projOpts).forEach(function (o) { var op = mk('option', '', o[1]); op.value = o[0]; pp.appendChild(op); });
-      pp.value = projOpts.some(function (o) { return o[0] === metProj; }) ? metProj : '';
-      if (pp.value !== metProj) metProj = pp.value;
-      pp.addEventListener('change', function () { metProj = pp.value; renderMet(); });
-      bar.appendChild(pp);
-    } else { metProj = ''; }
-    var ex = mk('button', 'btn-s', 'Exportar CSV'); ex.type = 'button'; ex.addEventListener('click', onExport);
-    bar.appendChild(ex);
-    return bar;
   }
   function csvCell(v) {
     var t = String(v === null || v === undefined ? '' : v);
@@ -4288,133 +4341,697 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
   }
 
-  function personalView(tasks, opts) {
-    opts = opts || {};
-    var all = tasks.filter(inMetProj), st = mStats(all), box = mk('div');
-    box.style.display = 'flex'; box.style.flexDirection = 'column'; box.style.gap = '20px';
-    if (!opts.noControls) {
-      var po = eqProy.map(function (x) { return [x.id, x.nombre]; });
-      box.appendChild(metControls(po, function () { exportCsv(all, false); }));
-    }
-    var k = mk('div', 'kpis');
-    k.appendChild(kpi(st.open.length, 'Abiertas'));
-    k.appendChild(kpi(st.doneP.length, 'Completadas · ' + periodTxt(), st.doneP.length ? 'good' : ''));
-    k.appendChild(kpi(st.late.length, 'Vencidas', st.late.length ? 'bad' : ''));
-    k.appendChild(kpi(fmtDays(st.med), 'Tiempo medio de resolución'));
-    k.appendChild(kpi(st.ontimePct === null ? '—' : st.ontimePct + '%', 'Cerradas a tiempo'));
-    k.appendChild(kpi(st.stuck.length, 'Sin moverse hace +7 días', st.stuck.length ? 'bad' : ''));
-    box.appendChild(k);
-    var ws = weekly(all, weekCount());
-    var wc = card(chartWeekly(ws) + '<div class="m-legend"><span><i style="background:var(--line-strong)"></i>Creadas</span><span><i style="background:var(--accent)"></i>Completadas</span></div>');
-    box.appendChild(msec('Ritmo semanal · últimas ' + ws.length + ' semanas', wc));
-    var tot = Math.max(1, st.total);
-    box.appendChild(msec('Cómo está el trabajo', card(
-      '<div class="stk" role="img" aria-label="' + st.pend + ' pendientes, ' + st.proc + ' en proceso, ' + st.done.length + ' completadas">' +
-      '<i class="s-pend" style="width:' + (st.pend / tot * 100) + '%"></i><i class="s-proc" style="width:' + (st.proc / tot * 100) + '%"></i><i class="s-comp" style="width:' + (st.done.length / tot * 100) + '%"></i></div>' +
-      '<div class="m-legend"><span><i style="background:var(--pend)"></i>Pendiente ' + st.pend + '</span><span><i style="background:var(--proc)"></i>En proceso ' + st.proc + '</span><span><i style="background:var(--comp)"></i>Completado ' + st.done.length + '</span></div>')));
-    var now = Date.now();
-    var oldest = st.open.slice().sort(function (a, b) { return (a.statusAt || a.createdAt) - (b.statusAt || b.createdAt); }).slice(0, 5)
-      .map(function (t) {
-        var d = Math.max(0, Math.round((now - (t.statusAt || t.createdAt || now)) / DAY));
-        return [t.text, d + (d === 1 ? ' día · ' : ' días · ') + LABEL[t.status].toLowerCase(), d > 7];
-      });
-    box.appendChild(msec('Lo que más tiempo lleva abierto', mList(oldest, 'No hay tareas abiertas.')));
-    return box;
+  /* --- Gráficos en SVG (se arman con el DOM: ningún texto de usuarios pasa por innerHTML) --- */
+  var NSV = 'http://www.w3.org/2000/svg';
+  function sv(tag, attrs, kids) {
+    var e = document.createElementNS(NSV, tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function (c) { if (c) e.appendChild(c); });
+    return e;
   }
-  function teamView() {
-    var box = mk('div'); box.style.display = 'flex'; box.style.flexDirection = 'column'; box.style.gap = '20px';
-    var all = teamTasks;
-    if (metPerson) {
-      var back = mk('button', 'btn-s m-back', '← Todo el equipo'); back.type = 'button';
-      back.addEventListener('click', function () { metPerson = ''; renderMet(); });
-      box.appendChild(back);
-      var h = mk('h3', 'a-h', nameOf(metPerson)); box.appendChild(h);
-      box.appendChild(personalView(all.filter(function (t) { return t.userId === metPerson; }).filter(inMetProj), { noControls: true }));
-      return box;
-    }
-    box.appendChild(mk('p', 'a-help', 'Incluye las tareas visibles de tu equipo y las que asignaste vos. Lo que cada uno marcó como privado no entra en las cuentas.'));
-    var scoped = all.filter(inMetProj);
-    box.appendChild(metControls(eqProy.filter(function (x) { return x.lider_id === me; }).map(function (x) { return [x.id, x.nombre]; }), function () { exportCsv(scoped, true); }));
-    all = scoped;
-    var st = mStats(all), now = Date.now();
-    var k = mk('div', 'kpis');
-    k.appendChild(kpi(st.open.length, 'Abiertas'));
-    k.appendChild(kpi(st.doneP.length, 'Completadas · ' + periodTxt(), st.doneP.length ? 'good' : ''));
-    k.appendChild(kpi(st.late.length, 'Vencidas', st.late.length ? 'bad' : ''));
-    k.appendChild(kpi(fmtDays(st.med), 'Tiempo medio de resolución'));
-    k.appendChild(kpi(st.ontimePct === null ? '—' : st.ontimePct + '%', 'Cerradas a tiempo'));
-    k.appendChild(kpi(st.waiting.length, 'Esperando validación', st.waiting.length ? 'bad' : ''));
-    box.appendChild(k);
-    box.appendChild(msec('Ritmo semanal del equipo', card(chartWeekly(weekly(all, weekCount())) +
-      '<div class="m-legend"><span><i style="background:var(--line-strong)"></i>Creadas</span><span><i style="background:var(--accent)"></i>Completadas</span></div>')));
-    // Carga de trabajo por persona
-    var loads = directos.map(function (id) {
-      var ps = mStats(all.filter(function (t) { return t.userId === id; }));
-      return { id: id, open: ps.open.length, late: ps.late.length, soon: ps.soon.length };
-    }).sort(function (a, b) { return b.open - a.open; });
-    var maxOpen = Math.max(1, Math.max.apply(null, loads.map(function (l) { return l.open; })));
-    var lw = mk('div', 'm-card');
-    if (!loads.length) lw.appendChild(mk('p', 't-empty', 'Todavía no tenés directos.'));
-    loads.forEach(function (l) {
-      var row = mk('div', 'load-row');
-      row.appendChild(mk('span', 'load-n', nameOf(l.id)));
-      var bar = mk('div', 'load-bar'), ok = mk('i', 'ok'), bad = mk('i', 'bad');
-      ok.style.width = ((l.open - l.late) / maxOpen * 100) + '%'; bad.style.width = (l.late / maxOpen * 100) + '%';
-      bar.appendChild(ok); bar.appendChild(bad); row.appendChild(bar);
-      row.appendChild(mk('span', 'load-v', l.open + ' abiertas' + (l.late ? ' · ' + l.late + ' vencidas' : '') + (l.soon ? ' · ' + l.soon + ' vencen esta semana' : '')));
-      lw.appendChild(row);
+  function svt(x, y, str, attrs) { var t = sv('text', Object.assign({ x: x, y: y }, attrs || {})); t.textContent = str; return t; }
+  function nf(n) { return n >= 1000 ? (Math.round(n / 100) / 10 + 'K').replace('.', ',') : String(Math.round(n * 10) / 10).replace('.', ','); }
+  function yScale(max) {
+    var steps = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000], s = 10000;
+    for (var i = 0; i < steps.length; i++) { if (max / steps[i] <= 4) { s = steps[i]; break; } }
+    return { step: s, top: Math.max(s, Math.ceil(max / s) * s) };
+  }
+  function clip(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+  function barPath(x, y, w, h, r) {
+    r = Math.max(0, Math.min(r, h, w / 2));
+    if (!r) return 'M' + x + ',' + y + 'h' + w + 'v' + h + 'h' + (-w) + 'Z';
+    return 'M' + x + ',' + (y + h) + 'V' + (y + r) + 'Q' + x + ',' + y + ' ' + (x + r) + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h) + 'Z';
+  }
+  function hbarPath(x, y, w, h, r) { // redondeado solo en el extremo de datos (derecha)
+    r = Math.max(0, Math.min(r, w, h / 2));
+    if (!r) return 'M' + x + ',' + y + 'h' + w + 'v' + h + 'h' + (-w) + 'Z';
+    return 'M' + x + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h - r) + 'Q' + (x + w) + ',' + (y + h) + ' ' + (x + w - r) + ',' + (y + h) + 'H' + x + 'Z';
+  }
+  function mkPath(d, color, cls) { var p = sv('path', { d: d, class: cls || '' }); p.style.fill = color; return p; }
+
+  // Tooltip único: lo leen los marcadores con la propiedad __tip (objeto o función del evento).
+  var tipEl = null;
+  function tipShow(info, x, y) {
+    if (!info) return;
+    if (!tipEl) { tipEl = document.createElement('div'); tipEl.className = 'mx-tip'; tipEl.setAttribute('role', 'status'); document.body.appendChild(tipEl); }
+    var kids = [];
+    if (info.title) kids.push(mk('div', 'mx-tip-t', info.title));
+    (info.rows || []).forEach(function (r) {
+      var row = mk('div', 'mx-tip-r');
+      if (r.c) { var k = mk('i'); k.style.background = r.c; row.appendChild(k); }
+      row.appendChild(mk('b', '', String(r.v)));
+      if (r.n) row.appendChild(mk('span', '', r.n));
+      kids.push(row);
     });
-    box.appendChild(msec('Carga de trabajo', lw));
-    // Cuellos de botella
-    var cb = [];
-    if (st.waiting.length) {
-      var oldW = Math.max.apply(null, st.waiting.map(function (t) { return Math.round((now - (t.doneAt || now)) / DAY); }));
-      cb.push(['Completadas sin validar', st.waiting.length + ' · la más vieja hace ' + oldW + (oldW === 1 ? ' día' : ' días'), oldW > 3]);
+    tipEl.replaceChildren.apply(tipEl, kids);
+    tipEl.hidden = false;
+    var w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    tipEl.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, x + 14)) + 'px';
+    tipEl.style.top = Math.max(8, Math.min(window.innerHeight - h - 8, y + 14)) + 'px';
+  }
+  function tipHide() { if (tipEl) tipEl.hidden = true; }
+  function tipBind(root) {
+    function find(e) { var n = e.target; while (n && n !== root && !n.__tip) n = n.parentNode; return n && n.__tip ? n : null; }
+    root.addEventListener('pointermove', function (e) {
+      var n = find(e); if (!n) { tipHide(); return; }
+      var info = typeof n.__tip === 'function' ? n.__tip(e) : n.__tip; tipShow(info, e.clientX, e.clientY);
+    });
+    root.addEventListener('pointerleave', tipHide);
+    root.addEventListener('focusin', function (e) {
+      var n = find(e); if (!n || typeof n.__tip === 'function') return;
+      var r = n.getBoundingClientRect(); tipShow(n.__tip, r.left + r.width / 2, r.top);
+    });
+    root.addEventListener('focusout', tipHide);
+  }
+
+  // Columnas verticales (agrupadas o apiladas). cats: [{l, t}], series: [{n, c, v:[]}]
+  function vbars(cats, series, o) {
+    o = o || {};
+    var W = 640, H = o.h || 200, pl = 30, pr = 6, pt = 16, pb = 24, n = cats.length, gw = (W - pl - pr) / n, base = H - pb;
+    var max = 0;
+    cats.forEach(function (c, i) {
+      var v = o.stack ? series.reduce(function (a, s) { return a + s.v[i]; }, 0) : Math.max.apply(null, series.map(function (s) { return s.v[i]; }));
+      if (v > max) max = v;
+    });
+    var ys = yScale(Math.max(1, max)), g = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': o.label || '' });
+    for (var v = 0; v <= ys.top; v += ys.step) {
+      var y = base - v / ys.top * (base - pt);
+      g.appendChild(sv('line', { x1: pl, x2: W - pr, y1: y, y2: y, class: v ? 'mx-gl' : 'mx-ax' }));
+      g.appendChild(svt(pl - 6, y + 3.5, nf(v), { 'text-anchor': 'end', class: 'mx-t' }));
     }
-    if (st.stuck.length) cb.push(['Sin moverse hace más de 7 días', String(st.stuck.length), true]);
-    if (st.late.length) cb.push(['Vencidas', String(st.late.length), true]);
-    if (loads.length > 1 && loads[0].open > 0 && loads[0].open >= 2 * Math.max(1, loads[loads.length - 1].open)) cb.push(['Reparto desparejo', nameOf(loads[0].id) + ' tiene ' + loads[0].open + ' abiertas vs ' + loads[loads.length - 1].open + ' de ' + nameOf(loads[loads.length - 1].id), true]);
-    box.appendChild(msec('Cuellos de botella', mList(cb, 'Sin cuellos de botella a la vista.')));
+    var every = n > 14 ? Math.ceil(n / 10) : 1, maxI = -1, maxV = 0;
+    cats.forEach(function (c, i) {
+      var tot = o.stack ? series.reduce(function (a, s) { return a + s.v[i]; }, 0) : Math.max.apply(null, series.map(function (s) { return s.v[i]; }));
+      if (tot > maxV) { maxV = tot; maxI = i; }
+    });
+    cats.forEach(function (c, i) {
+      var x0 = pl + i * gw, hit = sv('rect', { x: x0, y: pt - 6, width: gw, height: base - pt + 6, class: 'mx-hit' });
+      hit.__tip = { title: c.t || c.l, rows: series.map(function (s) { return { c: s.c, n: s.n, v: s.v[i] }; }) };
+      if (n <= 14) hit.setAttribute('tabindex', '0');
+      g.appendChild(hit);
+      var bw = o.stack ? Math.min(24, gw * .62) : Math.min(16, gw * .62 / series.length);
+      var span = o.stack ? bw : series.length * bw + (series.length - 1) * 2, sx = x0 + (gw - span) / 2, cum = 0;
+      series.forEach(function (s, k) {
+        var h = s.v[i] / ys.top * (base - pt);
+        if (o.stack) {
+          var top = base - (cum + s.v[i]) / ys.top * (base - pt), last = k === series.length - 1 || series.slice(k + 1).every(function (z) { return !z.v[i]; });
+          if (h > 0) g.appendChild(mkPath(barPath(sx, top, bw, Math.max(h - (cum ? 2 : 0), 1), last ? 4 : 0), s.c, 'mx-m'));
+          cum += s.v[i];
+        } else if (h > 0) {
+          g.appendChild(mkPath(barPath(sx + k * (bw + 2), base - h, bw, h, 4), s.c, 'mx-m'));
+        }
+      });
+      if (i === maxI && maxV > 0) {
+        var th = maxV / ys.top * (base - pt);
+        g.appendChild(svt(x0 + gw / 2, base - th - 5, nf(maxV), { 'text-anchor': 'middle', class: 'mx-v' }));
+      }
+      if ((n - 1 - i) % every === 0) g.appendChild(svt(x0 + gw / 2, H - 7, c.l, { 'text-anchor': 'middle', class: 'mx-t' }));
+    });
+    return g;
+  }
+
+  // Barras horizontales (apiladas). rows: [{l, segs:[{v,c,n}], extra, click}]
+  function hbars(rows, o) {
+    o = o || {};
+    var W = 640, lw = o.lw || 132, rh = 30, bh = 14, pr = o.pr || 92, H = rows.length * rh + 6, max = 1;
+    rows.forEach(function (r) { r.tot = r.segs.reduce(function (a, s) { return a + s.v; }, 0); if (r.tot > max) max = r.tot; });
+    if (o.max) max = Math.max(max, o.max);
+    var sc = (W - lw - pr) / max, g = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': o.label || '' });
+    g.appendChild(sv('line', { x1: lw, x2: lw, y1: 0, y2: H - 4, class: 'mx-ax' }));
+    rows.forEach(function (r, i) {
+      var y = 3 + i * rh, by = y + (rh - bh) / 2 - 1;
+      var hit = sv('rect', { x: 0, y: y, width: W, height: rh, class: 'mx-hit' });
+      hit.__tip = { title: r.l, rows: r.segs.map(function (s) { return { c: s.c, n: s.n, v: s.v }; }).concat(r.extra ? [{ n: r.extra, v: '' }] : []) };
+      hit.setAttribute('tabindex', '0');
+      if (r.click) { hit.classList.add('go'); hit.addEventListener('click', r.click); hit.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); r.click(); } }); }
+      g.appendChild(hit);
+      g.appendChild(svt(lw - 10, by + bh / 2 + 4, clip(r.l, Math.floor(lw / 6.4)), { 'text-anchor': 'end', class: 'mx-t mx-lbl' + (r.on ? ' on' : '') }));
+      var x = lw, vis = r.segs.filter(function (s) { return s.v > 0; });
+      vis.forEach(function (s, k) {
+        var w = Math.max(s.v * sc - (k < vis.length - 1 ? 2 : 0), 2);
+        g.appendChild(mkPath(k === vis.length - 1 ? hbarPath(x, by, w, bh, 4) : hbarPath(x, by, w, bh, 0), s.c, 'mx-m'));
+        x += s.v * sc;
+      });
+      g.appendChild(svt(x + 7, by + bh / 2 + 4, (o.fmt ? o.fmt(r.tot) : nf(r.tot)) + (r.extra ? ' · ' + r.extra : ''), { class: 'mx-v' }));
+    });
+    return g;
+  }
+
+  // Líneas con cruz de lectura. series: [{n, c, v:[]}]; o.area: sombrea la primera
+  function lines(cats, series, o) {
+    o = o || {};
+    var W = 640, H = o.h || 200, pl = 30, pr = 16, pt = 16, pb = 24, n = cats.length, base = H - pb, max = 0;
+    series.forEach(function (s) { s.v.forEach(function (v) { if (v > max) max = v; }); });
+    var ys = yScale(Math.max(1, max)), g = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': o.label || '' });
+    function X(i) { return n < 2 ? (pl + W - pr) / 2 : pl + i * (W - pl - pr) / (n - 1); }
+    function Y(v) { return base - v / ys.top * (base - pt); }
+    for (var v = 0; v <= ys.top; v += ys.step) {
+      g.appendChild(sv('line', { x1: pl, x2: W - pr, y1: Y(v), y2: Y(v), class: v ? 'mx-gl' : 'mx-ax' }));
+      g.appendChild(svt(pl - 6, Y(v) + 3.5, nf(v), { 'text-anchor': 'end', class: 'mx-t' }));
+    }
+    var every = n > 12 ? Math.ceil(n / 8) : 1;
+    cats.forEach(function (c, i) { if ((n - 1 - i) % every === 0) g.appendChild(svt(X(i), H - 7, c.l, { 'text-anchor': 'middle', class: 'mx-t' })); });
+    series.forEach(function (s, k) {
+      var d = s.v.map(function (val, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(val).toFixed(1); }).join('');
+      if (o.area && k === 0 && n > 1) g.appendChild(mkPath(d + 'L' + X(n - 1).toFixed(1) + ',' + base + 'L' + X(0).toFixed(1) + ',' + base + 'Z', s.c, 'mx-area'));
+      var p = sv('path', { d: d, class: 'mx-line' }); p.style.stroke = s.c; g.appendChild(p);
+    });
+    series.forEach(function (s) {
+      var i = n - 1, dot = sv('circle', { cx: X(i), cy: Y(s.v[i]), r: 4, class: 'mx-dot' }); dot.style.fill = s.c; g.appendChild(dot);
+    });
+    var last = series[0]; if (last) g.appendChild(svt(Math.min(X(n - 1), W - pr - 4), Y(last.v[n - 1]) - 10, nf(last.v[n - 1]), { 'text-anchor': 'end', class: 'mx-v' }));
+    var cross = sv('line', { y1: pt, y2: base, class: 'mx-cross' }); cross.style.display = 'none'; g.appendChild(cross);
+    var dots = series.map(function (s) { var d = sv('circle', { r: 4, class: 'mx-dot' }); d.style.fill = s.c; d.style.display = 'none'; g.appendChild(d); return d; });
+    var ov = sv('rect', { x: pl, y: pt - 6, width: W - pl - pr, height: base - pt + 6, class: 'mx-ov' });
+    ov.__tip = function (e) {
+      var r = g.getBoundingClientRect(), px = (e.clientX - r.left) * W / r.width;
+      var i = n < 2 ? 0 : Math.max(0, Math.min(n - 1, Math.round((px - pl) / ((W - pl - pr) / (n - 1)))));
+      cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i)); cross.style.display = '';
+      dots.forEach(function (d, k) { d.setAttribute('cx', X(i)); d.setAttribute('cy', Y(series[k].v[i])); d.style.display = ''; });
+      return { title: cats[i].t || cats[i].l, rows: series.map(function (s) { return { c: s.c, n: s.n, v: s.v[i] }; }) };
+    };
+    ov.addEventListener('pointerleave', function () { cross.style.display = 'none'; dots.forEach(function (d) { d.style.display = 'none'; }); });
+    g.appendChild(ov);
+    return g;
+  }
+
+  // Mapa de calor persona × semana (una sola tonalidad: más oscuro = más)
+  function heat(rows, cols, mat) {
+    var cell = 26, gap = 3, lw = 124, pt = 18, W = lw + cols.length * (cell + gap) + 6, H = pt + rows.length * (cell + gap) + 4, max = 1;
+    mat.forEach(function (r) { r.forEach(function (v) { if (v > max) max = v; }); });
+    var g = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Tareas completadas por persona y semana' });
+    g.style.width = Math.round(W * 1.15) + 'px'; g.style.maxWidth = '100%';
+    var every = cols.length > 9 ? 2 : 1;
+    cols.forEach(function (c, j) { if ((cols.length - 1 - j) % every === 0) g.appendChild(svt(lw + j * (cell + gap) + cell / 2, 11, c.l, { 'text-anchor': 'middle', class: 'mx-t' })); });
+    rows.forEach(function (r, i) {
+      g.appendChild(svt(lw - 8, pt + i * (cell + gap) + cell / 2 + 4, clip(r, 17), { 'text-anchor': 'end', class: 'mx-t mx-lbl' }));
+      cols.forEach(function (c, j) {
+        var v = mat[i][j], x = lw + j * (cell + gap), y = pt + i * (cell + gap);
+        var rc = sv('rect', { x: x, y: y, width: cell, height: cell, rx: 4, class: 'mx-cell' });
+        rc.style.fill = v ? 'color-mix(in srgb, var(--accent) ' + Math.round(22 + 78 * v / max) + '%, var(--surface-2))' : 'var(--surface-2)';
+        rc.__tip = { title: r + ' · semana del ' + c.l, rows: [{ n: v === 1 ? 'completada' : 'completadas', v: v }] };
+        rc.setAttribute('tabindex', '0');
+        g.appendChild(rc);
+      });
+    });
+    return g;
+  }
+  function spark(vals, w, h) {
+    w = w || 84; h = h || 22;
+    var max = Math.max(1, Math.max.apply(null, vals)), n = vals.length, g = sv('svg', { viewBox: '0 0 ' + w + ' ' + h, class: 'mx-spark', 'aria-hidden': 'true' });
+    var pts = vals.map(function (v, i) { return [n < 2 ? w / 2 : 3 + i * (w - 6) / (n - 1), h - 3 - v / max * (h - 6)]; });
+    g.appendChild(sv('path', { d: pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(''), class: 'mx-sp' }));
+    var l = pts[pts.length - 1]; g.appendChild(sv('circle', { cx: l[0], cy: l[1], r: 2.8, class: 'mx-spd' }));
+    return g;
+  }
+  function meter(pct, cls) {
+    var m = mk('div', 'mx-meter' + (cls ? ' ' + cls : '')), i = mk('i'); i.style.width = Math.max(0, Math.min(100, pct)) + '%'; m.appendChild(i);
+    m.setAttribute('role', 'img'); m.setAttribute('aria-label', Math.round(pct) + '%'); return m;
+  }
+
+  /* --- Piezas de la interfaz del panel --- */
+  var C_PEND = 'var(--pend)', C_PROC = 'var(--proc)', C_COMP = 'var(--comp)', C_ACC = 'var(--accent)', C_GRAY = 'color-mix(in srgb, var(--faint) 55%, var(--surface))', C_ALTA = 'var(--alta)';
+  function legendEl(items) {
+    var d = mk('div', 'mx-legend');
+    items.forEach(function (it) { var s = mk('span'), i = mk('i'); i.style.background = it.c; s.appendChild(i); s.appendChild(document.createTextNode(it.n)); d.appendChild(s); });
+    return d;
+  }
+  function tableEl(t) {
+    var wrap = mk('div', 'm-scroll'), tb = mk('table', 'mx-table'), hd = mk('thead'), hr = mk('tr');
+    t.head.forEach(function (h) { hr.appendChild(mk('th', '', h)); }); hd.appendChild(hr); tb.appendChild(hd);
+    var bd = mk('tbody');
+    t.rows.forEach(function (r) { var tr = mk('tr'); r.forEach(function (c) { tr.appendChild(mk('td', '', String(c))); }); bd.appendChild(tr); });
+    tb.appendChild(bd); wrap.appendChild(tb); return wrap;
+  }
+  function chartCard(title, sub, chart, table, o) {
+    o = o || {};
+    var c = mk('section', 'mx-card' + (o.wide ? ' wide' : '')), h = mk('div', 'mx-ch'), t = mk('div');
+    t.appendChild(mk('h3', '', title)); if (sub) t.appendChild(mk('p', '', sub)); h.appendChild(t);
+    var body = mk('div', 'mx-body'); body.appendChild(chart);
+    if (o.legend) body.appendChild(legendEl(o.legend));
+    if (table) {
+      var tv = tableEl(table); tv.hidden = true;
+      var tg = mk('button', 'mx-tg', 'Ver tabla'); tg.type = 'button'; tg.setAttribute('aria-pressed', 'false');
+      tg.addEventListener('click', function () {
+        var on = tg.getAttribute('aria-pressed') !== 'true';
+        tg.setAttribute('aria-pressed', String(on)); tg.textContent = on ? 'Ver gráfico' : 'Ver tabla';
+        tv.hidden = !on; body.hidden = on;
+      });
+      h.appendChild(tg); c.appendChild(h); c.appendChild(body); c.appendChild(tv); return c;
+    }
+    c.appendChild(h); c.appendChild(body); return c;
+  }
+  function dlt(cur, prev, upGood) {
+    if (prev === null || prev === undefined || cur === null || cur === undefined) return null;
+    var d = Math.round((cur - prev) * 10) / 10;
+    if (!d) return { txt: '● igual que el período anterior', cls: 'flat' };
+    var good = upGood ? d > 0 : d < 0;
+    return { txt: (d > 0 ? '▲ +' : '▼ ') + String(d).replace('.', ',') + ' vs. período anterior', cls: good ? 'good' : 'bad' };
+  }
+  function tile(label, value, o) {
+    o = o || {};
+    var d = mk('div', 'mx-tile' + (o.tone ? ' ' + o.tone : ''));
+    d.appendChild(mk('span', 'mx-tl', label)); d.appendChild(mk('b', '', String(value)));
+    if (o.sub) d.appendChild(mk('small', '', o.sub));
+    if (o.delta) d.appendChild(mk('small', 'mx-d ' + o.delta.cls, o.delta.txt));
+    if (o.spark) d.appendChild(spark(o.spark));
+    return d;
+  }
+  function msection(title, sub) {
+    var s = mk('section', 'mx-sec'), h = mk('div', 'mx-sh'); h.appendChild(mk('h2', '', title)); if (sub) h.appendChild(mk('p', '', sub)); s.appendChild(h); return s;
+  }
+  var ICON_SEV = {
+    0: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3zM12 10v4.5M12 17.5v.01"/></svg>',
+    1: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16v.01"/></svg>',
+    2: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>'
+  };
+  var SEV_TXT = { 0: 'Crítico', 1: 'Atención', 2: 'A tener en cuenta' };
+  function bnCard(b) {
+    var c = mk('div', 'mx-bn s' + b.sev), top = mk('div', 'mx-bn-t'), sp = mk('span', 'mx-sev');
+    sp.innerHTML = ICON_SEV[b.sev]; // icono fijo
+    sp.appendChild(document.createTextNode(SEV_TXT[b.sev])); top.appendChild(sp);
+    top.appendChild(mk('b', '', String(b.n))); c.appendChild(top);
+    c.appendChild(mk('h4', '', b.title)); c.appendChild(mk('p', '', b.text));
+    if (b.items && b.items.length) {
+      var ul = mk('ul'); b.items.forEach(function (it) { var li = mk('li'); li.appendChild(mk('span', '', it[0])); li.appendChild(mk('em', '', it[1])); ul.appendChild(li); }); c.appendChild(ul);
+    }
+    if (b.action) { var a = mk('button', 'btn-s', b.action.txt); a.type = 'button'; a.addEventListener('click', b.action.fn); c.appendChild(a); }
+    return c;
+  }
+  function whoName(t) { return t.userId && t.userId !== me ? nameOf(t.userId) : 'Vos'; }
+  function median(a) { var n = a.length; return n ? (n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2) : null; }
+  function pctile(a, p) { return a.length ? a[Math.min(a.length - 1, Math.floor(a.length * p))] : null; }
+  function doneTime(t) { return t.doneAt || t.statusAt || 0; }
+
+  // Cálculos compartidos por los dos paneles
+  function core(tasks) {
+    var now = Date.now(), a = metDays ? now - metDays * DAY : 0, pa = metDays ? a - metDays * DAY : null;
+    var st = mStats(tasks), blocked = st.open.filter(function (t) { return depOpenBlockers(t.id).length; });
+    var risk = {}; st.late.concat(st.stuck, blocked).forEach(function (t) { risk[t.id] = 1; });
+    var nr = Object.keys(risk).length;
+    var prev = pa === null ? null : st.done.filter(function (t) { var d = doneTime(t); return d >= pa && d < a; });
+    var prevTimes = prev ? prev.filter(function (t) { return t.doneAt && t.createdAt && t.doneAt >= t.createdAt; }).map(function (t) { return (t.doneAt - t.createdAt) / DAY; }).sort(function (x, y) { return x - y; }) : null;
+    return { st: st, blocked: blocked, risk: nr, atDay: st.open.length - nr, prevDone: prev ? prev.length : null, prevMed: prevTimes ? median(prevTimes) : null };
+  }
+  function ageBuckets(open) {
+    var lim = [[2, '0–2 d'], [7, '3–7 d'], [14, '8–14 d'], [30, '15–30 d'], [1e9, '+30 d']], now = Date.now();
+    var out = lim.map(function (l) { return { l: l[1], pend: 0, proc: 0 }; });
+    open.forEach(function (t) {
+      var d = (now - (t.statusAt || t.createdAt || now)) / DAY;
+      for (var i = 0; i < lim.length; i++) { if (d <= lim[i][0]) { out[i][t.status === 'proceso' ? 'proc' : 'pend']++; break; } }
+    });
+    return out;
+  }
+  function cycleBuckets(times) {
+    var lim = [[1, '< 1 d'], [3, '1–3 d'], [7, '3–7 d'], [14, '7–14 d'], [1e9, '+14 d']], out = lim.map(function (l) { return { l: l[1], n: 0 }; });
+    times.forEach(function (d) { for (var i = 0; i < lim.length; i++) { if (d <= lim[i][0]) { out[i].n++; break; } } });
+    return out;
+  }
+  function agendaDays(open) {
+    var cats = [{ l: 'Venc.', t: 'Vencidas' }], today = todayISO(), late = 0, days = [], by = {};
+    open.forEach(function (t) { if (!t.due) return; if (t.due < today) late++; else by[t.due] = (by[t.due] || 0) + 1; });
+    var vals = [late], lates = [late], soon = [0];
+    for (var i = 0; i < 14; i++) {
+      var d = new Date(); d.setDate(d.getDate() + i); var iso = isoOf(d.getTime());
+      cats.push({ l: d.getDate() + '/' + (d.getMonth() + 1), t: (i === 0 ? 'Hoy, ' : i === 1 ? 'Mañana, ' : '') + d.toLocaleDateString('es-UY', { weekday: 'long', day: 'numeric', month: 'short' }) });
+      soon.push(by[iso] || 0); lates.push(0);
+    }
+    return { cats: cats, late: lates, soon: soon };
+  }
+  function backlogSeries(tasks, ws) {
+    return ws.map(function (w) {
+      return tasks.filter(function (t) { return t.createdAt < w.b && !(t.status === 'completado' && doneTime(t) < w.b); }).length;
+    });
+  }
+  function weekCats(ws) { return ws.map(function (w) { return { l: w.label, t: 'Semana del ' + w.label }; }); }
+  function prioRows(open) {
+    var defs = [['alta', 'Alta'], ['media', 'Media'], ['baja', 'Baja'], ['', 'Sin prioridad']], today = todayISO();
+    return defs.map(function (d) {
+      var l = open.filter(function (t) { return t.prio === d[0]; });
+      return { l: d[1], segs: [{ v: l.filter(function (t) { return t.status === 'pendiente'; }).length, c: C_PEND, n: 'Pendiente' }, { v: l.filter(function (t) { return t.status === 'proceso'; }).length, c: C_PROC, n: 'En proceso' }],
+        extra: (function () { var x = l.filter(function (t) { return t.due && t.due < today; }).length; return x ? x + (x === 1 ? ' vencida' : ' vencidas') : ''; })() };
+    });
+  }
+  var STATE_LEG = [{ n: 'Pendiente', c: C_PEND }, { n: 'En proceso', c: C_PROC }, { n: 'Completado', c: C_COMP }];
+  function projRows(tasks, projs) {
+    var rows = projs.map(function (p) { return { id: p.id, l: p.nombre }; }).concat([{ id: '', l: 'Sin proyecto' }]);
+    return rows.map(function (r) {
+      var l = tasks.filter(function (t) { return (t.equipoProyectoId || '') === r.id; });
+      return { l: r.l, segs: [{ v: l.filter(function (t) { return t.status === 'pendiente'; }).length, c: C_PEND, n: 'Pendiente' }, { v: l.filter(function (t) { return t.status === 'proceso'; }).length, c: C_PROC, n: 'En proceso' }, { v: l.filter(function (t) { return t.status === 'completado'; }).length, c: C_COMP, n: 'Completado' }] };
+    }).filter(function (r) { return r.segs.some(function (s) { return s.v > 0; }); });
+  }
+  function goProy(id) { setView('proy'); proyOpen = id; renderProyectos(); }
+  function projCards(projs, tasksOf) {
+    var grid = mk('div', 'mx-pgrid'), today = todayISO();
+    if (!projs.length) return mk('p', 'lib-empty', 'Todavía no hay proyectos de equipo para mostrar.');
+    projs.slice().sort(function (a, b) { return (a.estado === 'cerrado') - (b.estado === 'cerrado'); }).forEach(function (p) {
+      var c = mk('button', 'mx-pc'); c.type = 'button';
+      var top = mk('div', 'meta'); top.style.paddingLeft = '0'; top.appendChild(estadoPill(p.estado));
+      if ((p.revision || 'aceptado') === 'rechazado') top.appendChild(pill('late', 'Rechazado')); else if (p.revision === 'pendiente' && directos.indexOf(p.lider_id) !== -1) top.appendChild(pill('warn', 'Para revisar'));
+      c.appendChild(top); c.appendChild(mk('h4', '', p.nombre));
+      var ts = tasksOf(p.id), done = ts.filter(function (t) { return t.status === 'completado'; }).length, open = ts.length - done;
+      var late = ts.filter(function (t) { return t.status !== 'completado' && t.due && t.due < today; }).length;
+      var hs = hitos.filter(function (h) { return h.proyecto_id === p.id; }), hd = hs.filter(function (h) { return h.hecho; }).length;
+      var hl = hs.filter(function (h) { return !h.hecho && h.fecha && h.fecha < today; }).length;
+      var r1 = mk('div', 'mx-pr'); r1.appendChild(mk('span', '', 'Tareas')); r1.appendChild(meter(ts.length ? done / ts.length * 100 : 0)); r1.appendChild(mk('em', '', ts.length ? done + ' de ' + ts.length : 'sin tareas')); c.appendChild(r1);
+      var r2 = mk('div', 'mx-pr'); r2.appendChild(mk('span', '', 'Hitos')); r2.appendChild(meter(hs.length ? hd / hs.length * 100 : 0, hl ? 'bad' : '')); r2.appendChild(mk('em', '', hs.length ? hd + ' de ' + hs.length : 'sin hitos')); c.appendChild(r2);
+      var nx = hs.filter(function (h) { return !h.hecho && h.fecha; }).sort(function (a, b) { return a.fecha < b.fecha ? -1 : 1; })[0];
+      var bits = [open + (open === 1 ? ' abierta' : ' abiertas')];
+      if (late) bits.push(late + (late === 1 ? ' vencida' : ' vencidas')); if (hl) bits.push(hl + (hl === 1 ? ' hito atrasado' : ' hitos atrasados'));
+      if (nx) bits.push('próximo hito: ' + fmtD(nx.fecha));
+      c.appendChild(mk('p', 'mx-pm' + (late || hl ? ' bad' : ''), bits.join(' · ')));
+      c.addEventListener('click', function () { goProy(p.id); });
+      grid.appendChild(c);
+    });
+    return grid;
+  }
+  function personRef(id) { return id === me ? 'Vos' : nameOf(id); }
+
+  /* --- Panel del colaborador: sus tareas, tareas relacionadas y proyectos --- */
+  function ownTasks() { return Object.keys(byId).map(function (k) { var t = byId[k]; t.userId = me; return t; }); }
+  function heroEl(cr, labelAll, causes) {
+    var h = mk('div', 'mx-hero'), pct = cr.st.open.length ? Math.round(cr.atDay / cr.st.open.length * 100) : null;
+    h.appendChild(mk('span', 'mx-tl', 'Al día'));
+    h.appendChild(mk('b', '', pct === null ? '—' : pct + '%'));
+    h.appendChild(meter(pct === null ? 0 : pct, pct !== null && pct < 50 ? 'bad' : ''));
+    h.appendChild(mk('p', '', pct === null ? 'No hay tareas abiertas.' : cr.atDay + ' de ' + cr.st.open.length + labelAll));
+    if (causes.length) h.appendChild(mk('p', 'mx-hc', causes.join(' · ')));
+    return h;
+  }
+  function riskCauses(cr) {
+    var out = [], s = cr.st;
+    if (s.late.length) out.push(s.late.length + (s.late.length === 1 ? ' vencida' : ' vencidas'));
+    if (s.stuck.length) out.push(s.stuck.length + (s.stuck.length === 1 ? ' estancada' : ' estancadas'));
+    if (cr.blocked.length) out.push(cr.blocked.length + (cr.blocked.length === 1 ? ' bloqueada' : ' bloqueadas'));
+    return out;
+  }
+  function chartsFor(tasks, cr, who) {
+    var st = cr.st, grid = mk('div', 'mx-grid'), ws = weekly(tasks, weekCount()), cats = weekCats(ws), s = who === 'team' ? 'del equipo' : 'tuyo';
+    grid.appendChild(chartCard('Ritmo semanal', 'Tareas creadas y completadas por semana',
+      vbars(cats, [{ n: 'Creadas', c: C_GRAY, v: ws.map(function (w) { return w.made; }) }, { n: 'Completadas', c: C_ACC, v: ws.map(function (w) { return w.done; }) }], { label: 'Tareas creadas y completadas por semana' }),
+      { head: ['Semana', 'Creadas', 'Completadas'], rows: ws.map(function (w) { return [w.label, w.made, w.done]; }) }, { legend: [{ n: 'Creadas', c: C_GRAY }, { n: 'Completadas', c: C_ACC }] }));
+    var bl = backlogSeries(tasks, ws);
+    grid.appendChild(chartCard('Trabajo abierto en el tiempo', 'Si la línea sube, entra más de lo que sale',
+      lines(cats, [{ n: 'Abiertas', c: C_ACC, v: bl }], { area: true, label: 'Tareas abiertas por semana' }),
+      { head: ['Semana', 'Abiertas al cierre'], rows: ws.map(function (w, i) { return [w.label, bl[i]]; }) }));
+    var pr = prioRows(st.open);
+    grid.appendChild(chartCard('Lo abierto, por prioridad', st.open.length + (st.open.length === 1 ? ' tarea abierta' : ' tareas abiertas'),
+      hbars(pr, { lw: 112, label: 'Tareas abiertas por prioridad' }),
+      { head: ['Prioridad', 'Pendiente', 'En proceso', 'Vencidas'], rows: pr.map(function (r) { return [r.l, r.segs[0].v, r.segs[1].v, r.extra || 0]; }) }, { legend: STATE_LEG.slice(0, 2) }));
+    var ag = agendaDays(st.open);
+    grid.appendChild(chartCard('Vencimientos · próximos 14 días', ag.late[0] ? ag.late[0] + (ag.late[0] === 1 ? ' tarea ya venció' : ' tareas ya vencieron') : 'Nada vencido',
+      vbars(ag.cats, [{ n: 'Vencidas', c: C_ALTA, v: ag.late }, { n: 'Por vencer', c: C_ACC, v: ag.soon }], { stack: true, label: 'Tareas por fecha de vencimiento' }),
+      { head: ['Día', 'Vencidas', 'Por vencer'], rows: ag.cats.map(function (c, i) { return [c.t, ag.late[i], ag.soon[i]]; }) }, { legend: [{ n: 'Vencidas', c: C_ALTA }, { n: 'Por vencer', c: C_ACC }] }));
+    var ab = ageBuckets(st.open);
+    grid.appendChild(chartCard('Cuánto llevan en su estado actual', 'Lo que se acumula a la derecha es lo que se estancó',
+      vbars(ab.map(function (b) { return { l: b.l }; }), [{ n: 'Pendiente', c: C_PEND, v: ab.map(function (b) { return b.pend; }) }, { n: 'En proceso', c: C_PROC, v: ab.map(function (b) { return b.proc; }) }], { stack: true, label: 'Tareas abiertas por antigüedad en su estado' }),
+      { head: ['Antigüedad', 'Pendiente', 'En proceso'], rows: ab.map(function (b) { return [b.l, b.pend, b.proc]; }) }, { legend: STATE_LEG.slice(0, 2) }));
+    var cb = cycleBuckets(st.times), p85 = pctile(st.times, .85);
+    grid.appendChild(chartCard('Cuánto tardan en cerrarse', st.med === null ? 'Todavía no hay cierres en el período' : 'Mediana ' + fmtDays(st.med) + ' · el 85% se cierra en ' + fmtDays(p85),
+      vbars(cb.map(function (b) { return { l: b.l }; }), [{ n: 'Tareas', c: C_ACC, v: cb.map(function (b) { return b.n; }) }], { label: 'Tareas cerradas por tiempo de resolución' }),
+      { head: ['Tiempo', 'Tareas'], rows: cb.map(function (b) { return [b.l, b.n]; }) }));
+    return grid;
+  }
+  function relatedSection(tasks) {
+    var sec = msection('Tareas relacionadas', 'Dependencias de tus tareas con las de otras personas y proyectos');
+    var open = tasks.filter(function (t) { return t.status !== 'completado'; });
+    var waiting = open.map(function (t) { return { t: t, bl: depOpenBlockers(t.id) }; }).filter(function (x) { return x.bl.length; });
+    var blocking = open.map(function (t) { return { t: t, ds: depBlocks(t.id) }; }).filter(function (x) { return x.ds.length; });
+    var toAnswer = deps.filter(function (d) { return d.estado === 'pendiente' && d.aprobador_id === me; });
+    var sent = deps.filter(function (d) { return d.estado === 'pendiente' && d.creada_por === me; });
+    var ts = mk('div', 'mx-tiles');
+    ts.appendChild(tile('Esperan a otra tarea', waiting.length, { tone: waiting.length ? 'warn' : '', sub: 'tuyas, sin poder avanzar del todo' }));
+    ts.appendChild(tile('Bloquean a otras', blocking.length, { sub: (function () { var k = blocking.reduce(function (a, x) { return a + x.ds.length; }, 0); return k + (k === 1 ? ' tarea espera' : ' tareas esperan') + ' que las cierres'; })() }));
+    ts.appendChild(tile('Pedidos por responder', toAnswer.length, { tone: toAnswer.length ? 'warn' : '' }));
+    ts.appendChild(tile('Pedidos enviados', sent.length, { sub: 'esperan respuesta' }));
+    sec.appendChild(ts);
+    var cols = mk('div', 'mx-grid');
+    function list(title, rows, empty) {
+      var c = mk('section', 'mx-card'), h = mk('div', 'mx-ch'), t = mk('div'); t.appendChild(mk('h3', '', title)); h.appendChild(t); c.appendChild(h);
+      if (!rows.length) { c.appendChild(mk('p', 'lib-empty', empty)); return c; }
+      var ul = mk('ul', 'mx-list'); rows.forEach(function (r) { var li = mk('li'); li.appendChild(mk('span', '', r[0])); li.appendChild(mk('em', '', r[1])); if (r[2]) li.classList.add('click'), li.addEventListener('click', r[2]); ul.appendChild(li); });
+      c.appendChild(ul); return c;
+    }
+    cols.appendChild(list('Esperan a otra tarea', waiting.map(function (x) {
+      var b = x.bl[0], extra = x.bl.length > 1 ? ' (+' + (x.bl.length - 1) + ')' : '';
+      return [x.t.text, 'espera «' + clip(b.text, 36) + '» · ' + personRef(b.userId || me) + ' · ' + LABEL[b.status].toLowerCase() + extra, function () { openPanel(x.t.id); }];
+    }), 'Ninguna de tus tareas espera a otra.'));
+    cols.appendChild(list('Tareas tuyas que frenan a otras', blocking.map(function (x) {
+      var who = x.ds.map(function (d) { return personRef(d.userId || me); }).filter(function (v, i, a) { return a.indexOf(v) === i; }).join(', ');
+      return [x.t.text, 'frena a ' + x.ds.length + (x.ds.length === 1 ? ' tarea' : ' tareas') + ' · ' + who, function () { openPanel(x.t.id); }];
+    }), 'Ninguna tarea tuya frena a otra.'));
+    sec.appendChild(cols);
+    return sec;
+  }
+  function ownProjectsSection(tasks) {
+    var sec = msection('Mis proyectos', 'Proyectos de equipo en los que participás, con tu aporte');
+    var projs = eqProy.filter(function (p) { return p.lider_id === me || p.abierto === true || eqMiem.some(function (m) { return m.proyecto_id === p.id && m.persona_id === me; }); });
+    sec.appendChild(projCards(projs, function (id) { return tasks.filter(function (t) { return t.equipoProyectoId === id; }); }));
+    return sec;
+  }
+  function ownPanel(box) {
+    var all = ownTasks(), tasks = all.filter(function (t) { return !metProj || t.equipoProyectoId === metProj; });
+    var cr = core(tasks), st = cr.st, ws = weekly(tasks, 8);
+    var top = mk('div', 'mx-top');
+    top.appendChild(heroEl(cr, ' tareas abiertas están al día (sin vencer, sin estancarse y sin bloqueos)', riskCauses(cr)));
+    var ts = mk('div', 'mx-tiles');
+    ts.appendChild(tile('Abiertas', st.open.length, { sub: st.proc + ' en proceso · ' + st.pend + ' pendientes' }));
+    ts.appendChild(tile('Completadas · ' + periodTxt(), st.doneP.length, { tone: 'good', delta: dlt(st.doneP.length, cr.prevDone, true), spark: ws.map(function (w) { return w.done; }) }));
+    ts.appendChild(tile('Vencidas', st.late.length, { tone: st.late.length ? 'bad' : '', sub: st.soon.length + (st.soon.length === 1 ? ' vence' : ' vencen') + ' esta semana' }));
+    ts.appendChild(tile('Cerradas a tiempo', st.ontimePct === null ? '—' : st.ontimePct + '%', { sub: 'de las que tenían fecha' }));
+    ts.appendChild(tile('Tiempo medio de cierre', fmtDays(st.med), { delta: dlt(st.med === null ? null : Math.round(st.med * 10) / 10, cr.prevMed === null ? null : Math.round(cr.prevMed * 10) / 10, false) }));
+    ts.appendChild(tile('Sin moverse hace +7 días', st.stuck.length, { tone: st.stuck.length ? 'bad' : '' }));
+    top.appendChild(ts); box.appendChild(top);
+    box.appendChild(chartsFor(tasks, cr, 'own'));
+    box.appendChild(relatedSection(tasks));
+    box.appendChild(ownProjectsSection(tasks));
+  }
+
+  /* --- Panel del responsable: visión de todo el equipo, cuellos de botella y carga --- */
+  function bottlenecks(tasks, st, cr) {
+    var out = [], now = Date.now(), today = todayISO();
+    function top(list, fn, n) { return list.slice(0, n || 3).map(fn); }
+    function ageD(ms) { return Math.max(0, Math.round((now - ms) / DAY)); }
+    // 1) Completadas esperando tu validación
+    if (st.waiting.length) {
+      var w = st.waiting.slice().sort(function (a, b) { return doneTime(a) - doneTime(b); }), old = ageD(doneTime(w[0]));
+      out.push({ sev: old > 5 || w.length >= 5 ? 0 : 1, n: w.length, title: 'Esperan tu validación', text: 'La más vieja hace ' + old + (old === 1 ? ' día' : ' días') + '. Mientras no las valides, el trabajo no se cierra.',
+        items: top(w, function (t) { return [t.text + ' · ' + nameOf(t.userId), 'hace ' + ageD(doneTime(t)) + ' d']; }), action: { txt: 'Validar en Gestión', fn: function () { setView('gest'); } } });
+    }
+    // 2) Dependencias: quién frena a más gente
+    var by = {};
+    deps.forEach(function (d) {
+      if (d.estado === 'pendiente') return;
+      var dep = depTask(d.tarea_id), bl = depTask(d.bloqueada_por);
+      if (!dep || !bl || dep.status === 'completado' || bl.status === 'completado') return;
+      (by[bl.id] = by[bl.id] || { b: bl, ds: [] }).ds.push({ t: dep, since: d.created_at });
+    });
+    var bl = Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return b.ds.length - a.ds.length; });
+    if (bl.length) {
+      var nb = bl.reduce(function (a, x) { return a + x.ds.length; }, 0), mx = bl[0].ds.length;
+      out.push({ sev: mx >= 3 ? 0 : 1, n: nb, title: 'Tareas frenadas por otras', text: 'Hay ' + bl.length + (bl.length === 1 ? ' tarea que frena' : ' tareas que frenan') + ' a otras. Destrabar las primeras libera más trabajo.',
+        items: top(bl, function (x) { return [x.b.text + ' · ' + personRef(x.b.userId || me), 'frena a ' + x.ds.length]; }) });
+    }
+    // 3) Vencidas
+    if (st.late.length) {
+      var lt = st.late.slice().sort(function (a, b) { return a.due < b.due ? -1 : 1; });
+      out.push({ sev: st.late.length >= 5 || st.late.length / Math.max(1, st.open.length) >= .3 ? 0 : 1, n: st.late.length, title: 'Vencidas', text: 'Pasaron su fecha límite y siguen abiertas.',
+        items: top(lt, function (t) { return [t.text + ' · ' + nameOf(t.userId), relDue(t.due, false)]; }) });
+    }
+    // 4) Estancadas
+    if (st.stuck.length) {
+      var sk = st.stuck.slice().sort(function (a, b) { return (a.statusAt || a.createdAt) - (b.statusAt || b.createdAt); });
+      out.push({ sev: st.stuck.length / Math.max(1, st.open.length) >= .4 ? 0 : 1, n: st.stuck.length, title: 'Sin moverse hace más de 7 días', text: 'Llevan una semana o más en el mismo estado: conviene preguntar qué las frena.',
+        items: top(sk, function (t) { return [t.text + ' · ' + nameOf(t.userId), ageD(t.statusAt || t.createdAt) + ' d en ' + LABEL[t.status].toLowerCase()]; }) });
+    }
+    // 5) Sobrecarga y personas sin cierres
+    var perP = directos.map(function (id) {
+      var ts = tasks.filter(function (t) { return t.userId === id; }), s = mStats(ts), recent = ts.filter(function (t) { return t.status === 'completado' && doneTime(t) >= now - 14 * DAY; }).length;
+      return { id: id, open: s.open.length, proc: s.proc, recent: recent };
+    });
+    var opens = perP.map(function (p) { return p.open; }).sort(function (a, b) { return a - b; }), med = median(opens) || 0;
+    var over = perP.filter(function (p) { return p.proc >= 5 || (p.open >= 8 && p.open >= 2 * Math.max(1, med)); }).sort(function (a, b) { return b.open - a.open; });
+    if (over.length) out.push({ sev: 1, n: over.length, title: 'Carga despareja', text: 'Mucho en proceso a la vez o el doble de tareas abiertas que el resto: se hace más lento todo.',
+      items: top(over, function (p) { return [nameOf(p.id), p.open + ' abiertas · ' + p.proc + ' en proceso']; }) });
+    var quiet = perP.filter(function (p) { return p.open >= 3 && p.recent === 0; });
+    if (quiet.length) out.push({ sev: 1, n: quiet.length, title: 'Sin cierres en 14 días', text: 'Tienen trabajo abierto pero no cerraron nada en las últimas dos semanas.',
+      items: top(quiet, function (p) { return [nameOf(p.id), p.open + ' abiertas']; }) });
+    // 6) Proyectos
+    var hl = [];
+    eqProy.forEach(function (p) { hitos.filter(function (h) { return h.proyecto_id === p.id && !h.hecho && h.fecha && h.fecha < today; }).forEach(function (h) { hl.push([h.titulo + ' · ' + p.nombre, 'venció ' + fmtD(h.fecha)]); }); });
+    if (hl.length) out.push({ sev: 1, n: hl.length, title: 'Hitos de proyecto atrasados', text: 'Hitos con fecha pasada que todavía no se marcaron como cumplidos.', items: hl.slice(0, 3), action: { txt: 'Ver proyectos', fn: function () { setView('proy'); } } });
+    var rev = eqProy.filter(function (p) { return p.revision === 'pendiente' && directos.indexOf(p.lider_id) !== -1; });
+    if (rev.length) out.push({ sev: 2, n: rev.length, title: 'Proyectos para revisar', text: 'Tu equipo los creó y esperan que los aceptes o rechaces. Si no hacés nada, siguen activos.',
+      items: top(rev, function (p) { return [p.nombre, nameOf(p.lider_id)]; }), action: { txt: 'Ver proyectos', fn: function () { setView('proy'); } } });
+    // 7) Orden en lo abierto
+    var nodue = st.open.filter(function (t) { return !t.due; }), noprio = st.open.filter(function (t) { return !t.prio; });
+    if (nodue.length >= 3 && nodue.length / Math.max(1, st.open.length) >= .4) out.push({ sev: 2, n: nodue.length, title: 'Abiertas sin fecha límite', text: 'Sin fecha es difícil saber qué está en riesgo. Conviene acordar fechas.' });
+    if (noprio.length >= 3 && noprio.length / Math.max(1, st.open.length) >= .4) out.push({ sev: 2, n: noprio.length, title: 'Abiertas sin prioridad', text: 'Sin prioridad no se sabe qué hacer primero.' });
+    return out.sort(function (a, b) { return a.sev - b.sev || b.n - a.n; });
+  }
+  function teamPanel(box) {
+    var tasks = teamTasks.filter(function (t) { return (!metProj || t.equipoProyectoId === metProj) && (!metPerson || t.userId === metPerson); });
+    var people = metPerson ? [metPerson] : directos, cr = core(tasks), st = cr.st, ws = weekly(tasks, 8), now = Date.now();
+    box.appendChild(mk('p', 'a-help', 'Incluye las tareas que tus colaboradores comparten con vos y las que asignaste. Lo que marcaron como privado no entra en las cuentas.'));
+    // Resumen
+    var top = mk('div', 'mx-top');
+    top.appendChild(heroEl(cr, ' tareas abiertas están al día (sin vencer, sin estancarse y sin bloqueos)', riskCauses(cr)));
+    var ts = mk('div', 'mx-tiles'), perWeek = Math.round(st.doneP.length / Math.max(1, (metDays || 182) / 7) * 10) / 10;
+    ts.appendChild(tile('Abiertas', st.open.length, { sub: st.proc + ' en proceso · ' + st.pend + ' pendientes' }));
+    ts.appendChild(tile('Completadas · ' + periodTxt(), st.doneP.length, { tone: 'good', delta: dlt(st.doneP.length, cr.prevDone, true), spark: ws.map(function (w) { return w.done; }) }));
+    ts.appendChild(tile('Cierres por semana', String(perWeek).replace('.', ','), { sub: 'promedio del período' }));
+    ts.appendChild(tile('Vencidas', st.late.length, { tone: st.late.length ? 'bad' : '', sub: st.soon.length + ' vencen esta semana' }));
+    ts.appendChild(tile('Esperan tu validación', st.waiting.length, { tone: st.waiting.length ? 'warn' : '' }));
+    ts.appendChild(tile('Estancadas +7 días', st.stuck.length, { tone: st.stuck.length ? 'bad' : '' }));
+    ts.appendChild(tile('Bloqueadas', cr.blocked.length, { tone: cr.blocked.length ? 'warn' : '', sub: 'esperan a otra tarea' }));
+    ts.appendChild(tile('Cerradas a tiempo', st.ontimePct === null ? '—' : st.ontimePct + '%', { sub: 'de las que tenían fecha' }));
+    ts.appendChild(tile('Tiempo medio de cierre', fmtDays(st.med), { delta: dlt(st.med === null ? null : Math.round(st.med * 10) / 10, cr.prevMed === null ? null : Math.round(cr.prevMed * 10) / 10, false) }));
+    top.appendChild(ts); box.appendChild(top);
+    // Qué necesita atención
+    var bs = bottlenecks(tasks, st, cr), sec = msection('Qué necesita tu atención', 'Cuellos de botella ordenados por gravedad e impacto');
+    var bg = mk('div', 'mx-bns');
+    if (!bs.length) bg.appendChild(mk('p', 'mx-ok', 'Sin cuellos de botella a la vista: nada vencido, estancado ni frenado en este alcance.'));
+    bs.forEach(function (b) { bg.appendChild(bnCard(b)); });
+    sec.appendChild(bg); box.appendChild(sec);
+    // Carga y flujo
+    var gs = msection('Carga y flujo', 'Quién tiene qué, y cómo se mueve el trabajo');
+    var grid = mk('div', 'mx-grid');
+    var load = directos.filter(function (id) { return !metPerson || id === metPerson; }).map(function (id) {
+      var ps = mStats(tasks.filter(function (t) { return t.userId === id; }));
+      return { id: id, ps: ps };
+    }).sort(function (a, b) { return b.ps.open.length - a.ps.open.length; });
+    var lrows = load.map(function (x) {
+      return { l: nameOf(x.id), on: metPerson === x.id, click: function () { metPerson = metPerson === x.id ? '' : x.id; renderMet(); },
+        segs: [{ v: x.ps.pend, c: C_PEND, n: 'Pendiente' }, { v: x.ps.proc, c: C_PROC, n: 'En proceso' }],
+        extra: x.ps.late.length ? x.ps.late.length + (x.ps.late.length === 1 ? ' vencida' : ' vencidas') : '' };
+    });
+    grid.appendChild(chartCard('Carga por persona', 'Tareas abiertas. Tocá una barra para ver solo a esa persona',
+      hbars(lrows, { lw: 124, label: 'Tareas abiertas por persona' }),
+      { head: ['Persona', 'Pendiente', 'En proceso', 'Vencidas'], rows: load.map(function (x) { return [nameOf(x.id), x.ps.pend, x.ps.proc, x.ps.late.length]; }) }, { legend: STATE_LEG.slice(0, 2) }));
+    var cats = weekCats(ws), wsl = weekly(tasks, weekCount()), catsL = weekCats(wsl);
+    grid.appendChild(chartCard('Ritmo semanal del equipo', 'Tareas creadas y completadas por semana',
+      vbars(catsL, [{ n: 'Creadas', c: C_GRAY, v: wsl.map(function (w) { return w.made; }) }, { n: 'Completadas', c: C_ACC, v: wsl.map(function (w) { return w.done; }) }], { label: 'Tareas creadas y completadas por semana' }),
+      { head: ['Semana', 'Creadas', 'Completadas'], rows: wsl.map(function (w) { return [w.label, w.made, w.done]; }) }, { legend: [{ n: 'Creadas', c: C_GRAY }, { n: 'Completadas', c: C_ACC }] }));
+    var bk = backlogSeries(tasks, wsl);
+    grid.appendChild(chartCard('Trabajo abierto en el tiempo', 'Si la línea sube, entra más de lo que se cierra',
+      lines(catsL, [{ n: 'Abiertas', c: C_ACC, v: bk }], { area: true, label: 'Tareas abiertas por semana' }),
+      { head: ['Semana', 'Abiertas al cierre'], rows: wsl.map(function (w, i) { return [w.label, bk[i]]; }) }));
+    var nW = Math.min(12, weekCount()), wh = weekly([], nW), pm = people.map(function (id) { return weekly(tasks.filter(function (t) { return t.userId === id; }), nW).map(function (w) { return w.done; }); });
+    var hw = chartCard('Cierres por persona y semana', 'Más oscuro, más tareas completadas', heat(people.map(nameOf), wh.map(function (w) { return { l: w.label }; }), pm),
+      { head: ['Persona'].concat(wh.map(function (w) { return w.label; })), rows: people.map(function (id, i) { return [nameOf(id)].concat(pm[i]); }) }, { wide: true });
+    grid.appendChild(hw);
+    var ag = agendaDays(st.open);
+    grid.appendChild(chartCard('Vencimientos · próximos 14 días', ag.late[0] ? ag.late[0] + ' ya vencieron' : 'Nada vencido',
+      vbars(ag.cats, [{ n: 'Vencidas', c: C_ALTA, v: ag.late }, { n: 'Por vencer', c: C_ACC, v: ag.soon }], { stack: true, label: 'Tareas por fecha de vencimiento' }),
+      { head: ['Día', 'Vencidas', 'Por vencer'], rows: ag.cats.map(function (c, i) { return [c.t, ag.late[i], ag.soon[i]]; }) }, { legend: [{ n: 'Vencidas', c: C_ALTA }, { n: 'Por vencer', c: C_ACC }] }));
+    var ab = ageBuckets(st.open);
+    grid.appendChild(chartCard('Cuánto llevan en su estado actual', 'Lo que se acumula a la derecha es lo que se estancó',
+      vbars(ab.map(function (b) { return { l: b.l }; }), [{ n: 'Pendiente', c: C_PEND, v: ab.map(function (b) { return b.pend; }) }, { n: 'En proceso', c: C_PROC, v: ab.map(function (b) { return b.proc; }) }], { stack: true, label: 'Tareas abiertas por antigüedad en su estado' }),
+      { head: ['Antigüedad', 'Pendiente', 'En proceso'], rows: ab.map(function (b) { return [b.l, b.pend, b.proc]; }) }, { legend: STATE_LEG.slice(0, 2) }));
+    var cb = cycleBuckets(st.times), p85 = pctile(st.times, .85);
+    grid.appendChild(chartCard('Cuánto tardan en cerrarse', st.med === null ? 'Todavía no hay cierres en el período' : 'Mediana ' + fmtDays(st.med) + ' · el 85% se cierra en ' + fmtDays(p85),
+      vbars(cb.map(function (b) { return { l: b.l }; }), [{ n: 'Tareas', c: C_ACC, v: cb.map(function (b) { return b.n; }) }], { label: 'Tareas cerradas por tiempo de resolución' }),
+      { head: ['Tiempo', 'Tareas'], rows: cb.map(function (b) { return [b.l, b.n]; }) }));
+    var pr = prioRows(st.open);
+    grid.appendChild(chartCard('Lo abierto, por prioridad', 'Qué tan cargado está el equipo de lo urgente',
+      hbars(pr, { lw: 112, label: 'Tareas abiertas por prioridad' }),
+      { head: ['Prioridad', 'Pendiente', 'En proceso', 'Vencidas'], rows: pr.map(function (r) { return [r.l, r.segs[0].v, r.segs[1].v, r.extra || 0]; }) }, { legend: STATE_LEG.slice(0, 2) }));
+    // Quién frena a más gente
+    var frena = {};
+    deps.forEach(function (d) {
+      if (d.estado === 'pendiente') return;
+      var dep = depTask(d.tarea_id), bl = depTask(d.bloqueada_por);
+      if (dep && bl && dep.status !== 'completado' && bl.status !== 'completado') frena[bl.userId || me] = (frena[bl.userId || me] || 0) + 1;
+    });
+    var frows = Object.keys(frena).map(function (id) { return { l: personRef(id), segs: [{ v: frena[id], c: C_PROC, n: 'Tareas que espera' }] }; }).sort(function (a, b) { return b.segs[0].v - a.segs[0].v; });
+    if (frows.length) grid.appendChild(chartCard('Quién frena a más tareas', 'Tareas de otras personas que esperan que alguien cierre la suya',
+      hbars(frows, { lw: 124, label: 'Tareas que cada persona frena' }), { head: ['Persona', 'Tareas que espera'], rows: frows.map(function (r) { return [r.l, r.segs[0].v]; }) }));
+    var myProj = eqProy.filter(function (p) { return p.lider_id === me || directos.indexOf(p.lider_id) !== -1 || teamTasks.some(function (t) { return t.equipoProyectoId === p.id; }); });
+    var pro = projRows(tasks, myProj);
+    if (pro.length) grid.appendChild(chartCard('Trabajo por proyecto', 'Tareas visibles de tu equipo vinculadas a cada proyecto',
+      hbars(pro, { lw: 132, label: 'Tareas por proyecto de equipo' }),
+      { head: ['Proyecto', 'Pendiente', 'En proceso', 'Completado'], rows: pro.map(function (r) { return [r.l, r.segs[0].v, r.segs[1].v, r.segs[2].v]; }) }, { legend: STATE_LEG }));
+    gs.appendChild(grid); box.appendChild(gs);
     // Por persona
-    var tbl = mk('table', 'm-people');
-    tbl.innerHTML = '<thead><tr><th>Persona</th><th>Abiertas</th><th>Vencidas</th><th>Completadas</th><th>Tiempo</th></tr></thead>';
+    var ps = msection('Por persona · ' + periodTxt(), 'Tocá una fila para ver solo a esa persona');
+    var tbl = mk('table', 'mx-table mx-people'), hd = mk('thead'), hr = mk('tr');
+    ['Persona', 'Abiertas', 'En proceso', 'Vencidas', 'Estancadas', 'Completadas', 'Cerradas a tiempo', 'Tiempo medio', 'Tendencia'].forEach(function (h) { hr.appendChild(mk('th', '', h)); });
+    hd.appendChild(hr); tbl.appendChild(hd);
     var tb = mk('tbody');
     directos.forEach(function (id) {
-      var ps = mStats(all.filter(function (t) { return t.userId === id; }));
-      var tr = mk('tr', 'go'); tr.tabIndex = 0; tr.setAttribute('role', 'button'); tr.setAttribute('aria-label', 'Ver métricas de ' + nameOf(id));
-      [nameOf(id), ps.open.length, ps.late.length, ps.doneP.length, fmtDays(ps.med)].forEach(function (v, i) {
-        var td = mk('td', i === 2 && v ? 'bad' : '', String(v)); tr.appendChild(td);
+      var mine = teamTasks.filter(function (t) { return t.userId === id && (!metProj || t.equipoProyectoId === metProj); }), s = mStats(mine), spk = weekly(mine, 8).map(function (w) { return w.done; });
+      var tr = mk('tr', 'go' + (metPerson === id ? ' on' : '')); tr.tabIndex = 0; tr.setAttribute('role', 'button'); tr.setAttribute('aria-label', 'Ver solo a ' + nameOf(id));
+      [nameOf(id), s.open.length, s.proc, s.late.length, s.stuck.length, s.doneP.length, s.ontimePct === null ? '—' : s.ontimePct + '%', fmtDays(s.med)].forEach(function (v, i) {
+        tr.appendChild(mk('td', (i === 3 || i === 4) && v ? 'bad' : '', String(v)));
       });
-      function go() { metPerson = id; renderMet(); }
-      tr.addEventListener('click', go);
-      tr.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      var tdk = mk('td'); tdk.appendChild(spark(spk)); tr.appendChild(tdk);
+      function go() { metPerson = metPerson === id ? '' : id; renderMet(); }
+      tr.addEventListener('click', go); tr.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
       tb.appendChild(tr);
     });
-    tbl.appendChild(tb);
-    var sc = mk('div', 'm-scroll'); sc.appendChild(tbl);
-    box.appendChild(msec('Por persona · ' + periodTxt(), directos.length ? sc : mk('p', 't-empty', 'Todavía no tenés directos.')));
-    return box;
+    tbl.appendChild(tb); var sc = mk('div', 'm-scroll'); sc.appendChild(tbl); ps.appendChild(directos.length ? sc : mk('p', 'lib-empty', 'Todavía no tenés directos.'));
+    box.appendChild(ps);
+    // Proyectos
+    var pj = msection('Proyectos del equipo', 'Avance de tareas e hitos, y lo que se atrasa');
+    pj.appendChild(projCards(myProj, function (id) { return teamTasks.concat(ownTasks()).filter(function (t) { return t.equipoProyectoId === id; }); }));
+    box.appendChild(pj);
+  }
+
+  /* --- Armado de la vista --- */
+  function metBar() {
+    var bar = mk('div', 'mx-bar'), isTeam = metTab === 'eq' && directos.length;
+    if (directos.length) {
+      var vm = mk('div', 'vm'); vm.setAttribute('role', 'tablist');
+      [['mias', 'Mi panel'], ['eq', 'Mi equipo']].forEach(function (o) {
+        var b = mk('button', '', o[1]); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(metTab === o[0]));
+        b.addEventListener('click', function () { metTab = o[0]; metPerson = ''; renderMet(); if (o[0] === 'eq') loadTeam(); });
+        vm.appendChild(b);
+      });
+      bar.appendChild(vm);
+    }
+    var sp = mk('select'); sp.setAttribute('aria-label', 'Período');
+    [[7, 'Últimos 7 días'], [30, 'Últimos 30 días'], [90, 'Últimos 90 días'], [0, 'Todo el histórico']].forEach(function (o) { var op = mk('option', '', o[1]); op.value = String(o[0]); sp.appendChild(op); });
+    sp.value = String(metDays); sp.addEventListener('change', function () { metDays = Number(sp.value); renderMet(); }); bar.appendChild(sp);
+    var popts = (isTeam ? eqProy.filter(function (x) { return x.lider_id === me || directos.indexOf(x.lider_id) !== -1 || teamTasks.some(function (t) { return t.equipoProyectoId === x.id; }); } ) : eqProy).map(function (x) { return [x.id, x.nombre]; });
+    if (popts.length) {
+      var pp = mk('select'); pp.setAttribute('aria-label', 'Proyecto');
+      [['', 'Todos los proyectos']].concat(popts).forEach(function (o) { var op = mk('option', '', o[1]); op.value = o[0]; pp.appendChild(op); });
+      pp.value = popts.some(function (o) { return o[0] === metProj; }) ? metProj : ''; if (pp.value !== metProj) metProj = pp.value;
+      pp.addEventListener('change', function () { metProj = pp.value; renderMet(); }); bar.appendChild(pp);
+    } else metProj = '';
+    if (isTeam) {
+      var pe = mk('select'); pe.setAttribute('aria-label', 'Persona');
+      [['', 'Todo el equipo']].concat(directos.map(function (id) { return [id, nameOf(id)]; })).forEach(function (o) { var op = mk('option', '', o[1]); op.value = o[0]; pe.appendChild(op); });
+      pe.value = metPerson; pe.addEventListener('change', function () { metPerson = pe.value; renderMet(); }); bar.appendChild(pe);
+    }
+    var ex = mk('button', 'btn-s', 'Exportar CSV'); ex.type = 'button';
+    ex.addEventListener('click', function () {
+      if (isTeam) exportCsv(teamTasks.filter(function (t) { return (!metProj || t.equipoProyectoId === metProj) && (!metPerson || t.userId === metPerson); }), true);
+      else exportCsv(ownTasks().filter(function (t) { return !metProj || t.equipoProyectoId === metProj; }), false);
+    });
+    bar.appendChild(ex);
+    return bar;
   }
   function renderMet() {
-    $('tab-m-mias').setAttribute('aria-selected', String(metTab === 'mias'));
-    $('tab-m-eq').setAttribute('aria-selected', String(metTab === 'eq'));
-    var body = $('m-body');
-    body.replaceChildren(metTab === 'mias'
-      ? personalView(Object.keys(byId).map(function (k) { return byId[k]; }))
-      : teamView());
+    var v = $('met-view'); if (!v) return;
+    tipHide();
+    if (metTab === 'eq' && !directos.length) metTab = 'mias';
+    if (metPerson && directos.indexOf(metPerson) === -1) metPerson = '';
+    var head = mk('div', 'v-head'), t = mk('div');
+    t.appendChild(mk('h1', '', metTab === 'eq' ? 'Centro de control del equipo' : 'Mis métricas'));
+    t.appendChild(mk('p', '', metTab === 'eq' ? 'Visión completa de tu equipo: cuellos de botella, carga, ritmo y proyectos.' : 'Cómo venís trabajando: tus tareas, las relacionadas con otras y tus proyectos.'));
+    head.appendChild(t);
+    var box = mk('div', 'mx');
+    if (metTab === 'eq') teamPanel(box); else ownPanel(box);
+    v.replaceChildren(head, metBar(), box);
   }
-  function openMet() {
-    metTab = 'mias'; metPerson = '';
-    $('m-scrim').hidden = false; $('met').hidden = false; $('met').focus();
+  async function enterMet() {
     renderMet();
+    await Promise.all([loadDeps(), loadHitos(), directos.length ? loadTeam() : null]);
+    if (view === 'met') renderMet();
   }
-  function closeMet() { $('met').hidden = true; $('m-scrim').hidden = true; }
-  $('met-btn').addEventListener('click', openMet);
-  $('m-close').addEventListener('click', closeMet);
-  $('m-scrim').addEventListener('click', closeMet);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('met').hidden) closeMet(); });
-  $('tab-m-mias').addEventListener('click', function () { metTab = 'mias'; metPerson = ''; renderMet(); });
-  $('tab-m-eq').addEventListener('click', function () { metTab = 'eq'; metPerson = ''; renderMet(); loadTeam(); });
+  function openMetPerson(id) { metTab = 'eq'; metPerson = id; setView('met'); }
+  tipBind($('met-view'));
 
   /* ---------- Mi equipo ---------- */
 
@@ -4429,7 +5046,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     renderTeam();
     if (view === 'gest') renderCtl();
     loadDeps();
-    if (!$('met').hidden) renderMet();
+    if (view === 'met') renderMet();
   }
   async function teamCall(fn, args, okMsg) {
     tSay('');
