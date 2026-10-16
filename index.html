@@ -1036,22 +1036,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
           <button type="submit">Agregar</button>
         </form>
       </div>
-      <div class="field wide">
-        <label for="p-proj">Proyecto</label>
-        <select id="p-proj"></select>
-        <form class="sub-add" id="p-proj-add" autocomplete="off">
-          <input type="text" id="p-proj-new" placeholder="Nuevo proyecto" maxlength="40">
-          <button type="submit">Crear</button>
-        </form>
-        <div class="proj-mng" id="p-proj-mng" hidden>
-          <button type="button" class="btn-s" id="p-proj-ren">Renombrar</button>
-          <button type="button" class="btn-s" id="p-proj-del">Eliminar proyecto</button>
-        </div>
-        <form class="sub-add" id="p-proj-rnf" autocomplete="off" hidden>
-          <input type="text" id="p-proj-rnn" placeholder="Nuevo nombre" maxlength="40" aria-label="Nuevo nombre del proyecto">
-          <button type="submit">Guardar</button>
-        </form>
-      </div>
       <div class="field wide" id="p-ep-f">
         <label for="p-ep">Proyecto de equipo</label>
         <select id="p-ep"></select>
@@ -1208,7 +1192,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 
   var col = null;            // CollectionReference
   var delegTasks = {};
-  var me = '', proyectos = [], misResp = [], directos = [], names = {}, companeros = [], deleg = [], delegChannel = null, openPick = '';
+  var me = '', misResp = [], directos = [], names = {}, companeros = [], deleg = [], delegChannel = null, openPick = '';
   var byId = {};             // id -> task
   var openId = null;         // task open in the panel
   var canWrite = true;
@@ -1455,7 +1439,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     else if (t.status === 'completado' && (t.visible || t.asignadaPor || t.delegadaPor)) pills.push(pill('warn', 'Esperando validación'));
     else if (t.visible) pills.push(pill('', 'Compartida'));
     if (t.equipoProyectoId && projName(t.equipoProyectoId)) pills.push(pill('ok', esc(projName(t.equipoProyectoId))));
-    if (t.proyectoId) { var pj = proyectos.filter(function (x) { return x.id === t.proyectoId; })[0]; if (pj) pills.push(pill('', esc(pj.nombre))); }
     if (pills.length) {
       var meta = document.createElement('div');
       meta.className = 'meta';
@@ -1536,7 +1519,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   }
   function renderPFilters() {
     var box = $('pfilters'), items = [];
-    if (proyectos.length) items = items.concat(proyectos.map(function (x) { return mkPFilter(x.id, x.nombre); }));
     eqProy.forEach(function (x) { items.push(mkPFilter(x.id, x.nombre)); });
     if (misResp.length) items.push(mkPFilter('__shared', 'Compartidas'));
     if (!items.length) { box.hidden = true; box.replaceChildren(); return; }
@@ -1545,7 +1527,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   }
   function inProj(t) {
     if (!filterProj) return true;
-    return filterProj === '__shared' ? (t.visible || !!t.asignadaPor) : (t.proyectoId === filterProj || t.equipoProyectoId === filterProj);
+    return filterProj === '__shared' ? (t.visible || !!t.asignadaPor) : t.equipoProyectoId === filterProj;
   }
 
   /* --- vistas: tablero, hoy, semana, archivo --- */
@@ -1638,7 +1620,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var oldN = all.filter(function (t) { return t.status === 'completado' && (t.doneAt || t.statusAt || t.createdAt) < Date.now() - 14 * DAY; }).length;
     $('arch-old').hidden = !oldN; if (!oldN) { $('arch-old').classList.remove('armed'); $('arch-old').textContent = 'Archivar +14 días'; }
     if (filterLabel && !all.some(function (t) { return t.labels.indexOf(filterLabel) !== -1; })) filterLabel = '';
-    if (filterProj && filterProj !== '__shared' && !proyectos.some(function (x) { return x.id === filterProj; }) && !eqProy.some(function (x) { return x.id === filterProj; })) filterProj = '';
+    if (filterProj && filterProj !== '__shared' && !eqProy.some(function (x) { return x.id === filterProj; })) filterProj = '';
     renderFilters(); renderPFilters(); renderBanner();
     if (!$('met').hidden && metTab === 'mias') renderMet();
     var shown = all.filter(function (t) { return (!filterLabel || t.labels.indexOf(filterLabel) !== -1) && inProj(t); });
@@ -1783,13 +1765,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     hint.textContent = t.due ? relDue(t.due, t.status === 'completado') : 'Sin fecha límite';
     hint.className = 'hint' + (t.due && t.status !== 'completado' && t.due < todayISO() ? ' late' : '');
 
-    var pj = $('p-proj');
-    if (document.activeElement !== pj) {
-      pj.replaceChildren.apply(pj, [['', 'Sin proyecto']].concat(proyectos.map(function (x) { return [x.id, x.nombre]; })).map(function (o) {
-        var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; return op;
-      }));
-      pj.value = t.proyectoId;
-    }
     var ep = $('p-ep');
     if (document.activeElement !== ep) {
       var opts = [['', 'Ninguno']].concat(eqProy.map(function (x) { return [x.id, x.nombre]; }));
@@ -1801,9 +1776,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var asig = !!t.asignadaPor, lock = !!t.validadaPor, dlg = !!t.delegadaPor;
     $('p-rec-f').hidden = asig || dlg; $('p-rec').value = t.recurrencia; $('p-rec').disabled = !canWrite;
     $('p-rec-h').hidden = !t.recurrencia;
-    var pjx = t.proyectoId && proyectos.filter(function (x) { return x.id === t.proyectoId; })[0];
-    $('p-proj-mng').hidden = !pjx;
-    if (!pjx) $('p-proj-rnf').hidden = true;
     var pa = $('p-arch'); pa.hidden = t.status !== 'completado'; pa.textContent = t.archivada ? 'Restaurar' : 'Archivar'; pa.disabled = !canWrite;
     renderComments(t);
     renderDeps(t);
@@ -1970,7 +1942,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     $('p-prio').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite || asig; });
     $('p-quick').querySelectorAll('button').forEach(function (b) { b.disabled = !canWrite || asig; });
     $('p-vis').disabled = !canWrite || asig || dlg;
-    $('p-proj').disabled = !canWrite; $('p-proj-new').disabled = !canWrite;
     $('p-ep').disabled = !canWrite || asig;
     del.hidden = asig || dlg; del.disabled = !canWrite || asig || dlg;
   }
@@ -2107,28 +2078,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var ok = await save(Object.assign({}, t, { archivada: archivar }), 'No se pudo archivar la tarea.');
     if (ok && archivar) closePanel();
   });
-  $('p-proj-ren').addEventListener('click', function () {
-    var t = openId && byId[openId], pj = t && proyectos.filter(function (x) { return x.id === t.proyectoId; })[0]; if (!pj) return;
-    var f = $('p-proj-rnf'); f.hidden = !f.hidden; $('p-proj-rnn').value = pj.nombre; if (!f.hidden) $('p-proj-rnn').focus();
-  });
-  $('p-proj-rnf').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    var t = openId && byId[openId], nn = $('p-proj-rnn').value.trim(); if (!t || !nn) return;
-    var r = await sb.from('proyectos').update({ nombre: nn }).eq('id', t.proyectoId);
-    if (r.error) { say(/duplicate|unique/i.test(r.error.message) ? 'Ya tenés un proyecto con ese nombre.' : 'No se pudo renombrar el proyecto.', r.error); return; }
-    say(''); $('p-proj-rnf').hidden = true; await loadProyectos();
-  });
-  $('p-proj-del').addEventListener('click', async function () {
-    var b = this, t = openId && byId[openId]; if (!t || !t.proyectoId) return;
-    if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = 'Confirmar: las tareas quedan sin proyecto'; return; }
-    b.disabled = true;
-    var r = await sb.from('proyectos').delete().eq('id', t.proyectoId);
-    b.disabled = false; b.classList.remove('armed'); b.textContent = 'Eliminar proyecto';
-    if (r.error) { say('No se pudo eliminar el proyecto.', r.error); return; }
-    if (filterProj === t.proyectoId) filterProj = '';
-    await loadProyectos();
-    if (col) { var rr = await sb.from('tareas').select('*').eq('user_id', me); if (!rr.error) { var next = {}; rr.data.forEach(function (row) { next[row.id] = norm(row.id, fromRow(row)); }); byId = next; render(); } }
-  });
   $('p-cm-add').addEventListener('submit', async function (e) {
     e.preventDefault();
     var inp = $('p-cm-new'), v = inp.value.trim(), tid = openId; if (!v || !tid) return;
@@ -2143,23 +2092,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   });
   $('p-ep').addEventListener('change', function () {
     var c = edit('equipoProyectoId', this.value); if (c) save(c, 'No se pudo vincular el proyecto de equipo.');
-  });
-  $('p-proj').addEventListener('change', function () {
-    var c = edit('proyectoId', this.value); if (c) save(c, 'No se pudo cambiar el proyecto.');
-  });
-  $('p-proj-add').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    var inp = $('p-proj-new'), t = openId && byId[openId], v = inp.value.trim();
-    if (!v || !t || !sb) return;
-    var dup = proyectos.filter(function (x) { return x.nombre.toLowerCase() === v.toLowerCase(); })[0];
-    var pr = dup;
-    if (!pr) {
-      var r = await sb.from('proyectos').insert({ nombre: v }).select().single();
-      if (r.error) { say('No se pudo crear el proyecto.', r.error); return; }
-      pr = r.data; proyectos.push({ id: pr.id, nombre: pr.nombre });
-    }
-    inp.value = '';
-    save(Object.assign({}, t, { proyectoId: pr.id }), 'No se pudo asignar el proyecto.');
   });
   $('p-av-add').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -2261,7 +2193,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     loadPerfil(session);
     $('bell-btn').hidden = false; $('pass-btn').hidden = false;
     $('side').hidden = false; document.body.classList.add('has-side');
-    loadProyectos();
     loadEqProy();
     loadDeps();
     refreshLecturas();
@@ -2294,11 +2225,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var r = await sb.from('equipo_proyectos').select('*').order('created_at');
     eqProy = r.error ? [] : r.data;
     $('side-gest').hidden = !puedeGestionar();
-    render();
-  }
-  async function loadProyectos() {
-    var r = await sb.from('proyectos').select('id,nombre').order('created_at');
-    proyectos = r.error ? [] : r.data;
     render();
   }
   async function loadEquipo() {
@@ -2369,7 +2295,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; comentarios = {}; threadRefreshers = {}; deps = []; depTasks = {}; closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; comentarios = {}; threadRefreshers = {}; deps = []; depTasks = {}; closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('who-mail').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -3427,7 +3353,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Qué muestra cada tarjeta\n' +
 'Título, primera línea de las notas, las subtareas que faltan, la prioridad, la fecha en palabras («Vence mañana», «Venció hace 2 días»), las etiquetas, el proyecto y avisos como «Asignada por…», «Compartida», «Esperando validación», «Validada» o «Devuelta».\n\n' +
 '## Filtrar\n' +
-'Si usás etiquetas o proyectos, aparecen filtros arriba del tablero. «Compartidas» muestra lo que ven tus responsables.\n\n' +
+'Si usás etiquetas o hay proyectos de equipo, aparecen filtros arriba del tablero. «Compartidas» muestra lo que ven tus responsables.\n\n' +
 '## Otras vistas\n' +
 'Arriba del tablero elegís cómo mirar tus tareas:\n' +
 '- **Tablero**: las tres columnas.\n' +
@@ -3447,16 +3373,14 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '- **Comentarios**: conversación con quienes ven la tarea (tu responsable, o quien te la pasó). Si la tarea es privada, nadie más puede comentar.\n' +
 '- **Dependencias**: relacioná la tarea con otras, aunque sean de otro proyecto. «Depende de» marca algo que tiene que terminar antes; «Bloquea a» es lo inverso. Mientras falte alguna, la tarjeta muestra «Bloqueada · espera N tareas» (es un aviso: igual podés completarla). No se admiten círculos (A depende de B y B de A). Solo ves relaciones entre tareas que ves vos: un líder puede relacionar tareas de sus directos que sean visibles; tus tareas privadas nunca se muestran a nadie.\n' +
 '- **Con tareas de compañeros** (personas con el mismo responsable): en la lista aparecen solo las tareas que el compañero dejó visibles. **Depende de** una tarea suya no necesita aprobación (solo te bloquea a vos); él recibe un aviso. **Bloquea a** una tarea suya es un pedido: tu tarea tiene que ser visible, y la relación vale recién cuando él la acepta desde el detalle de su tarea (o la rechaza). Mientras esperás, podés cancelar el pedido. Si alguien pasa su tarea a privada, la relación deja de verse.\n' +
-'- **Proyecto** y **Proyecto de equipo**: ver la sección de proyectos.\n' +
+'- **Proyecto de equipo**: ver la sección de proyectos.\n' +
 '- **Historia**: cuándo se creó, desde cuándo está en este estado y cuánto tardó en cerrarse.\n\n' +
 '## Eliminar\n' +
 'El botón Eliminar pide una segunda confirmación. Las tareas que te asignó tu responsable no se pueden eliminar.' },
 
-    { id: 'proyectos', t: 'Proyectos y etiquetas', b:
-'Hay dos tipos de proyecto, y conviene no confundirlos.\n\n' +
-'## Proyecto personal\n' +
-'Lo creás vos, desde el detalle de cualquier tarea (campo «Nuevo proyecto»). Es solo para ordenar tu tablero: nadie más lo ve, y sirve para filtrar. Desde el detalle de una tarea con proyecto podés renombrarlo o eliminarlo (las tareas quedan sin proyecto).\n\n' +
-'## Proyecto de equipo\n' +
+    { id: 'proyectos', t: 'Proyectos de equipo y etiquetas', b:
+'Los proyectos de Pendientes son siempre de equipo (ya no hay proyectos personales).\n\n' +
+'## Cómo funcionan\n' +
 'Los proyectos son del equipo: los crea cualquier persona desde **Proyectos** («Crear proyecto») y quien lo crea es su **responsable**.\n' +
 '- **Participantes**: el responsable elige en Gestión («Editar en Gestión») quiénes participan, entre su equipo (compañeros, su responsable y sus directos). Los participantes ven el proyecto, vinculan sus tareas desde el detalle («Proyecto de equipo») y crean tareas nuevas con «Agregar tarea», directo desde el proyecto.\n' +
 '- **Revisión**: el responsable de equipo de quien lo creó recibe un aviso y puede **aceptarlo o rechazarlo** (con un motivo). Si no hace nada, el proyecto sigue activo. Si lo rechaza, los participantes dejan de verlo y no se le pueden vincular tareas nuevas; el responsable ve el motivo y puede **pedir una nueva revisión**. El revisor puede cambiar su decisión.\n' +
@@ -3680,8 +3604,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var parts = [];
     if (t.userId && t.userId !== me) parts.push(nameOf(t.userId));
     if (t.equipoProyectoId && projName(t.equipoProyectoId)) parts.push(projName(t.equipoProyectoId));
-    else if (t.proyectoId && t.userId !== me && t.userId) { /* proyecto personal de otra persona: no se muestra */ }
-    else if (t.proyectoId) { var pj = proyectos.filter(function (x) { return x.id === t.proyectoId; })[0]; if (pj) parts.push(pj.nombre); }
     return parts.join(' · ');
   }
   function renderDeps(t) {
@@ -4322,7 +4244,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   }
 
   // Filtros de período y proyecto, y exportación.
-  function inMetProj(t) { return !metProj || t.proyectoId === metProj || t.equipoProyectoId === metProj; }
+  function inMetProj(t) { return !metProj || t.equipoProyectoId === metProj; }
   function metControls(projOpts, onExport) {
     var bar = mk('div', 'm-ctl');
     var sp = mk('select'); sp.setAttribute('aria-label', 'Período');
@@ -4349,12 +4271,11 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     return /[;"\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
   }
   function exportCsv(tasks, withPerson) {
-    var head = ['Título', 'Estado', 'Prioridad', 'Fecha límite', 'Creada', 'Completada', 'Días hasta cerrar', 'Proyecto personal', 'Proyecto de equipo', 'Etiquetas', 'Validada'];
+    var head = ['Título', 'Estado', 'Prioridad', 'Fecha límite', 'Creada', 'Completada', 'Días hasta cerrar', 'Proyecto de equipo', 'Etiquetas', 'Validada'];
     if (withPerson) head.unshift('Persona');
     var rows = tasks.map(function (t) {
-      var pj = proyectos.filter(function (x) { return x.id === t.proyectoId; })[0];
       var r = [t.text, LABEL[t.status], t.prio ? PRIO[t.prio] : '', t.due, t.createdAt ? isoOf(t.createdAt) : '', t.doneAt ? isoOf(t.doneAt) : '',
-        t.doneAt && t.createdAt ? Math.round((t.doneAt - t.createdAt) / DAY * 10) / 10 : '', pj ? pj.nombre : '', t.equipoProyectoId ? projName(t.equipoProyectoId) : '',
+        t.doneAt && t.createdAt ? Math.round((t.doneAt - t.createdAt) / DAY * 10) / 10 : '', t.equipoProyectoId ? projName(t.equipoProyectoId) : '',
         t.labels.join(', '), t.validadaPor ? 'Sí' : 'No'];
       if (withPerson) r.unshift(nameOf(t.userId));
       return r;
@@ -4372,7 +4293,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var all = tasks.filter(inMetProj), st = mStats(all), box = mk('div');
     box.style.display = 'flex'; box.style.flexDirection = 'column'; box.style.gap = '20px';
     if (!opts.noControls) {
-      var po = proyectos.map(function (x) { return [x.id, x.nombre]; }).concat(eqProy.map(function (x) { return [x.id, 'Equipo: ' + x.nombre]; }));
+      var po = eqProy.map(function (x) { return [x.id, x.nombre]; });
       box.appendChild(metControls(po, function () { exportCsv(all, false); }));
     }
     var k = mk('div', 'kpis');
