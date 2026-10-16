@@ -6,7 +6,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://zeedhbokiyvowlgenkon.supabase.co wss://zeedhbokiyvowlgenkon.supabase.co; base-uri 'none'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
 <script>try { var tm = localStorage.getItem('tema'); if (tm === 'light' || tm === 'dark') document.documentElement.setAttribute('data-theme', tm); } catch (e) {}</script>
-<style id="antiframe">html { display: none !important; }</style>
+<style id="antiframe">html { display: none !important; }
+</style>
 <script>if (window.top === window.self) { var a = document.getElementById('antiframe'); a.parentNode.removeChild(a); } else { window.top.location = window.self.location; }</script>
 <title>Pendientes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -747,6 +748,35 @@ button.pcard:hover { border-color: var(--line-strong); }
   .board { align-items: start; }
   .u-row { padding: 10px; gap: 10px; }
 }
+
+/* Centro de control del equipo */
+.cc-people { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.cc-p { display: flex; flex-direction: column; gap: 8px; text-align: left; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); color: var(--ink); }
+.cc-p:hover { border-color: var(--line-strong); }
+.cc-p.on { border-color: var(--accent); background: var(--accent-soft); }
+.cc-ptop { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cc-ptop .u-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cc-stats { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 12.5px; color: var(--muted); }
+.cc-stats b { color: var(--ink); font-weight: 600; }
+.cc-late, .cc-stats .cc-late b { color: var(--alta); }
+.cc-wait { color: var(--accent); font-weight: 500; }
+.cc-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+.cc-bar .txt { flex: 1 1 220px; max-width: 360px; }
+.cc-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.cc-col { min-width: 0; display: flex; flex-direction: column; gap: 10px; background: color-mix(in srgb, var(--surface-2) 55%, transparent); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.cc-head { display: flex; align-items: center; gap: 8px; padding: 2px 4px; }
+.cc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.cc-card { display: flex; flex-direction: column; gap: 8px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); }
+.cc-card .t-title { font-weight: 500; overflow-wrap: anywhere; }
+.cc-card .t-sub { font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.cc-who { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.cc-who .av { width: 22px; height: 22px; font-size: 10px; }
+.cc-acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.cc-acts .btn-s, .cc-acts .a-btn { height: 32px; font-size: 13px; padding: 0 12px; }
+.cc-prio { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.cc-prio select { height: 32px; }
+.cc-card form { display: flex; gap: 8px; }
+@media (max-width: 900px) { .cc-board { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -3096,6 +3126,131 @@ button.pcard:hover { border-color: var(--line-strong); }
     return box;
   }
   function gSay(msg, ok) { gestMsg = msg || ''; var m = $('gest-msg'); if (m) { m.textContent = gestMsg; m.className = 'a-msg' + (ok ? ' ok' : ''); } }
+
+  /* ---------- Centro de control del equipo (Gestión) ---------- */
+
+  var ctl = { who: '', prio: '', q: '' };
+  async function ctlCall(fn, args, okMsg) {
+    gSay('');
+    var r = await sb.rpc(fn, args);
+    if (r.error) { gSay(r.error.message); return false; }
+    if (okMsg) gSay(okMsg, true);
+    await loadTeam();
+    return true;
+  }
+  var PRIO_ORD = { alta: 0, media: 1, baja: 2, '': 3 };
+  function ctlSort(a, b) {
+    return (PRIO_ORD[a.prio] - PRIO_ORD[b.prio]) || byDue(a, b);
+  }
+  function ctlCard(t) {
+    var li = mk('li', 'cc-card');
+    var who = mk('div', 'cc-who'); who.appendChild(mk('span', 'av', initials(nameOf(t.userId)))); who.appendChild(mk('span', '', nameOf(t.userId)));
+    li.appendChild(who);
+    li.appendChild(mk('div', 't-title', t.text));
+    var meta = mk('div', 't-sub');
+    if (t.due) { var late = t.status !== 'completado' && t.due < todayISO(); var d = mk('span', late ? 'cc-late' : '', relDue(t.due, t.status === 'completado')); meta.appendChild(d); }
+    if (t.equipoProyectoId && projName(t.equipoProyectoId)) meta.appendChild(mk('span', '', 'Proyecto: ' + projName(t.equipoProyectoId)));
+    if (t.subs.length) meta.appendChild(mk('span', '', t.subs.filter(function (x) { return x.d; }).length + ' de ' + t.subs.length + ' subtareas'));
+    if (t.asignadaPor === me) meta.appendChild(mk('span', '', 'Asignada por vos'));
+    if (t.status === 'completado' && !t.validadaPor) meta.appendChild(mk('span', 'cc-wait', 'Esperando validación'));
+    if (t.validadaPor) meta.appendChild(mk('span', '', 'Validada'));
+    if (meta.childNodes.length) li.appendChild(meta);
+    var acts = mk('div', 'cc-acts');
+    var lb = mk('label', 'cc-prio', 'Prioridad ');
+    var sel = mk('select'); sel.setAttribute('aria-label', 'Prioridad de «' + t.text + '»');
+    [['', 'Sin prioridad'], ['alta', 'Alta'], ['media', 'Media'], ['baja', 'Baja']].forEach(function (o) { var op = mk('option', '', o[1]); op.value = o[0]; sel.appendChild(op); });
+    sel.value = t.prio; sel.disabled = !!t.validadaPor;
+    sel.addEventListener('change', function () {
+      sel.disabled = true;
+      ctlCall('cambiar_prioridad_equipo', { p_id: t.id, p_prio: sel.value }, 'Prioridad actualizada.').then(function (ok) { if (!ok) { sel.value = t.prio; sel.disabled = false; } });
+    });
+    lb.appendChild(sel); acts.appendChild(lb);
+    var th = teamThread(t);
+    var cb = mk('button', 'btn-s', 'Comentarios'); cb.type = 'button'; cb.addEventListener('click', th.open); acts.appendChild(cb);
+    li.appendChild(acts);
+    if (t.status === 'completado' && !t.validadaPor) {
+      var vr = mk('div', 'cc-acts');
+      var ok = mk('button', 'a-btn', 'Validar'); ok.type = 'button';
+      ok.addEventListener('click', function () { ok.disabled = true; ctlCall('validar_tarea', { p_id: t.id }, 'Tarea validada.'); });
+      var back = mk('button', 'btn-s', 'Devolver'); back.type = 'button';
+      var form = mk('form', 'sub-add'); form.hidden = true; form.autocomplete = 'off';
+      var inp = mk('input'); inp.maxLength = 500; inp.placeholder = 'Motivo (obligatorio)'; inp.setAttribute('aria-label', 'Motivo de la devolución');
+      var go = mk('button', '', 'Devolver'); go.type = 'submit'; form.appendChild(inp); form.appendChild(go);
+      back.addEventListener('click', function () { form.hidden = !form.hidden; if (!form.hidden) inp.focus(); });
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!inp.value.trim()) { gSay('Escribí el motivo de la devolución.'); return; }
+        go.disabled = true; ctlCall('devolver_tarea', { p_id: t.id, p_motivo: inp.value.trim() }, 'Tarea devuelta.').then(function (o) { if (!o) go.disabled = false; });
+      });
+      vr.appendChild(ok); vr.appendChild(back); li.appendChild(vr); li.appendChild(form);
+    }
+    li.appendChild(th.box);
+    return li;
+  }
+  function renderCtl(box) {
+    box = box || $('ctl-box'); if (!box) return;
+    var today = todayISO();
+    if (ctl.who && directos.indexOf(ctl.who) === -1) ctl.who = '';
+    box.replaceChildren(mk('h3', '', 'Centro de control del equipo'));
+    box.appendChild(mk('p', 'a-help', 'Ves las tareas que asignaste y las que tus colaboradores comparten con vos. Podés cambiar su prioridad desde acá; ellos reciben un aviso.'));
+
+    var cards = mk('div', 'cc-people');
+    function personCard(id, name, list) {
+      var open = list.filter(function (t) { return t.status !== 'completado'; });
+      var late = open.filter(function (t) { return t.due && t.due < today; }).length;
+      var wait = list.filter(function (t) { return t.status === 'completado' && !t.validadaPor; }).length;
+      var alta = open.filter(function (t) { return t.prio === 'alta'; }).length;
+      var b = mk('button', 'cc-p' + (ctl.who === id ? ' on' : '')); b.type = 'button'; b.setAttribute('aria-pressed', ctl.who === id ? 'true' : 'false');
+      var top = mk('div', 'cc-ptop'); if (id) top.appendChild(mk('span', 'av', initials(name))); top.appendChild(mk('span', 'u-name', name)); b.appendChild(top);
+      var st = mk('div', 'cc-stats');
+      function stat(n, txt, cls) { var s = mk('span', cls || ''); s.appendChild(mk('b', '', String(n))); s.appendChild(document.createTextNode(' ' + txt)); st.appendChild(s); }
+      stat(open.length, open.length === 1 ? 'abierta' : 'abiertas');
+      if (late) stat(late, late === 1 ? 'vencida' : 'vencidas', 'cc-late');
+      if (wait) stat(wait, 'por validar', 'cc-wait');
+      if (alta) stat(alta, 'alta', '');
+      b.appendChild(st);
+      b.addEventListener('click', function () { ctl.who = ctl.who === id ? '' : id; renderCtl(); });
+      cards.appendChild(b);
+    }
+    personCard('', 'Todo el equipo', teamTasks);
+    directos.forEach(function (id) { personCard(id, nameOf(id), teamTasks.filter(function (t) { return t.userId === id; })); });
+    box.appendChild(cards);
+
+    var bar = mk('div', 'cc-bar');
+    var q = mk('input', 'txt'); q.type = 'search'; q.placeholder = 'Buscar en las tareas'; q.value = ctl.q; q.setAttribute('aria-label', 'Buscar en las tareas del equipo');
+    var pf = mk('select'); pf.setAttribute('aria-label', 'Filtrar por prioridad');
+    [['', 'Toda prioridad'], ['alta', 'Alta'], ['media', 'Media'], ['baja', 'Baja'], ['sin', 'Sin prioridad']].forEach(function (o) { var op = mk('option', '', o[1]); op.value = o[0]; pf.appendChild(op); });
+    pf.value = ctl.prio;
+    bar.appendChild(q); bar.appendChild(pf); box.appendChild(bar);
+
+    var board = mk('div', 'cc-board'); box.appendChild(board);
+    function fill() {
+      var qq = ctl.q.trim().toLowerCase();
+      var list = teamTasks.filter(function (t) {
+        if (t.archivada) return false;
+        if (ctl.who && t.userId !== ctl.who) return false;
+        if (ctl.prio === 'sin' ? t.prio : (ctl.prio && t.prio !== ctl.prio)) return false;
+        if (qq && t.text.toLowerCase().indexOf(qq) === -1) return false;
+        return true;
+      });
+      board.replaceChildren();
+      STATES.forEach(function (st) {
+        var items = list.filter(function (t) { return t.status === st; });
+        if (st === 'completado') items.sort(function (a, b) { return (a.validadaPor ? 1 : 0) - (b.validadaPor ? 1 : 0) || (b.doneAt || 0) - (a.doneAt || 0); }); else items.sort(ctlSort);
+        var col = mk('div', 'cc-col'); col.dataset.status = st;
+        var h = mk('div', 'cc-head'); h.appendChild(mk('span', 'col-name', LABEL[st])); h.appendChild(mk('span', 'col-n', String(items.length))); col.appendChild(h);
+        var ul = mk('ul', 'cc-list');
+        if (!items.length) ul.appendChild(mk('li', 't-empty', teamTasks.length ? 'Nada por acá.' : 'Todavía no hay tareas asignadas ni compartidas.'));
+        items.slice(0, 60).forEach(function (t) { ul.appendChild(ctlCard(t)); });
+        if (items.length > 60) ul.appendChild(mk('li', 't-empty', 'Hay ' + (items.length - 60) + ' más; filtrá para verlas.'));
+        col.appendChild(ul); board.appendChild(col);
+      });
+    }
+    q.addEventListener('input', function () { ctl.q = q.value; fill(); });
+    pf.addEventListener('change', function () { ctl.prio = pf.value; fill(); });
+    fill();
+  }
+
   function renderGest() {
     var v = $('gest-view');
     var head = mk('div', 'v-head'), t = mk('div');
@@ -3104,6 +3259,8 @@ button.pcard:hover { border-color: var(--line-strong); }
     head.appendChild(t);
     var msg = mk('p', 'a-msg'); msg.id = 'gest-msg'; msg.setAttribute('role', 'status'); msg.textContent = gestMsg;
     var mine = eqProy.filter(function (p) { return p.lider_id === me; });
+
+    var cc = mk('section', 'lib-sec'); cc.id = 'ctl-box'; renderCtl(cc);
 
     var cs = mk('section', 'lib-sec'); cs.appendChild(mk('h3', '', 'Colaboradores'));
     var grid = mk('div', 'collab-grid');
@@ -3196,7 +3353,7 @@ button.pcard:hover { border-color: var(--line-strong); }
       });
       c.appendChild(del); ps.appendChild(c);
     });
-    v.replaceChildren(head, msg, cs, ps);
+    v.replaceChildren(head, msg, cc, cs, ps);
   }
 
   /* ---------- Guía de uso ---------- */
@@ -3357,7 +3514,12 @@ button.pcard:hover { border-color: var(--line-strong); }
 'En Métricas, la pestaña **Equipo** consolida los indicadores de todos tus directos, marca los cuellos de botella (sin validar, estancadas, vencidas) y permite abrir las métricas de cada persona. Solo cuentan tareas visibles o asignadas. Ahí también ves la **carga de trabajo** por persona (abiertas, vencidas y por vencer) y se avisa si el reparto está muy desparejo. Podés filtrar por proyecto de equipo y exportar a CSV.' },
 
     { id: 'gestion', lider: true, t: 'Gestión de equipo (líderes)', b:
-'En **Gestión** (barra lateral) organizás a tus colaboradores por proyecto.\n\n' +
+'En **Gestión** (barra lateral) está tu centro de control: ves el trabajo de tus colaboradores y los organizás por proyecto.\n\n' +
+'## Centro de control del equipo\n' +
+'Arriba hay una tarjeta por persona con sus tareas abiertas, vencidas, por validar y de prioridad alta; tocá una para ver solo a esa persona (de nuevo para volver a todo el equipo). Debajo, un tablero con Pendiente, En proceso y Completado, con buscador y filtro por prioridad. Ves las tareas que asignaste y las que tus colaboradores comparten con vos, nunca las privadas.\n' +
+'- **Prioridad**: cambiala desde la tarjeta. La persona recibe un aviso y queda anotado en los Avances de la tarea. No se puede en tareas ya validadas.\n' +
+'- **Validar o devolver**: las completadas que esperan revisión tienen sus botones ahí mismo.\n' +
+'- **Comentarios**: conversá con la persona sin salir del tablero.\n\n' +
 '## Colaboradores\n' +
 'Cada tarjeta muestra los proyectos en los que trabaja esa persona y un atajo a sus métricas.\n\n' +
 '## Proyectos de equipo\n' +
@@ -4063,6 +4225,7 @@ button.pcard:hover { border-color: var(--line-strong); }
       var t = norm(row.id, fromRow(row)); t.userId = row.user_id; return t;
     }).filter(function (t) { return directos.indexOf(t.userId) !== -1; });
     renderTeam();
+    if (view === 'gest') renderCtl();
     if (!$('met').hidden) renderMet();
   }
   async function teamCall(fn, args, okMsg) {
