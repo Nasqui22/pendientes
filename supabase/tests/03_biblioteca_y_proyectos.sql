@@ -23,7 +23,7 @@ begin
   -- El líder crea un proyecto, suma a B, y le asigna un libro propio (borrador de L)
   perform set_config('request.jwt.claims', json_build_object('sub', l, 'role', 'authenticated')::text, true);
   insert into libros (titulo) values ('Guía del proyecto') returning id into lib;
-  insert into equipo_proyectos (nombre) values ('Proyecto Uno') returning id into pid;
+  insert into equipo_proyectos (nombre, abierto) values ('Proyecto Uno', false) returning id into pid;
   insert into equipo_proyecto_miembros values (pid, b);
   begin insert into equipo_proyecto_miembros values (pid, x); raise exception 'FALLA: sumó a quien no es directo'; exception when others then if sqlerrm like 'FALLA%' then raise; end if; end;
   insert into equipo_proyecto_libros values (pid, lib);

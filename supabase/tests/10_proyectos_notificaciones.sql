@@ -63,7 +63,7 @@ begin
   -- ===== proyectos: fechas, hitos y avisos =====
   perform set_config('request.jwt.claims', json_build_object('sub', l, 'role', 'authenticated')::text, true);
   set local role authenticated;
-  insert into equipo_proyectos (nombre, inicio, fin, estado) values ('Proy', '2026-10-01', '2026-12-31', 'activo') returning id into pid;
+  insert into equipo_proyectos (nombre, inicio, fin, estado, abierto) values ('Proy', '2026-10-01', '2026-12-31', 'activo', false) returning id into pid;
   begin insert into equipo_proyectos (nombre, fin) values ('malo', '31/12/2026'); raise exception 'FALLA: fecha inválida'; exception when others then if sqlerrm like 'FALLA%' then raise; end if; end;
   begin update equipo_proyectos set estado = 'volando' where id = pid; raise exception 'FALLA: estado inválido'; exception when others then if sqlerrm like 'FALLA%' then raise; end if; end;
   insert into equipo_proyecto_miembros values (pid, a), (pid, b);

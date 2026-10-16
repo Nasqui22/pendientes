@@ -5,8 +5,8 @@ begin
   insert into responsables (responsable_id, persona_id, confirmado) values (l,a,true),(l,b,true);
   perform set_config('request.jwt.claims', json_build_object('sub', l, 'role', 'authenticated')::text, true);
   set local role authenticated;
-  insert into equipo_proyectos (nombre) values ('P1') returning id into pid;
-  insert into equipo_proyectos (nombre) values ('P2') returning id into pid2;
+  insert into equipo_proyectos (nombre, abierto) values ('P1', false) returning id into pid;
+  insert into equipo_proyectos (nombre, abierto) values ('P2', false) returning id into pid2;
   insert into equipo_proyecto_miembros values (pid, a);
   -- asignar con proyecto: a miembro sí, a no miembro no
   perform asignar_tarea(a, 'Con proyecto', '', '', '', pid);
