@@ -793,6 +793,10 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 .dep-add { flex-wrap: wrap; }
 .dep-add select { min-width: 0; }
 .dep-add #p-dep-sel { flex: 1 1 200px; }
+
+.dep.pend .dep-t { font-style: italic; }
+.dep-acts { display: flex; gap: 8px; margin-top: 6px; }
+.dep-acts .a-btn, .dep-acts .btn-s { height: 32px; font-size: 13px; padding: 0 12px; }
 </style>
 </head>
 <body>
@@ -1061,6 +1065,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
           <select id="p-dep-sel" aria-label="Tarea relacionada"></select>
           <button type="submit">Agregar</button>
         </form>
+        <span class="hint" id="p-dep-note"></span>
       </div>
       <div class="field wide" id="p-vis-f">
         <label class="vis-row"><input type="checkbox" id="p-vis"><span>Visible para mis responsables<small id="p-vis-s">Quienes responden por vos ven esta tarea y la validan cuando la completás. Si la desmarcás, es solo tuya.</small></span></label>
@@ -1441,6 +1446,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     t.labels.forEach(function (l) { pills.push(lblEl(l)); });
     if (t.asignadaPor) pills.push(pill('', 'Asignada por ' + esc(nameOf(t.asignadaPor))));
     else if (t.delegadaPor) pills.push(pill('', 'Pasada por ' + esc(nameOf(t.delegadaPor))));
+    if (depPend(t.id).length) pills.push(pill('warn', 'Pedido de dependencia'));
     var nb = depOpenBlockers(t.id).length, nk = depBlocks(t.id).length;
     if (nb) pills.push(pill('warn', 'Bloqueada · espera ' + nb + (nb === 1 ? ' tarea' : ' tareas')));
     else if (nk) pills.push(pill('', 'Bloquea a ' + nk + (nk === 1 ? ' tarea' : ' tareas')));
@@ -3434,6 +3440,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '- **Se repite**: cada día, semana o mes. Al completar la tarea se crea la siguiente sola, con la fecha corrida (solo en tareas propias).\n' +
 '- **Comentarios**: conversación con quienes ven la tarea (tu responsable, o quien te la pasó). Si la tarea es privada, nadie más puede comentar.\n' +
 '- **Dependencias**: relacioná la tarea con otras, aunque sean de otro proyecto. «Depende de» marca algo que tiene que terminar antes; «Bloquea a» es lo inverso. Mientras falte alguna, la tarjeta muestra «Bloqueada · espera N tareas» (es un aviso: igual podés completarla). No se admiten círculos (A depende de B y B de A). Solo ves relaciones entre tareas que ves vos: un líder puede relacionar tareas de sus directos que sean visibles; tus tareas privadas nunca se muestran a nadie.\n' +
+'- **Con tareas de compañeros** (personas con el mismo responsable): en la lista aparecen solo las tareas que el compañero dejó visibles. **Depende de** una tarea suya no necesita aprobación (solo te bloquea a vos); él recibe un aviso. **Bloquea a** una tarea suya es un pedido: tu tarea tiene que ser visible, y la relación vale recién cuando él la acepta desde el detalle de su tarea (o la rechaza). Mientras esperás, podés cancelar el pedido. Si alguien pasa su tarea a privada, la relación deja de verse.\n' +
 '- **Proyecto** y **Proyecto de equipo**: ver la sección de proyectos.\n' +
 '- **Historia**: cuándo se creó, desde cuándo está en este estado y cuánto tardó en cerrarse.\n\n' +
 '## Eliminar\n' +
@@ -3619,16 +3626,23 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 
   /* ---------- Dependencias entre tareas ---------- */
 
-  var deps = [], depTasks = {};
+  var deps = [], depTasks = {}, peerTasks = [];
   function depTask(id) {
-    return byId[id] || teamTasks.filter(function (t) { return t.id === id; })[0] || depTasks[id] || null;
+    return byId[id] || teamTasks.filter(function (t) { return t.id === id; })[0] || depTasks[id] || peerTasks.filter(function (t) { return t.id === id; })[0] || null;
+  }
+  function depPend(id) { // pedidos que me tocan responder sobre mi tarea
+    return deps.filter(function (d) { return d.estado === 'pendiente' && d.aprobador_id === me && d.tarea_id === id; });
+  }
+  function depRowTask(row) {
+    var t = norm(row.id, { text: row.text, status: row.status, prio: row.prio, due: row.due, doneAt: row.done_at, equipoProyectoId: row.equipo_proyecto_id });
+    t.userId = row.user_id; return t;
   }
   function depOpenBlockers(id) {
-    return deps.filter(function (d) { return d.tarea_id === id; }).map(function (d) { return depTask(d.bloqueada_por); })
+    return deps.filter(function (d) { return d.tarea_id === id && d.estado !== 'pendiente'; }).map(function (d) { return depTask(d.bloqueada_por); })
       .filter(function (t) { return t && t.status !== 'completado'; });
   }
   function depBlocks(id) {
-    return deps.filter(function (d) { return d.bloqueada_por === id; }).map(function (d) { return depTask(d.tarea_id); })
+    return deps.filter(function (d) { return d.bloqueada_por === id && d.estado !== 'pendiente'; }).map(function (d) { return depTask(d.tarea_id); })
       .filter(function (t) { return t && t.status !== 'completado'; });
   }
   var depBusy = false;
@@ -3636,15 +3650,16 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     if (!sb || !me || depBusy) return;
     depBusy = true;
     try {
-      var r = await sb.from('tarea_dependencias').select('*');
-      deps = r.error ? [] : r.data;
+      var rs = await Promise.all([sb.from('tarea_dependencias').select('*'), sb.rpc('tareas_de_companeros')]);
+      deps = rs[0].error ? [] : rs[0].data;
+      peerTasks = rs[1].error ? [] : rs[1].data.map(depRowTask);
       var falta = [];
-      deps.forEach(function (d) { [d.tarea_id, d.bloqueada_por].forEach(function (id) { if (!byId[id] && !teamTasks.some(function (t) { return t.id === id; }) && falta.indexOf(id) === -1) falta.push(id); }); });
+      deps.forEach(function (d) { [d.tarea_id, d.bloqueada_por].forEach(function (id) { if (!byId[id] && !teamTasks.some(function (t) { return t.id === id; }) && !peerTasks.some(function (t) { return t.id === id; }) && falta.indexOf(id) === -1) falta.push(id); }); });
+      depTasks = {};
       if (falta.length) {
-        var rt = await sb.from('tareas').select('*').in('id', falta);
-        depTasks = {};
-        if (!rt.error) rt.data.forEach(function (row) { var t = norm(row.id, fromRow(row)); t.userId = row.user_id; depTasks[row.id] = t; });
-      } else depTasks = {};
+        var rt = await sb.rpc('dependencias_info', { p_ids: falta });
+        if (!rt.error) rt.data.forEach(function (row) { depTasks[row.id] = depRowTask(row); });
+      }
     } finally { depBusy = false; }
     render();
     if (openId && byId[openId]) renderDeps(byId[openId]);
@@ -3663,24 +3678,41 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var rows = [];
     mine.forEach(function (d) {
       var dep = d.tarea_id === t.id, o = depTask(dep ? d.bloqueada_por : d.tarea_id);
-      if (o) rows.push({ d: d, o: o, dep: dep });
+      if (o) rows.push({ d: d, o: o, dep: dep, pend: d.estado === 'pendiente' });
     });
-    rows.sort(function (a, b) { return (b.dep ? 1 : 0) - (a.dep ? 1 : 0); });
+    rows.sort(function (a, b) { return (b.pend ? 1 : 0) - (a.pend ? 1 : 0) || (b.dep ? 1 : 0) - (a.dep ? 1 : 0); });
     $('p-dep-count').textContent = rows.length ? String(rows.length) : '';
     var nb = depOpenBlockers(t.id).length;
     $('p-dep-hint').textContent = nb ? 'Esta tarea espera que termine' + (nb === 1 ? ' 1 tarea' : 'n ' + nb + ' tareas') + '.' : rows.length ? '' : 'Relacioná esta tarea con otras, aunque sean de otro proyecto.';
     ul.replaceChildren.apply(ul, rows.map(function (x) {
-      var li = mk('li', 'dep' + (x.o.status === 'completado' ? ' done' : ''));
-      li.appendChild(mk('span', 'dep-k', x.dep ? 'Depende de' : 'Bloquea a'));
+      var li = mk('li', 'dep' + (x.o.status === 'completado' && !x.pend ? ' done' : '') + (x.pend ? ' pend' : ''));
+      var answer = x.pend && x.d.aprobador_id === me;
+      li.appendChild(mk('span', 'dep-k', answer ? 'Pedido' : x.pend ? 'Pendiente' : x.dep ? 'Depende de' : 'Bloquea a'));
       var body = mk('div', 'dep-b');
       var tt;
       if (byId[x.o.id]) { tt = mk('button', 'dep-t', x.o.text); tt.type = 'button'; tt.addEventListener('click', function () { openPanel(x.o.id); }); }
       else tt = mk('span', 'dep-t', x.o.text);
       body.appendChild(tt);
       var w = depWhere(x.o);
-      body.appendChild(mk('small', '', LABEL[x.o.status] + (w ? ' · ' + w : '')));
+      body.appendChild(mk('small', '', (answer ? 'Quiere que esta tarea la bloquee su tarea · ' : x.pend ? 'Esperando que ' + nameOf(x.d.aprobador_id) + ' lo acepte · ' : '') + LABEL[x.o.status] + (w ? ' · ' + w : '')));
+      if (answer) {
+        var br = mk('div', 'dep-acts');
+        function resp(ok) {
+          return function () {
+            br.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+            sb.rpc('responder_dependencia', { p_id: x.d.id, p_acepta: ok }).then(function (r) {
+              if (r.error) { say(r.error.message, r.error); br.querySelectorAll('button').forEach(function (b) { b.disabled = false; }); return; }
+              say(''); loadDeps();
+            });
+          };
+        }
+        var ya = mk('button', 'a-btn', 'Aceptar'); ya.type = 'button'; ya.addEventListener('click', resp(true));
+        var no = mk('button', 'btn-s', 'Rechazar'); no.type = 'button'; no.addEventListener('click', resp(false));
+        br.appendChild(ya); br.appendChild(no); body.appendChild(br);
+      }
       li.appendChild(body);
-      var rm = mk('button', 'dep-x'); rm.type = 'button'; rm.innerHTML = ICON_X; rm.setAttribute('aria-label', 'Quitar la relación');
+      if (answer) return li;
+      var rm = mk('button', 'dep-x'); rm.type = 'button'; rm.innerHTML = ICON_X; rm.setAttribute('aria-label', x.pend ? 'Cancelar el pedido' : 'Quitar la relación');
       rm.addEventListener('click', async function () {
         rm.disabled = true;
         var r = await sb.from('tarea_dependencias').delete().eq('id', x.d.id);
@@ -3704,10 +3736,29 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       items.sort(function (a, b) { return a.text.localeCompare(b.text, 'es'); }).forEach(function (o) { g.appendChild(opt(o)); });
       groups.push(g);
     });
+    var peers = {};
+    peerTasks.filter(function (o) { return !related[o.id]; }).forEach(function (o) { (peers[o.userId] = peers[o.userId] || []).push(o); });
+    Object.keys(peers).sort(function (a, b) { return nameOf(a).localeCompare(nameOf(b), 'es'); }).forEach(function (id) {
+      var g = mk('optgroup'); g.label = nameOf(id) + ' (compañero)';
+      peers[id].sort(function (a, b) { return a.text.localeCompare(b.text, 'es'); }).forEach(function (o) { g.appendChild(opt(o)); });
+      groups.push(g);
+    });
     var any = groups.some(function (g) { return g.children.length; });
     sel.replaceChildren.apply(sel, any ? groups.filter(function (g) { return g.children.length; }) : [mk('option', '', 'No hay otras tareas para relacionar')]);
-    $('p-dep-add').querySelector('button').disabled = !any;
+    depNote(t);
   }
+  function depNote(t) {
+    var sel = $('p-dep-sel'), op = sel.options[sel.selectedIndex], peer = !!(op && op.value && peerTasks.some(function (o) { return o.id === op.value; }));
+    var blk = $('p-dep-dir').value === 'blk', note = '', off = !op || !op.value;
+    if (peer && blk) {
+      var who = nameOf(peerTasks.filter(function (o) { return o.id === op.value; })[0].userId);
+      if (!t.visible) { note = 'Para bloquear la tarea de un compañero, esta tarea tiene que ser visible para tus responsables.'; off = true; }
+      else note = who + ' tiene que aceptar el pedido antes de que la relación valga.';
+    } else if (peer) note = 'Solo vos quedás bloqueado: no hace falta que la acepte, pero va a ver el aviso.';
+    $('p-dep-note').textContent = note; $('p-dep-add').querySelector('button').disabled = off;
+  }
+  $('p-dep-sel').addEventListener('change', function () { var t = openId && byId[openId]; if (t) depNote(t); });
+  $('p-dep-dir').addEventListener('change', function () { var t = openId && byId[openId]; if (t) depNote(t); });
   $('p-dep-add').addEventListener('submit', async function (e) {
     e.preventDefault();
     var t = openId && byId[openId], oid = $('p-dep-sel').value; if (!t || !oid) return;
@@ -3716,7 +3767,8 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var r = await sb.from('tarea_dependencias').insert(row);
     btn.disabled = false;
     if (r.error) { say(r.error.code === '23505' ? 'Esas tareas ya están relacionadas.' : r.error.message && r.error.message.indexOf('círculo') !== -1 ? r.error.message : 'No se pudo crear la relación.', r.error); return; }
-    say(''); await loadDeps();
+    var pedido = $('p-dep-dir').value === 'blk' && peerTasks.some(function (o) { return o.id === oid; });
+    say(pedido ? 'Pedido enviado: queda pendiente hasta que lo acepte.' : ''); await loadDeps();
   });
 
   var comentarios = {}, cmChannel = null, threadRefreshers = {};
@@ -4010,6 +4062,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var r = await sb.from('notificaciones').select('*').order('created_at', { ascending: false }).limit(80);
     notifs = r.error ? [] : r.data; pintarCampana();
     if (!$('notif').hidden) renderNotif();
+    loadDeps();
   }
   async function loadPrefs() {
     if (!sb || !me) return;
