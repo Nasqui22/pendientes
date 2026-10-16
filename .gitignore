@@ -5,3 +5,6 @@
 .impeccable/hook.cache.json
 .DS_Store
 dev/*.log
+
+# Salida de graphify (grafo de conocimiento local)
+graphify-out/
