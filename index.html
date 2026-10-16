@@ -41,6 +41,7 @@
   --shadow-pop: 0 16px 40px -12px rgba(18, 21, 28, .3);
   --font: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
   --r: 10px;
+  --maxw: clamp(1200px, 94vw, 2000px);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -121,7 +122,7 @@ button:disabled, input:disabled, textarea:disabled, select:disabled { opacity: .
 
 /* Barra superior */
 .topbar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--line); }
-.topbar-in { max-width: 1200px; margin: 0 auto; height: 56px; display: flex; align-items: center; gap: 12px; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+.topbar-in { max-width: var(--maxw); margin: 0 auto; height: 56px; display: flex; align-items: center; gap: 12px; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
 .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
 .brand-mark .i { width: 15px; height: 15px; stroke-width: 2.4; }
@@ -132,7 +133,7 @@ button:disabled, input:disabled, textarea:disabled, select:disabled { opacity: .
 .btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
 .btn.ghost:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
 
-.wrap { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; padding: 28px max(16px, env(safe-area-inset-right, 0px)) 72px max(16px, env(safe-area-inset-left, 0px)); }
+.wrap { max-width: var(--maxw); margin: 0 auto; display: flex; flex-direction: column; gap: 20px; padding: 28px max(16px, env(safe-area-inset-right, 0px)) 72px max(16px, env(safe-area-inset-left, 0px)); }
 
 /* Encabezado con avance */
 .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 40px; flex-wrap: wrap; }
