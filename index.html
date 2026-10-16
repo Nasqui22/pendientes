@@ -777,6 +777,22 @@ button.pcard:hover { border-color: var(--line-strong); }
 .cc-prio select { height: 32px; }
 .cc-card form { display: flex; gap: 8px; }
 @media (max-width: 900px) { .cc-board { grid-template-columns: 1fr; } }
+
+/* Dependencias entre tareas */
+.deps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.dep { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.dep:last-child { border-bottom: 0; }
+.dep-k { flex: none; width: 82px; font-size: 12px; font-weight: 500; color: var(--muted); }
+.dep-b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.dep-t { padding: 0; background: none; border: 0; text-align: left; color: var(--ink); font-size: 14.5px; overflow-wrap: anywhere; }
+button.dep-t:hover { color: var(--accent); text-decoration: underline; }
+.dep.done .dep-t { color: var(--muted); text-decoration: line-through; }
+.dep-b small { color: var(--muted); font-size: 12.5px; }
+.dep-x { flex: none; width: 32px; height: 32px; display: grid; place-items: center; background: none; color: var(--muted); border-radius: 8px; }
+.dep-x:hover { background: var(--surface-2); color: var(--ink); }
+.dep-add { flex-wrap: wrap; }
+.dep-add select { min-width: 0; }
+.dep-add #p-dep-sel { flex: 1 1 200px; }
 </style>
 </head>
 <body>
@@ -1035,6 +1051,16 @@ button.pcard:hover { border-color: var(--line-strong); }
       <div class="field wide" id="p-ep-f">
         <label for="p-ep">Proyecto de equipo</label>
         <select id="p-ep"></select>
+      </div>
+      <div class="field wide" id="p-dep-f">
+        <div class="sub-head"><label for="p-dep-sel">Dependencias</label><span class="sub-count" id="p-dep-count"></span></div>
+        <span class="hint" id="p-dep-hint"></span>
+        <ul class="deps" id="p-deps"></ul>
+        <form class="sub-add dep-add" id="p-dep-add" autocomplete="off">
+          <select id="p-dep-dir" aria-label="Tipo de relación"><option value="dep">Depende de</option><option value="blk">Bloquea a</option></select>
+          <select id="p-dep-sel" aria-label="Tarea relacionada"></select>
+          <button type="submit">Agregar</button>
+        </form>
       </div>
       <div class="field wide" id="p-vis-f">
         <label class="vis-row"><input type="checkbox" id="p-vis"><span>Visible para mis responsables<small id="p-vis-s">Quienes responden por vos ven esta tarea y la validan cuando la completás. Si la desmarcás, es solo tuya.</small></span></label>
@@ -1415,6 +1441,9 @@ button.pcard:hover { border-color: var(--line-strong); }
     t.labels.forEach(function (l) { pills.push(lblEl(l)); });
     if (t.asignadaPor) pills.push(pill('', 'Asignada por ' + esc(nameOf(t.asignadaPor))));
     else if (t.delegadaPor) pills.push(pill('', 'Pasada por ' + esc(nameOf(t.delegadaPor))));
+    var nb = depOpenBlockers(t.id).length, nk = depBlocks(t.id).length;
+    if (nb) pills.push(pill('warn', 'Bloqueada · espera ' + nb + (nb === 1 ? ' tarea' : ' tareas')));
+    else if (nk) pills.push(pill('', 'Bloquea a ' + nk + (nk === 1 ? ' tarea' : ' tareas')));
     if (t.validadaPor) pills.push(pill('ok', ICON_OK + 'Validada'));
     else if (t.motivo && t.status !== 'completado') pills.push(pill('warn', 'Devuelta'));
     else if (t.status === 'completado' && (t.visible || t.asignadaPor || t.delegadaPor)) pills.push(pill('warn', 'Esperando validación'));
@@ -1771,6 +1800,7 @@ button.pcard:hover { border-color: var(--line-strong); }
     if (!pjx) $('p-proj-rnf').hidden = true;
     var pa = $('p-arch'); pa.hidden = t.status !== 'completado'; pa.textContent = t.archivada ? 'Restaurar' : 'Archivar'; pa.disabled = !canWrite;
     renderComments(t);
+    renderDeps(t);
     $('p-vis').checked = asig || dlg || t.visible;
     $('p-vis-f').hidden = !asig && !dlg && !misResp.length && !t.visible;
     var pn = $('p-note'), msg = '';
@@ -2227,6 +2257,7 @@ button.pcard:hover { border-color: var(--line-strong); }
     $('side').hidden = false; document.body.classList.add('has-side');
     loadProyectos();
     loadEqProy();
+    loadDeps();
     refreshLecturas();
     loadNotifs(); loadPrefs(); loadHitos();
     if (notifChannel) sb.removeChannel(notifChannel);
@@ -2331,7 +2362,7 @@ button.pcard:hover { border-color: var(--line-strong); }
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; comentarios = {}; threadRefreshers = {}; closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; proyectos = []; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('met-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; comentarios = {}; threadRefreshers = {}; deps = []; depTasks = {}; closeNotif(); closeMet(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('who-mail').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -3151,6 +3182,7 @@ button.pcard:hover { border-color: var(--line-strong); }
     if (t.due) { var late = t.status !== 'completado' && t.due < todayISO(); var d = mk('span', late ? 'cc-late' : '', relDue(t.due, t.status === 'completado')); meta.appendChild(d); }
     if (t.equipoProyectoId && projName(t.equipoProyectoId)) meta.appendChild(mk('span', '', 'Proyecto: ' + projName(t.equipoProyectoId)));
     if (t.subs.length) meta.appendChild(mk('span', '', t.subs.filter(function (x) { return x.d; }).length + ' de ' + t.subs.length + ' subtareas'));
+    var nbl = depOpenBlockers(t.id).length; if (nbl) meta.appendChild(mk('span', 'cc-late', 'Bloqueada · espera ' + nbl + (nbl === 1 ? ' tarea' : ' tareas')));
     if (t.asignadaPor === me) meta.appendChild(mk('span', '', 'Asignada por vos'));
     if (t.status === 'completado' && !t.validadaPor) meta.appendChild(mk('span', 'cc-wait', 'Esperando validación'));
     if (t.validadaPor) meta.appendChild(mk('span', '', 'Validada'));
@@ -3401,6 +3433,7 @@ button.pcard:hover { border-color: var(--line-strong); }
 '- **Avances**: anotás novedades cortas con fecha («Hablé con el proveedor»). El más reciente queda arriba. Sirven para dejar registro sin editar las notas.\n' +
 '- **Se repite**: cada día, semana o mes. Al completar la tarea se crea la siguiente sola, con la fecha corrida (solo en tareas propias).\n' +
 '- **Comentarios**: conversación con quienes ven la tarea (tu responsable, o quien te la pasó). Si la tarea es privada, nadie más puede comentar.\n' +
+'- **Dependencias**: relacioná la tarea con otras, aunque sean de otro proyecto. «Depende de» marca algo que tiene que terminar antes; «Bloquea a» es lo inverso. Mientras falte alguna, la tarjeta muestra «Bloqueada · espera N tareas» (es un aviso: igual podés completarla). No se admiten círculos (A depende de B y B de A). Solo ves relaciones entre tareas que ves vos: un líder puede relacionar tareas de sus directos que sean visibles; tus tareas privadas nunca se muestran a nadie.\n' +
 '- **Proyecto** y **Proyecto de equipo**: ver la sección de proyectos.\n' +
 '- **Historia**: cuándo se creó, desde cuándo está en este estado y cuánto tardó en cerrarse.\n\n' +
 '## Eliminar\n' +
@@ -3519,7 +3552,7 @@ button.pcard:hover { border-color: var(--line-strong); }
 'Arriba hay una tarjeta por persona con sus tareas abiertas, vencidas, por validar y de prioridad alta; tocá una para ver solo a esa persona (de nuevo para volver a todo el equipo). Debajo, un tablero con Pendiente, En proceso y Completado, con buscador y filtro por prioridad. Ves las tareas que asignaste y las que tus colaboradores comparten con vos, nunca las privadas.\n' +
 '- **Prioridad**: cambiala desde la tarjeta. La persona recibe un aviso y queda anotado en los Avances de la tarea. No se puede en tareas ya validadas.\n' +
 '- **Validar o devolver**: las completadas que esperan revisión tienen sus botones ahí mismo.\n' +
-'- **Comentarios**: conversá con la persona sin salir del tablero.\n\n' +
+'- **Comentarios**: conversá con la persona sin salir del tablero.\n- **Bloqueadas**: si una tarea espera a otra, la tarjeta lo indica.\n\n' +
 '## Colaboradores\n' +
 'Cada tarjeta muestra los proyectos en los que trabaja esa persona y un atajo a sus métricas.\n\n' +
 '## Proyectos de equipo\n' +
@@ -3582,6 +3615,109 @@ button.pcard:hover { border-color: var(--line-strong); }
   }
 
   /* ---------- Comentarios de tarea ---------- */
+
+
+  /* ---------- Dependencias entre tareas ---------- */
+
+  var deps = [], depTasks = {};
+  function depTask(id) {
+    return byId[id] || teamTasks.filter(function (t) { return t.id === id; })[0] || depTasks[id] || null;
+  }
+  function depOpenBlockers(id) {
+    return deps.filter(function (d) { return d.tarea_id === id; }).map(function (d) { return depTask(d.bloqueada_por); })
+      .filter(function (t) { return t && t.status !== 'completado'; });
+  }
+  function depBlocks(id) {
+    return deps.filter(function (d) { return d.bloqueada_por === id; }).map(function (d) { return depTask(d.tarea_id); })
+      .filter(function (t) { return t && t.status !== 'completado'; });
+  }
+  var depBusy = false;
+  async function loadDeps() {
+    if (!sb || !me || depBusy) return;
+    depBusy = true;
+    try {
+      var r = await sb.from('tarea_dependencias').select('*');
+      deps = r.error ? [] : r.data;
+      var falta = [];
+      deps.forEach(function (d) { [d.tarea_id, d.bloqueada_por].forEach(function (id) { if (!byId[id] && !teamTasks.some(function (t) { return t.id === id; }) && falta.indexOf(id) === -1) falta.push(id); }); });
+      if (falta.length) {
+        var rt = await sb.from('tareas').select('*').in('id', falta);
+        depTasks = {};
+        if (!rt.error) rt.data.forEach(function (row) { var t = norm(row.id, fromRow(row)); t.userId = row.user_id; depTasks[row.id] = t; });
+      } else depTasks = {};
+    } finally { depBusy = false; }
+    render();
+    if (openId && byId[openId]) renderDeps(byId[openId]);
+    if (view === 'gest') renderCtl();
+  }
+  function depWhere(t) {
+    var parts = [];
+    if (t.userId && t.userId !== me) parts.push(nameOf(t.userId));
+    if (t.equipoProyectoId && projName(t.equipoProyectoId)) parts.push(projName(t.equipoProyectoId));
+    else if (t.proyectoId && t.userId !== me && t.userId) { /* proyecto personal de otra persona: no se muestra */ }
+    else if (t.proyectoId) { var pj = proyectos.filter(function (x) { return x.id === t.proyectoId; })[0]; if (pj) parts.push(pj.nombre); }
+    return parts.join(' · ');
+  }
+  function renderDeps(t) {
+    var ul = $('p-deps'), mine = deps.filter(function (d) { return d.tarea_id === t.id || d.bloqueada_por === t.id; });
+    var rows = [];
+    mine.forEach(function (d) {
+      var dep = d.tarea_id === t.id, o = depTask(dep ? d.bloqueada_por : d.tarea_id);
+      if (o) rows.push({ d: d, o: o, dep: dep });
+    });
+    rows.sort(function (a, b) { return (b.dep ? 1 : 0) - (a.dep ? 1 : 0); });
+    $('p-dep-count').textContent = rows.length ? String(rows.length) : '';
+    var nb = depOpenBlockers(t.id).length;
+    $('p-dep-hint').textContent = nb ? 'Esta tarea espera que termine' + (nb === 1 ? ' 1 tarea' : 'n ' + nb + ' tareas') + '.' : rows.length ? '' : 'Relacioná esta tarea con otras, aunque sean de otro proyecto.';
+    ul.replaceChildren.apply(ul, rows.map(function (x) {
+      var li = mk('li', 'dep' + (x.o.status === 'completado' ? ' done' : ''));
+      li.appendChild(mk('span', 'dep-k', x.dep ? 'Depende de' : 'Bloquea a'));
+      var body = mk('div', 'dep-b');
+      var tt;
+      if (byId[x.o.id]) { tt = mk('button', 'dep-t', x.o.text); tt.type = 'button'; tt.addEventListener('click', function () { openPanel(x.o.id); }); }
+      else tt = mk('span', 'dep-t', x.o.text);
+      body.appendChild(tt);
+      var w = depWhere(x.o);
+      body.appendChild(mk('small', '', LABEL[x.o.status] + (w ? ' · ' + w : '')));
+      li.appendChild(body);
+      var rm = mk('button', 'dep-x'); rm.type = 'button'; rm.innerHTML = ICON_X; rm.setAttribute('aria-label', 'Quitar la relación');
+      rm.addEventListener('click', async function () {
+        rm.disabled = true;
+        var r = await sb.from('tarea_dependencias').delete().eq('id', x.d.id);
+        if (r.error) { say('No se pudo quitar la relación.', r.error); rm.disabled = false; return; }
+        say(''); loadDeps();
+      });
+      li.appendChild(rm);
+      return li;
+    }));
+    // candidatas: lo que veo, sin esta tarea ni las ya relacionadas
+    var sel = $('p-dep-sel'), related = {}; mine.forEach(function (d) { related[d.tarea_id === t.id ? d.bloqueada_por : d.tarea_id] = 1; });
+    function opt(o) { var op = mk('option', '', (o.text.length > 60 ? o.text.slice(0, 59) + '…' : o.text) + (depWhere(o) ? ' — ' + depWhere(o) : '')); op.value = o.id; return op; }
+    var g1 = mk('optgroup'); g1.label = 'Mis tareas';
+    Object.keys(byId).map(function (k) { return byId[k]; }).filter(function (o) { return o.id !== t.id && !related[o.id] && !o.archivada; })
+      .sort(function (a, b) { return a.text.localeCompare(b.text, 'es'); }).forEach(function (o) { o.userId = me; g1.appendChild(opt(o)); });
+    var groups = [g1];
+    directos.forEach(function (id) {
+      var items = teamTasks.filter(function (o) { return o.userId === id && !related[o.id] && !o.archivada; });
+      if (!items.length) return;
+      var g = mk('optgroup'); g.label = nameOf(id);
+      items.sort(function (a, b) { return a.text.localeCompare(b.text, 'es'); }).forEach(function (o) { g.appendChild(opt(o)); });
+      groups.push(g);
+    });
+    var any = groups.some(function (g) { return g.children.length; });
+    sel.replaceChildren.apply(sel, any ? groups.filter(function (g) { return g.children.length; }) : [mk('option', '', 'No hay otras tareas para relacionar')]);
+    $('p-dep-add').querySelector('button').disabled = !any;
+  }
+  $('p-dep-add').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var t = openId && byId[openId], oid = $('p-dep-sel').value; if (!t || !oid) return;
+    var btn = this.querySelector('button'); btn.disabled = true;
+    var row = $('p-dep-dir').value === 'dep' ? { tarea_id: t.id, bloqueada_por: oid } : { tarea_id: oid, bloqueada_por: t.id };
+    var r = await sb.from('tarea_dependencias').insert(row);
+    btn.disabled = false;
+    if (r.error) { say(r.error.code === '23505' ? 'Esas tareas ya están relacionadas.' : r.error.message && r.error.message.indexOf('círculo') !== -1 ? r.error.message : 'No se pudo crear la relación.', r.error); return; }
+    say(''); await loadDeps();
+  });
 
   var comentarios = {}, cmChannel = null, threadRefreshers = {};
   async function loadComentarios(tid) {
@@ -4226,6 +4362,7 @@ button.pcard:hover { border-color: var(--line-strong); }
     }).filter(function (t) { return directos.indexOf(t.userId) !== -1; });
     renderTeam();
     if (view === 'gest') renderCtl();
+    loadDeps();
     if (!$('met').hidden) renderMet();
   }
   async function teamCall(fn, args, okMsg) {
