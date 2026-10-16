@@ -892,7 +892,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 <nav class="side" id="side" hidden aria-label="Secciones">
   <button type="button" data-view="board" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="16.5" y="4" width="4" height="13" rx="1.5"/></svg>Tablero</button>
   <button type="button" data-view="lib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>Biblioteca<span class="nb" id="lib-n" hidden></span></button>
-  <button type="button" data-view="proy" id="side-proy" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V4M5 5h11l-2 4 2 4H5"/></svg>Proyectos</button>
+  <button type="button" data-view="proy" id="side-proy"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V4M5 5h11l-2 4 2 4H5"/></svg>Proyectos</button>
   <button type="button" data-view="gest" id="side-gest" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5M16.5 5.2a3.2 3.2 0 0 1 0 5.6M18.5 14.8c1.6.7 2.6 2.2 3 4.5"/></svg>Gestión</button>
   <button type="button" data-view="guia"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 1 1 3.4 2.2c-.7.4-1.1.9-1.1 1.8M12 16.6v.1"/></svg>Guía</button>
 </nav>
@@ -2292,7 +2292,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   async function loadEqProy() {
     var r = await sb.from('equipo_proyectos').select('*').order('created_at');
     eqProy = r.error ? [] : r.data;
-    $('side-proy').hidden = !eqProy.length;
     render();
   }
   async function loadProyectos() {
@@ -2729,7 +2728,6 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 
   function setView(v) {
     if (v === 'gest' && !directos.length) v = 'board';
-    if (v === 'proy' && !eqProy.length) v = 'board';
     view = v;
     document.getElementById('board-view').hidden = v !== 'board';
     $('guia-view').hidden = v !== 'guia';
@@ -2776,7 +2774,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     if (rs[0].error) say('No se pudo cargar la biblioteca.', rs[0].error);
     renderViews();
   }
-  function renderViews() { if (view === 'lib') renderLib(); if (view === 'gest') renderGest(); if (view === 'proy') renderProyectos(); $('side-proy').hidden = !eqProy.length; }
+  function renderViews() { if (view === 'lib') renderLib(); if (view === 'gest') renderGest(); if (view === 'proy') renderProyectos(); }
 
   // Texto con formato mínimo: # título, ## subtítulo, - viñetas, **negrita**, `código` y enlaces http(s).
   function inline(text, parent) {
@@ -3406,7 +3404,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Cómo entrar\n' +
 'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras desde la tuerca de arriba a la derecha (junto a la campana), que también tiene el fondo claro u oscuro, las preferencias de avisos y «Salir»; el sistema recuerda el tema que elegís. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
 '## Dónde está cada cosa\n' +
-'- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Proyectos (si hay alguno en tu equipo), Gestión (si tenés gente a cargo) y Guía.\n' +
+'- **Barra lateral** (abajo en el celular): Tablero, Biblioteca, Proyectos, Gestión (si tenés gente a cargo) y Guía.\n' +
 '- **Barra de arriba**: Métricas, Mi equipo (solo líderes), Usuarios (solo administradores), la campana de notificaciones y la **tuerca** con tus opciones: tema claro u oscuro, cambiar contraseña, preferencias de avisos y Salir.\n\n' +
 '## Tu primer día\n' +
 '- Cargá tus tareas en el Tablero con el botón «Nueva tarea».\n' +
@@ -3455,7 +3453,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 'Lo creás vos, desde el detalle de cualquier tarea (campo «Nuevo proyecto»). Es solo para ordenar tu tablero: nadie más lo ve, y sirve para filtrar. Desde el detalle de una tarea con proyecto podés renombrarlo o eliminarlo (las tareas quedan sin proyecto).\n\n' +
 '## Proyecto de equipo\n' +
 'Lo crea un líder en Gestión. Por defecto está **abierto a todo su equipo** (sus colaboradores, su responsable y los compañeros de este): todos pueden verlo, con sus hitos, y vincular sus propias tareas desde el detalle («Proyecto de equipo»). Solo el líder lo edita. Si el líder lo desmarca como abierto, lo ven solo los colaboradores que sumó. En el tablero del proyecto ves tus tareas y las que tus compañeros dejaron visibles. Así tu líder ve en qué trabaja cada uno. Si el proyecto se borra, tus tareas no se pierden: quedan sin proyecto.\n\n' +
-'En la barra lateral, **Proyectos** (aparece si hay proyectos en tu equipo) muestra cada proyecto con su estado, fechas, hitos, el tablero de tareas vinculadas, el equipo y los libros. Los hitos los marca el líder; vos ves tus tareas vinculadas y las que tus compañeros dejaron visibles, y el líder ve las de sus directos que sean visibles.\n\n' +
+'En la barra lateral, **Proyectos** muestra cada proyecto con su estado, fechas, hitos, el tablero de tareas vinculadas, el equipo y los libros. Los hitos los marca el líder; vos ves tus tareas vinculadas y las que tus compañeros dejaron visibles, y el líder ve las de sus directos que sean visibles.\n\n' +
 '## Etiquetas\n' +
 'Son palabras libres que agregás a la tarea (máximo 8). No son proyectos: sirven para filtrar por tema, y tienen su propio filtro arriba del tablero.' },
 
@@ -3872,7 +3870,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   function estadoPill(e) { return pill('estado-' + e, esc({ activo: 'Activo', pausado: 'En pausa', cerrado: 'Cerrado' }[e] || e)); }
   function renderProyectos() {
     var v = $('proy-view');
-    if (!eqProy.length) { v.replaceChildren(mk('p', 'lib-empty', 'Todavía no hay proyectos de equipo.')); return; }
+    if (!eqProy.length) { v.replaceChildren(mk('p', 'lib-empty', directos.length ? 'Todavía no hay proyectos de equipo. Creá el primero en Gestión.' : 'Todavía no hay proyectos de equipo. Los crea tu líder en Gestión y van a aparecer acá.')); return; }
     var p = proyOpen && eqProy.filter(function (x) { return x.id === proyOpen; })[0];
     if (p) return renderProyDetalle(v, p);
     proyOpen = '';
