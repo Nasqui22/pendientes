@@ -46,6 +46,8 @@ Tablero personal de tareas en tres estados (Pendiente, En proceso, Completado) c
 - Tareas y proyectos de equipo (migración `20261015240000`): `tareas.equipo_proyecto_id`; el trigger `tareas_proteger` solo deja vincular proyectos donde la persona es líder o miembro vigente. `asignar_tarea` acepta un proyecto opcional (del líder, con la persona como miembro).
 - Guía de uso: sección `Guía` de la barra lateral, con el contenido en el arreglo `GUIA` de `index.html` (por rol: líder y admin). Al agregar o cambiar una función, actualizar la guía.
 
+- Edición del líder (migración `20261021120000`): `editar_tarea_equipo` (security definer) deja al responsable editar título, descripción, fecha, prioridad, etiquetas y subtareas (agregar, renombrar, quitar) de las tareas de sus directos que ya ve (`ve_tarea_ajena`), salvo validadas. No toca estado, avances previos, comentarios, `visible`, recurrencia, archivo, proyecto ni el tildado de subtareas; las subtareas con delegación pendiente o aceptada no se renombran ni se quitan. Anota en Avances y avisa (`tarea_editada`). Botón «Editar» en el centro de control de Gestión (`ctlEditor`).
+
 ## Seguridad (migración `20261015250000` y Edge Function)
 - Permisos mínimos: `anon` no accede a ninguna tabla; `authenticated` sin TRUNCATE/REFERENCES/TRIGGER. Las funciones de trigger no se ejecutan desde la web.
 - El admin no puede crear un responsable ya confirmado (la persona confirma). Las tareas se validan en el servidor (`tareas_validar`) y hay límites de uso (`limites_uso`: tareas, libros, proyectos, delegaciones y asignaciones por hora).

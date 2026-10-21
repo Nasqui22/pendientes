@@ -776,6 +776,15 @@ button.pcard:hover { border-color: var(--line-strong); }
 .cc-prio { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
 .cc-prio select { height: 32px; }
 .cc-card form { display: flex; gap: 8px; }
+.cc-card form.cc-edit { flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.cc-edit[hidden] { display: none; }
+.cc-f { display: flex; flex-direction: column; gap: 4px; }
+.cc-f > span, .cc-fl { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.cc-f textarea { min-height: 90px; }
+.cc-subs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.cc-subs li { display: flex; align-items: center; gap: 6px; }
+.cc-subs .txt { flex: 1; height: 36px; }
+.cc-edit > .btn-s { align-self: flex-start; height: 32px; font-size: 13px; }
 @media (max-width: 900px) { .cc-board { grid-template-columns: 1fr; } }
 
 /* Dependencias entre tareas */
@@ -3224,6 +3233,16 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     lb.appendChild(sel); acts.appendChild(lb);
     var th = teamThread(t);
     var cb = mk('button', 'btn-s', 'Comentarios'); cb.type = 'button'; cb.addEventListener('click', th.open); acts.appendChild(cb);
+    var ed = null;
+    if (!t.validadaPor) {
+      var eb = mk('button', 'btn-s', 'Editar'); eb.type = 'button'; eb.setAttribute('aria-expanded', 'false');
+      eb.addEventListener('click', function () {
+        if (!ed) { ed = ctlEditor(t); li.insertBefore(ed, th.box); }
+        ed.hidden = !ed.hidden; eb.setAttribute('aria-expanded', ed.hidden ? 'false' : 'true');
+        if (!ed.hidden) ed.querySelector('input').focus();
+      });
+      acts.appendChild(eb);
+    }
     li.appendChild(acts);
     if (t.status === 'completado' && !t.validadaPor) {
       var vr = mk('div', 'cc-acts');
@@ -3244,12 +3263,58 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     li.appendChild(th.box);
     return li;
   }
+  // Edición del líder: título, descripción, fecha, etiquetas y subtareas (el tildado y los avances son de la persona).
+  function ctlEditor(t) {
+    var f = mk('form', 'cc-edit'); f.autocomplete = 'off'; f.hidden = true;
+    function field(label, el) { var l = mk('label', 'cc-f'); l.appendChild(mk('span', '', label)); l.appendChild(el); f.appendChild(l); return el; }
+    var ti = mk('input', 'txt'); ti.maxLength = 300; ti.value = t.text; field('Título', ti);
+    var no = mk('textarea'); no.maxLength = 10000; no.value = t.notes || ''; no.placeholder = 'Descripción o notas'; field('Descripción', no);
+    var du = mk('input'); du.type = 'date'; du.value = t.due || ''; field('Fecha límite', du);
+    var la = mk('input', 'txt'); la.maxLength = 220; la.value = (t.labels || []).join(', '); la.placeholder = 'Separadas por coma'; field('Etiquetas', la);
+    f.appendChild(mk('span', 'cc-fl', 'Subtareas'));
+    var ul = mk('ul', 'cc-subs');
+    function subRow(txt, i, done) {
+      var r = mk('li'); r.dataset.i = i == null ? '' : String(i);
+      var inp = mk('input', 'txt'); inp.maxLength = 200; inp.value = txt; inp.setAttribute('aria-label', 'Subtarea');
+      r.appendChild(inp);
+      if (done) r.appendChild(mk('span', 'cc-wait', 'Hecha'));
+      var rm = mk('button', 'ico-b'); rm.type = 'button'; rm.innerHTML = ICON_X; rm.setAttribute('aria-label', 'Quitar subtarea');
+      rm.addEventListener('click', function () { r.remove(); });
+      r.appendChild(rm); ul.appendChild(r);
+      return inp;
+    }
+    t.subs.forEach(function (s, i) { subRow(s.t, i, s.d); });
+    f.appendChild(ul);
+    var add = mk('button', 'btn-s', '+ Subtarea'); add.type = 'button';
+    add.addEventListener('click', function () { subRow('', null, false).focus(); });
+    f.appendChild(add);
+    var bar = mk('div', 'cc-acts');
+    var ok = mk('button', 'a-btn', 'Guardar cambios'); ok.type = 'submit';
+    var no2 = mk('button', 'btn-s', 'Cancelar'); no2.type = 'button';
+    no2.addEventListener('click', function () { f.hidden = true; });
+    bar.appendChild(ok); bar.appendChild(no2); f.appendChild(bar);
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!ti.value.trim()) { gSay('El título no puede quedar vacío.'); ti.focus(); return; }
+      var labels = la.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean)
+        .filter(function (x, i, a) { return a.indexOf(x) === i; });
+      if (labels.length > 8 || labels.some(function (x) { return x.length > 24; })) { gSay('Hasta 8 etiquetas de 24 caracteres.'); la.focus(); return; }
+      var subs = Array.prototype.map.call(ul.children, function (r) {
+        return { t: r.querySelector('input').value.trim(), i: r.dataset.i === '' ? null : Number(r.dataset.i) };
+      }).filter(function (s) { return s.t; });
+      ok.disabled = true;
+      ctlCall('editar_tarea_equipo', {
+        p_id: t.id, p_text: ti.value.trim(), p_notes: no.value, p_due: du.value || '', p_labels: labels, p_subs: subs
+      }, 'Tarea actualizada. ' + nameOf(t.userId) + ' recibe un aviso.').then(function (o) { if (!o) ok.disabled = false; });
+    });
+    return f;
+  }
   function renderCtl(box) {
     box = box || $('ctl-box'); if (!box) return;
     var today = todayISO();
     if (ctl.who && directos.indexOf(ctl.who) === -1) ctl.who = '';
     box.replaceChildren(mk('h3', '', 'Centro de control del equipo'));
-    box.appendChild(mk('p', 'a-help', 'Ves las tareas que asignaste y las que tus colaboradores comparten con vos. Podés cambiar su prioridad desde acá; ellos reciben un aviso.'));
+    box.appendChild(mk('p', 'a-help', 'Ves las tareas que asignaste y las que tus colaboradores comparten con vos. Podés cambiar su prioridad o editarlas desde acá; ellos reciben un aviso.'));
 
     var cards = mk('div', 'cc-people');
     function personCard(id, name, list) {
@@ -3595,6 +3660,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Centro de control del equipo\n' +
 'Arriba hay una tarjeta por persona con sus tareas abiertas, vencidas, por validar y de prioridad alta; tocá una para ver solo a esa persona (de nuevo para volver a todo el equipo). Debajo, un tablero con Pendiente, En proceso y Completado, con buscador y filtro por prioridad. Ves las tareas que asignaste y las que tus colaboradores comparten con vos, nunca las privadas.\n' +
 '- **Prioridad**: cambiala desde la tarjeta. La persona recibe un aviso y queda anotado en los Avances de la tarea. No se puede en tareas ya validadas.\n' +
+'- **Editar**: cambiá el título, la descripción, la fecha límite, las etiquetas y las subtareas (agregar, renombrar o quitar), tanto en las que asignaste como en las que tus colaboradores comparten. Los avances, los comentarios, el estado, el tildado de las subtareas y la privacidad siguen siendo de la persona; las subtareas que pasó a un compañero no se pueden renombrar ni quitar. La persona recibe un aviso y queda anotado qué cambiaste en los Avances. No se puede en tareas ya validadas.\n' +
 '- **Validar o devolver**: las completadas que esperan revisión tienen sus botones ahí mismo.\n' +
 '- **Comentarios**: conversá con la persona sin salir del tablero.\n- **Bloqueadas**: si una tarea espera a otra, la tarjeta lo indica.\n\n' +
 '## Colaboradores\n' +
