@@ -1,5 +1,5 @@
 ---
-name: Pendientes
+name: Merlin't
 description: Tablero personal de tareas en tres estados, sobrio y bien terminado, con un solo acento índigo.
 colors:
   accent: "#3858E9"
@@ -123,13 +123,13 @@ components:
     padding: "12px"
 ---
 
-# Design System: Pendientes
+# Design System: Merlin't
 
 ## Overview
 
 **Creative North Star: "El cuaderno bien hecho"**
 
-Pendientes es una app de tareas que se siente cálida porque está bien ejecutada, no porque tenga disfraz. Sigue el estándar de la categoría (Linear, Todoist, Things 3): neutros fríos apenas tintados, una sola familia tipográfica, hilos de 1px, una elevación suave y un único acento. La jerarquía la dan el peso y el tamaño, no los adornos.
+Merlin't es una app de tareas que se siente cálida porque está bien ejecutada, no porque tenga disfraz. Sigue el estándar de la categoría (Linear, Todoist, Things 3): neutros fríos apenas tintados, una sola familia tipográfica, hilos de 1px, una elevación suave y un único acento. La jerarquía la dan el peso y el tamaño, no los adornos.
 
 El color trabaja. El índigo marca selección, foco y acciones; el estado de cada tarea tiene su propio color funcional (pizarra, ámbar, verde); la prioridad alta y los errores usan rojo. Todo lo demás es neutro. La interfaz es mobile primero (16px mínimo de margen lateral) y existe en claro y oscuro desde las mismas variables.
 

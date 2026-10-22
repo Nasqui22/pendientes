@@ -1,4 +1,4 @@
-# Pendientes
+# Merlin't
 
 Tablero personal de tareas en tres estados (Pendiente, En proceso, Completado) con prioridad, fecha límite, notas y subtareas. Idioma de la interfaz: español rioplatense.
 

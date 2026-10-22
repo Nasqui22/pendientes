@@ -24,7 +24,7 @@ Se abre varias veces al día, a menudo entre otras cosas y desde el teléfono. T
 - La lógica JS y los ids del DOM existentes (`toRow`/`fromRow`, Supabase) deben seguir funcionando.
 
 ## Brand Commitments
-Solo el nombre "Pendientes" y el español rioplatense. No hay logo, paleta ni marca previa que preservar; la identidad visual actual es reemplazable.
+Solo el nombre "Merlin't" y el español rioplatense. No hay logo, paleta ni marca previa que preservar; la identidad visual actual es reemplazable.
 
 Preferencia estable confirmada por el usuario (2026-10-15): visual sobrio y limpio, al nivel de oficio de Linear, Todoist y Things 3, ejecutado como estándar de la categoría; sin tono corporativo frío ni decoración de más.
 

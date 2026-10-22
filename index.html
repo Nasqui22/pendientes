@@ -9,7 +9,7 @@
 <style id="antiframe">html { display: none !important; }
 </style>
 <script>if (window.top === window.self) { var a = document.getElementById('antiframe'); a.parentNode.removeChild(a); } else { window.top.location = window.self.location; }</script>
-<title>Pendientes</title>
+<title>Merlin't</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
@@ -948,7 +948,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   <div class="topbar-in">
     <span class="brand">
       <span class="brand-mark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12.5 4 4 8-9"/></svg></span>
-      Pendientes
+      Merlin't
     </span>
     <div class="top-actions">
       <button type="button" class="btn ghost" id="team-btn" hidden aria-label="Mi equipo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="bl">Mi equipo</span></button>
@@ -1053,7 +1053,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   <form id="login-form" autocomplete="on">
     <span class="brand">
       <span class="brand-mark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12.5 4 4 8-9"/></svg></span>
-      Pendientes
+      Merlin't
     </span>
     <h2>Entrá a tu cuenta</h2>
     <p>Con tu email y contraseña ves tus tareas.</p>
@@ -1068,7 +1068,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   <form id="chpw-form" autocomplete="off">
     <span class="brand">
       <span class="brand-mark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12.5 4 4 8-9"/></svg></span>
-      Pendientes
+      Merlin't
     </span>
     <h2 id="chpw-h">Elegí tu contraseña</h2>
     <p id="chpw-p">La que te dieron es temporal. Para entrar, creá una contraseña propia.</p>
@@ -3527,7 +3527,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   var guiaSec = 'inicio';
   var GUIA = [
     { id: 'inicio', t: 'Primeros pasos', b:
-'Pendientes es tu tablero de tareas personal, con herramientas para trabajar en equipo: responsables que validan, subtareas que se pasan entre compañeros, una biblioteca compartida y métricas.\n\n' +
+'Merlin\'t es tu tablero de tareas personal, con herramientas para trabajar en equipo: responsables que validan, subtareas que se pasan entre compañeros, una biblioteca compartida y métricas.\n\n' +
 '## Cómo entrar\n' +
 'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras desde la tuerca de arriba a la derecha (junto a la campana), que también tiene el fondo claro u oscuro, las preferencias de avisos y «Salir»; el sistema recuerda el tema que elegís. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
 '## Dónde está cada cosa\n' +
@@ -3575,7 +3575,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 'El botón Eliminar pide una segunda confirmación. Las tareas que te asignó tu responsable no se pueden eliminar.' },
 
     { id: 'proyectos', t: 'Proyectos de equipo y etiquetas', b:
-'Los proyectos de Pendientes son siempre de equipo (ya no hay proyectos personales).\n\n' +
+'Los proyectos de Merlin\'t son siempre de equipo (ya no hay proyectos personales).\n\n' +
 '## Cómo funcionan\n' +
 'Los proyectos son del equipo: los crea cualquier persona desde **Proyectos** («Crear proyecto») y quien lo crea es su **responsable**.\n' +
 '- **Participantes**: el responsable elige en Gestión («Editar en Gestión») quiénes participan, entre su equipo (compañeros, su responsable y sus directos). Los participantes ven el proyecto, vinculan sus tareas desde el detalle («Proyecto de equipo») y crean tareas nuevas con «Agregar tarea», directo desde el proyecto.\n' +
@@ -3762,7 +3762,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var secs = GUIA.filter(function (g) { return (!g.lider || isLider) && (!g.admin || isAdmin); });
     if (!secs.some(function (g) { return g.id === guiaSec; })) guiaSec = secs[0].id;
     var head = mk('div', 'v-head'), t = mk('div');
-    t.appendChild(mk('h1', '', 'Guía de uso')); t.appendChild(mk('p', '', 'Cómo funciona Pendientes, paso a paso.'));
+    t.appendChild(mk('h1', '', 'Guía de uso')); t.appendChild(mk('p', '', 'Cómo funciona Merlin\'t, paso a paso.'));
     head.appendChild(t);
     var book = mk('div', 'book'), toc = mk('div', 'book-toc'), box = mk('div', 'book-page');
     function show() {
@@ -4695,7 +4695,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     var csv = '﻿' + [head].concat(rows).map(function (r) { return r.map(csvCell).join(';'); }).join('\r\n');
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-    a.download = 'pendientes-tareas-' + todayISO() + '.csv';
+    a.download = 'merlint-tareas-' + todayISO() + '.csv';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
   }
