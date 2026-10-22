@@ -437,6 +437,36 @@ body.has-side .wrap { margin-left: 216px; margin-right: auto; width: calc(100% -
   body.has-side .wrap { margin-left: auto; width: auto; }
   body.has-side { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
 }
+/* Tickets */
+.tk-list { display: flex; flex-direction: column; gap: 8px; }
+.tk-row { text-align: left; display: flex; flex-direction: column; gap: 8px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); color: var(--ink); width: 100%; }
+.tk-row:hover { border-color: var(--line-strong); box-shadow: var(--shadow-pop); }
+.tk-row h4 { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.tk-row h4 small { color: var(--faint); font-weight: 500; font-size: 13px; margin-right: 6px; }
+.tk-row .meta, .tk-pills { padding-left: 0; }
+.tk-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.tk-st { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.tk-st[data-s="nuevo"] { background: var(--accent-soft); color: var(--accent); }
+.tk-st[data-s="en_curso"] { background: var(--proc-soft); color: var(--proc); }
+.tk-st[data-s="resuelto"] { background: var(--comp-soft); color: var(--comp); }
+.tk-st[data-s="cerrado"] { background: var(--pend-soft); color: var(--pend); }
+.tk-form, .tk-det { display: flex; flex-direction: column; gap: 18px; max-width: 760px; }
+.tk-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 560px) { .tk-2 { grid-template-columns: 1fr; } }
+.tk-hint { margin: 0; font-size: 12.5px; color: var(--faint); }
+.tk-block h3 { margin: 0 0 6px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.tk-block p { margin: 0; font-size: 14.5px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tk-block a { color: var(--accent); overflow-wrap: anywhere; }
+.tk-case { padding: 12px 14px; background: var(--surface-2); border-radius: 8px; }
+.tk-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.tk-acts .btn-p { height: 40px; }
+.tk-hilo { display: flex; flex-direction: column; gap: 10px; }
+.tk-msg { padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.tk-msg.mine { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 25%, var(--line)); }
+.tk-msg b { font-size: 13px; font-weight: 600; }
+.tk-msg small { color: var(--faint); margin-left: 6px; font-size: 12px; }
+.tk-msg p { margin: 4px 0 0; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 420px) { .side button { font-size: 10.5px; } }
 .v-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
 .v-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 .btn-p { background: var(--accent); color: var(--accent-ink); font-weight: 600; font-size: 14px; padding: 0 16px; height: 40px; display: inline-flex; align-items: center; gap: 8px; }
@@ -1007,12 +1037,14 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   <button type="button" data-view="met" id="side-met"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Métricas</button>
   <button type="button" data-view="lib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>Biblioteca<span class="nb" id="lib-n" hidden></span></button>
   <button type="button" data-view="proy" id="side-proy"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V4M5 5h11l-2 4 2 4H5"/></svg>Proyectos</button>
+  <button type="button" data-view="tk" id="side-tk"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5V6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v2a2.5 2.5 0 0 0 0 5v2a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 15.5v-2a2.5 2.5 0 0 0 0-5zM14 5v14"/></svg>Tickets<span class="nb" id="tk-n" hidden></span></button>
   <button type="button" data-view="gest" id="side-gest" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5M16.5 5.2a3.2 3.2 0 0 1 0 5.6M18.5 14.8c1.6.7 2.6 2.2 3 4.5"/></svg>Gestión</button>
   <button type="button" data-view="guia"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.5a2.4 2.4 0 1 1 3.4 2.2c-.7.4-1.1.9-1.1 1.8M12 16.6v.1"/></svg>Guía</button>
 </nav>
 
 <main class="wrap" id="lib-view" hidden></main>
 <main class="wrap" id="gest-view" hidden></main>
+<main class="wrap" id="tk-view" hidden></main>
 <main class="wrap" id="proy-view" hidden></main>
 <main class="wrap" id="met-view" hidden></main>
 <main class="wrap" id="guia-view" hidden></main>
@@ -2297,7 +2329,11 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     loadEqProy();
     loadDeps();
     refreshLecturas();
-    loadNotifs(); loadPrefs(); loadHitos();
+    loadNotifs(); loadPrefs(); loadHitos(); loadTickets();
+    if (tkChannel) sb.removeChannel(tkChannel);
+    tkChannel = sb.channel('tk-' + me).on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, loadTickets).subscribe();
+    if (tkCmChannel) sb.removeChannel(tkCmChannel);
+    tkCmChannel = sb.channel('tkc-' + me).on('postgres_changes', { event: '*', schema: 'public', table: 'ticket_comentarios' }, function () { if (tkOpen) loadTkComents(); }).subscribe();
     if (notifChannel) sb.removeChannel(notifChannel);
     notifChannel = sb.channel('nt-' + me).on('postgres_changes', { event: '*', schema: 'public', table: 'notificaciones' }, loadNotifs).subscribe();
     loadEquipo().then(loadDeleg);
@@ -2395,7 +2431,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
   $('logout').addEventListener('click', async function () {
     await sb.auth.signOut();
     if (channel) { sb.removeChannel(channel); channel = null; }
-    byId = {}; col = null; me = ''; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; comentarios = {}; threadRefreshers = {}; deps = []; depTasks = {}; closeNotif(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
+    byId = {}; col = null; me = ''; misResp = []; directos = []; names = {}; filterProj = ''; $('team-btn').hidden = true; $('bell-btn').hidden = true; $('pass-btn').hidden = true; closeChPw(); deleg = []; companeros = []; if (delegChannel) { sb.removeChannel(delegChannel); delegChannel = null; } if (cmChannel) { sb.removeChannel(cmChannel); cmChannel = null; } if (notifChannel) { sb.removeChannel(notifChannel); notifChannel = null; } notifs = []; silenciadas = []; hitos = []; tickets = []; tkServicios = []; tkComents = []; tkOpen = ''; tkForm = null; if (tkChannel) { sb.removeChannel(tkChannel); tkChannel = null; } if (tkCmChannel) { sb.removeChannel(tkCmChannel); tkCmChannel = null; } pintarTk(); comentarios = {}; threadRefreshers = {}; deps = []; depTasks = {}; closeNotif(); $('side').hidden = true; document.body.classList.remove('has-side'); libros = []; eqProy = []; eqMiem = []; eqLib = []; lecturasMias = {}; pendLect = []; pintarBadge(); setView('board'); closePanel(); closeAdmin(); closeTeam(); render(); showLogin(true); tallyEl.textContent = 'sin sesión';
     perfil = null; $('who').textContent = ''; $('who-mail').textContent = ''; $('title').textContent = 'Mi tablero'; $('admin-btn').hidden = true;
   });
 
@@ -2763,6 +2799,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     $('met-view').hidden = v !== 'met';
     $('lib-view').hidden = v !== 'lib';
     $('gest-view').hidden = v !== 'gest';
+    $('tk-view').hidden = v !== 'tk';
     $('side').querySelectorAll('[data-view]').forEach(function (b) {
       if (b.dataset.view === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
@@ -2771,6 +2808,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     if (v === 'proy') { proyOpen = ''; loadProyectosVista(); }
     if (v === 'lib') { libOpen = ''; libEdit = null; loadBiblioteca(); }
     if (v === 'gest') { loadBiblioteca(); loadTeam(); loadHitos(); }
+    if (v === 'tk') { tkOpen = ''; tkForm = null; tkComents = []; renderTk(); loadTickets(); }
     window.scrollTo(0, 0);
   }
   $('side').addEventListener('click', function (e) {
@@ -3493,7 +3531,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '## Cómo entrar\n' +
 'Entrás con tu email y contraseña. Las cuentas las crea el administrador (no hay registro libre). La primera vez que entres, el sistema te pide cambiar la contraseña temporal por una propia (mínimo 10 caracteres, con letras y números). Después podés cambiarla cuando quieras desde la tuerca de arriba a la derecha (junto a la campana), que también tiene el fondo claro u oscuro, las preferencias de avisos y «Salir»; el sistema recuerda el tema que elegís. Si la olvidás, pedile al administrador que la restablezca: al entrar vas a elegir una nueva.\n\n' +
 '## Dónde está cada cosa\n' +
-'- **Barra lateral** (abajo en el celular): Tablero, Métricas, Biblioteca, Proyectos, Gestión (si tenés gente a cargo o creaste proyectos) y Guía.\n' +
+'- **Barra lateral** (abajo en el celular): Tablero, Métricas, Biblioteca, Proyectos, Tickets, Gestión (si tenés gente a cargo o creaste proyectos) y Guía.\n' +
 '- **Barra de arriba**: Mi equipo (solo líderes), Usuarios (solo administradores), la campana de notificaciones y la **tuerca** con tus opciones: tema claro u oscuro, cambiar contraseña, preferencias de avisos y Salir.\n\n' +
 '## Tu primer día\n' +
 '- Cargá tus tareas en el Tablero con el botón «Nueva tarea».\n' +
@@ -3593,7 +3631,8 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '- **Comentarios**: alguien comenta una tarea que ves (varios mensajes seguidos se agrupan en un solo aviso).\n' +
 '- **Biblioteca**: te comparten un libro, te piden leerlo o lo actualizan.\n' +
 '- **Proyectos**: te suman a un proyecto o se cumple un hito.\n' +
-'- **Equipo**: te suman un responsable nuevo.\n\n' +
+'- **Equipo**: te suman un responsable nuevo.\n' +
+'- **Tickets**: tickets nuevos para tu servicio, cambios de estado y mensajes de tus pedidos.\n\n' +
 'Nunca te avisan de lo que hacés vos mismo, ni de tareas privadas.\n\n' +
 '## Elegir qué recibir\n' +
 'Al final del panel, «Qué avisos querés recibir» te deja silenciar cada grupo. Por ahora los avisos son solo dentro de la web (no hay correo).' },
@@ -3618,6 +3657,22 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 'Cada vez que cambiás el contenido se guarda la versión anterior (las últimas 20). Con el botón **Historial** podés verlas y **restaurar** una; solo el autor ve el historial.\n\n' +
 'Para encontrar algo: el buscador mira títulos, resúmenes, el texto de las páginas y los enlaces, y te muestra el fragmento donde aparece. También podés filtrar por categoría, por proyecto o por lectura pendiente.' },
 
+    { id: 'tickets', t: 'Tickets', b:
+'**Tickets** es el lugar para pedir algo a un servicio (por ahora, **Merlin**, que atiende Santiago Risi). Está en la barra lateral.\n\n' +
+'## Cómo pedir algo\n' +
+'- Tocá «Nuevo ticket» y elegí el servicio. Abajo ves quién lo recibe.\n' +
+'- **Título** y **Contexto**: qué pasa, desde cuándo y a quién afecta.\n' +
+'- **Prioridad**: qué tan rápido lo necesitás (baja, media, alta o urgente).\n' +
+'- **Entorno afectado**: la **URL**, el **tipo** (desarrollo, pruebas, preproducción, producción u otro) y la **criticidad** (qué tan grave es para ese entorno).\n' +
+'- **Caso de ejemplo**: escribí un caso concreto, con los pasos y los datos, para que otra persona lo pueda reproducir.\n\n' +
+'## Qué ve cada uno\n' +
+'Cada ticket lo ven solo quien lo pidió y el responsable del servicio. Mientras esté «Nuevo» podés editarlo.\n\n' +
+'## Estados\n' +
+'- **Nuevo**: recién enviado.\n' +
+'- **En curso**: el responsable lo está trabajando.\n' +
+'- **Resuelto**: el responsable terminó. Vos confirmás y lo cerrás, o lo reabrís si no quedó bien.\n' +
+'- **Cerrado**: terminado (o cancelado por vos). Ya no admite mensajes.\n\n' +
+'Dentro del ticket hay una conversación entre las dos partes, y la campana te avisa de tickets nuevos, cambios de estado y mensajes. Si sos responsable de un servicio, el filtro «Recibidos» muestra los pedidos que te llegaron, los más urgentes primero.' },
     { id: 'metricas', t: 'Métricas', b:
 '**Métricas** (barra lateral) es tu panel: cómo venís trabajando, en un vistazo. Se calcula con tus tareas, sin que cargues nada extra. En cada gráfico, **Ver tabla** muestra los mismos números en una tabla, y al pasar el mouse (o con el teclado) ves el valor exacto.\n\n' +
 '## Arriba de todo\n' +
@@ -4233,7 +4288,8 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     comentarios: ['Comentarios', 'Cuando alguien comenta una tarea que ves'],
     biblioteca: ['Biblioteca', 'Libros compartidos, lecturas pedidas y libros actualizados'],
     proyectos: ['Proyectos', 'Cuando te suman a un proyecto o se cumple un hito'],
-    equipo: ['Equipo', 'Cambios en tus responsables']
+    equipo: ['Equipo', 'Cambios en tus responsables'],
+    tickets: ['Tickets', 'Tickets nuevos, cambios de estado y mensajes']
   };
   function noLeidas() { return notifs.filter(function (n) { return !n.leida; }).length; }
   function pintarCampana() {
@@ -4274,6 +4330,8 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       if (byId[n.ref_id]) { setView('board'); openPanel(n.ref_id); } else if (directos.length) openTeam();
     } else if (n.ref_tipo === 'libro') {
       setView('lib'); await loadBiblioteca(); libOpen = n.ref_id; libPage = 0; libPreview = null; libHist = false; libAudFor = ''; renderLib();
+    } else if (n.ref_tipo === 'ticket') {
+      setView('tk'); await loadTickets(); tkOpen = n.ref_id; tkComents = []; loadTkComents(); renderTk();
     } else if (n.ref_tipo === 'proyecto') {
       setView('proy'); await loadProyectosVista(); proyOpen = n.ref_id; renderProyectos();
     } else { setView('board'); }
@@ -4328,6 +4386,241 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
     notifs.forEach(function (n) { n.leida = true; }); pintarCampana(); renderNews();
     await sb.from('notificaciones').update({ leida: true }).eq('leida', false);
   });
+
+  /* ---------- Tickets ---------- */
+
+  var tkServicios = [], tickets = [], tkComents = [], tkOpen = '', tkForm = null, tkScope = 'mios', tkEstado = 'abiertos', tkChannel = null, tkCmChannel = null;
+  var TK_PRIO = { baja: 'Baja', media: 'Media', alta: 'Alta', urgente: 'Urgente' };
+  var TK_CRIT = { baja: 'Baja', media: 'Media', alta: 'Alta', critica: 'Crítica' };
+  var TK_ENT = { desarrollo: 'Desarrollo', pruebas: 'Pruebas', preproduccion: 'Preproducción', produccion: 'Producción', otro: 'Otro' };
+  var TK_EST = { nuevo: 'Nuevo', en_curso: 'En curso', resuelto: 'Resuelto', cerrado: 'Cerrado' };
+  function tkServ(id) { return tkServicios.filter(function (s) { return s.id === id; })[0]; }
+  function tkEsResp(t) { var s = tkServ(t.servicio_id); return !!s && s.responsable_id === me; }
+  function tkRecibe() { return tkServicios.some(function (s) { return s.responsable_id === me; }); }
+  function tkPend() {
+    // Para el responsable: tickets nuevos de su servicio. Para el solicitante: resueltos esperando confirmación.
+    return tickets.filter(function (t) {
+      return (tkEsResp(t) && t.estado === 'nuevo' && t.solicitante_id !== me) || (t.solicitante_id === me && t.estado === 'resuelto');
+    }).length;
+  }
+  function pintarTk() {
+    var n = tkPend(), b = $('tk-n'); b.hidden = !n; b.textContent = String(n);
+  }
+  async function loadTickets() {
+    if (!sb || !me) return;
+    var s = await sb.rpc('servicios_lista');
+    tkServicios = s.error ? [] : s.data;
+    var r = await sb.from('tickets').select('*').order('created_at', { ascending: false }).limit(300);
+    tickets = r.error ? [] : r.data; pintarTk();
+    if (tkOpen) await loadTkComents();
+    if (view === 'tk') renderTk();
+  }
+  async function loadTkComents() {
+    if (!tkOpen) { tkComents = []; return; }
+    var id = tkOpen, r = await sb.from('ticket_comentarios').select('*').eq('ticket_id', id).order('created_at');
+    if (id === tkOpen) { tkComents = r.error ? [] : r.data; if (view === 'tk') renderTk(); }
+  }
+  function tkErr(msg, r) {
+    var e = r.error; msg.textContent = e && e.code === 'P0001' ? e.message : 'No se pudo guardar. Revisá los datos e intentá de nuevo.';
+  }
+  function tkPrioCls(p) { return p === 'urgente' || p === 'alta' ? 'p-alta' : p === 'media' ? 'p-media' : 'p-baja'; }
+  function tkPills(t) {
+    var w = mk('div', 'tk-pills'), st = mk('span', 'tk-st', TK_EST[t.estado]); st.dataset.s = t.estado; w.appendChild(st);
+    w.appendChild(pill(tkPrioCls(t.prioridad), esc('Prioridad ' + TK_PRIO[t.prioridad].toLowerCase())));
+    w.appendChild(pill(t.entorno_tipo === 'produccion' ? 'p-alta' : '', esc(TK_ENT[t.entorno_tipo])));
+    w.appendChild(pill(t.criticidad === 'critica' || t.criticidad === 'alta' ? 'p-alta' : '', esc('Criticidad ' + TK_CRIT[t.criticidad].toLowerCase())));
+    return w;
+  }
+  function tkVisibles() {
+    var recibidos = tkScope === 'recibidos';
+    var l = tickets.filter(function (t) { return recibidos ? tkEsResp(t) : t.solicitante_id === me; });
+    l = l.filter(function (t) {
+      if (tkEstado === 'abiertos') return t.estado === 'nuevo' || t.estado === 'en_curso';
+      if (tkEstado === 'resueltos') return t.estado === 'resuelto';
+      if (tkEstado === 'cerrados') return t.estado === 'cerrado';
+      return true;
+    });
+    var peso = { urgente: 0, alta: 1, media: 2, baja: 3 };
+    if (recibidos) l.sort(function (a, b) { return (peso[a.prioridad] - peso[b.prioridad]) || (a.created_at - b.created_at); });
+    return l;
+  }
+  function renderTk() {
+    var v = $('tk-view');
+    if (tkForm) return renderTkForm(v);
+    if (tkOpen) { var cur = tickets.filter(function (x) { return x.id === tkOpen; })[0]; if (cur) return renderTkDet(v, cur); tkOpen = ''; }
+    var head = mk('div', 'v-head'), t = mk('div');
+    t.appendChild(mk('h1', '', 'Tickets'));
+    t.appendChild(mk('p', '', 'Pedí algo a un servicio y seguí cómo avanza. Lo ven solo vos y su responsable.'));
+    var nb = mk('button', 'btn-p'); nb.type = 'button'; nb.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo ticket';
+    nb.disabled = !tkServicios.length;
+    nb.addEventListener('click', function () {
+      var s0 = tkServicios.filter(function (s) { return s.responsable_id; })[0] || tkServicios[0];
+      tkForm = { id: '', servicio_id: s0 ? s0.id : '', titulo: '', prioridad: 'media', contexto: '', entorno_url: '', entorno_tipo: 'produccion', criticidad: 'media', caso_ejemplo: '' };
+      renderTk(); window.scrollTo(0, 0);
+    });
+    head.appendChild(t); head.appendChild(nb);
+    var parts = [head], tools = mk('div', 'lib-tools');
+    if (tkRecibe()) {
+      var fs = mk('div', 'filters'); fs.setAttribute('role', 'group'); fs.setAttribute('aria-label', 'Qué tickets ver');
+      [['mios', 'Mis pedidos'], ['recibidos', 'Recibidos']].forEach(function (o) {
+        var b = mk('button', 'fchip', o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(tkScope === o[0]));
+        b.addEventListener('click', function () { tkScope = o[0]; renderTk(); }); fs.appendChild(b);
+      });
+      tools.appendChild(fs);
+    } else tkScope = 'mios';
+    var fe = mk('div', 'filters'); fe.setAttribute('role', 'group'); fe.setAttribute('aria-label', 'Filtrar por estado');
+    [['abiertos', 'Abiertos'], ['resueltos', 'Resueltos'], ['cerrados', 'Cerrados'], ['todos', 'Todos']].forEach(function (o) {
+      var b = mk('button', 'fchip', o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(tkEstado === o[0]));
+      b.addEventListener('click', function () { tkEstado = o[0]; renderTk(); }); fe.appendChild(b);
+    });
+    tools.appendChild(fe); parts.push(tools);
+    var list = tkVisibles(), ul = mk('div', 'tk-list');
+    if (!list.length) ul.appendChild(mk('p', 'lib-empty', tkScope === 'recibidos' ? 'No hay tickets con este filtro.' : 'Todavía no hiciste pedidos. Tocá «Nuevo ticket».'));
+    list.forEach(function (tk) {
+      var b = mk('button', 'tk-row'); b.type = 'button';
+      var h = mk('h4'); h.appendChild(mk('small', '', '#' + tk.numero)); h.appendChild(document.createTextNode(tk.titulo)); b.appendChild(h);
+      b.appendChild(tkPills(tk));
+      var s = tkServ(tk.servicio_id);
+      b.appendChild(mk('small', 'tk-hint', (s ? s.nombre : 'Servicio') + ' · ' + (tkScope === 'recibidos' ? 'de ' + tk.solicitante_nombre : 'a ' + (s && s.responsable_nombre ? s.responsable_nombre : 'sin responsable')) + ' · ' + ago(tk.created_at)));
+      b.addEventListener('click', function () { tkOpen = tk.id; tkComents = []; loadTkComents(); renderTk(); window.scrollTo(0, 0); });
+      ul.appendChild(b);
+    });
+    parts.push(ul);
+    v.replaceChildren.apply(v, parts);
+  }
+
+  /* --- formulario (nuevo y edición mientras está «nuevo») --- */
+  function renderTkForm(v) {
+    var d = tkForm, parts = [];
+    parts.push(backBtn('← Tickets', function () { tkForm = null; renderTk(); }));
+    var head = mk('div', 'v-head'), t = mk('div'); t.appendChild(mk('h1', '', d.id ? 'Editar ticket' : 'Nuevo ticket'));
+    var sv0 = tkServ(d.servicio_id);
+    t.appendChild(mk('p', '', 'Cuanto más claro el caso, más rápido se resuelve.')); head.appendChild(t); parts.push(head);
+    var f = mk('div', 'tk-form'), msg = mk('p', 'a-msg'); msg.setAttribute('role', 'alert');
+    function field(label, el, hint) { var w = mk('div', 'field'); w.appendChild(mk('label', '', label)); w.appendChild(el); if (hint) w.appendChild(mk('p', 'tk-hint', hint)); return w; }
+    function sel(map, key, label) {
+      var s = mk('select'); s.setAttribute('aria-label', label);
+      Object.keys(map).forEach(function (k) { var o = mk('option', '', map[k]); o.value = k; s.appendChild(o); });
+      s.value = d[key]; s.addEventListener('change', function () { d[key] = s.value; }); return s;
+    }
+    var hintServ = mk('p', 'tk-hint');
+    function pintaResp() { var s = tkServ(d.servicio_id); hintServ.textContent = s ? (s.responsable_nombre ? 'Lo recibe ' + s.responsable_nombre + '.' : 'Este servicio todavía no tiene responsable.') : ''; }
+    var sv = mk('select'); sv.setAttribute('aria-label', 'Servicio'); sv.disabled = !!d.id;
+    tkServicios.forEach(function (s) { var o = mk('option', '', s.nombre); o.value = s.id; sv.appendChild(o); });
+    sv.value = d.servicio_id; sv.addEventListener('change', function () { d.servicio_id = sv.value; pintaResp(); });
+    pintaResp();
+    var sw = field('Servicio', sv); sw.appendChild(hintServ); f.appendChild(sw);
+    var ti = mk('input', 'txt'); ti.maxLength = 120; ti.value = d.titulo; ti.placeholder = 'Resumen en una línea'; ti.addEventListener('input', function () { d.titulo = ti.value; });
+    f.appendChild(field('Título', ti));
+    f.appendChild(field('Prioridad', sel(TK_PRIO, 'prioridad', 'Prioridad'), 'Qué tan rápido lo necesitás.'));
+    var cx = mk('textarea'); cx.maxLength = 2000; cx.value = d.contexto; cx.placeholder = 'Qué estabas haciendo, desde cuándo pasa, a quién afecta.'; cx.addEventListener('input', function () { d.contexto = cx.value; });
+    f.appendChild(field('Contexto', cx));
+    var ur = mk('input', 'txt'); ur.type = 'url'; ur.maxLength = 500; ur.value = d.entorno_url; ur.placeholder = 'https://…'; ur.setAttribute('inputmode', 'url'); ur.addEventListener('input', function () { d.entorno_url = ur.value.trim(); });
+    f.appendChild(field('URL del entorno afectado', ur));
+    var g = mk('div', 'tk-2');
+    g.appendChild(field('Tipo de entorno', sel(TK_ENT, 'entorno_tipo', 'Tipo de entorno')));
+    g.appendChild(field('Criticidad', sel(TK_CRIT, 'criticidad', 'Criticidad'), 'Qué tan grave es para el entorno afectado.'));
+    f.appendChild(g);
+    var ce = mk('textarea'); ce.maxLength = 4000; ce.value = d.caso_ejemplo; ce.placeholder = 'Un caso concreto: pasos que seguiste, datos que usaste, qué esperabas y qué pasó.'; ce.addEventListener('input', function () { d.caso_ejemplo = ce.value; });
+    f.appendChild(field('Caso de ejemplo', ce, 'Escribilo como si lo fuera a reproducir otra persona.'));
+    f.appendChild(msg);
+    var acts = mk('div', 'tk-acts'), ok = mk('button', 'btn-p', d.id ? 'Guardar cambios' : 'Enviar ticket'); ok.type = 'button';
+    var no = mk('button', 'btn-s', 'Cancelar'); no.type = 'button';
+    no.addEventListener('click', function () { tkForm = null; renderTk(); });
+    ok.addEventListener('click', async function () {
+      msg.textContent = '';
+      if (!d.servicio_id) { msg.textContent = 'Elegí un servicio.'; return; }
+      if (!d.titulo.trim()) { msg.textContent = 'Poné un título.'; ti.focus(); return; }
+      if (!d.contexto.trim()) { msg.textContent = 'Contá el contexto.'; cx.focus(); return; }
+      if (!/^https?:\/\/\S{3,}$/.test(d.entorno_url)) { msg.textContent = 'La URL del entorno debe empezar con http:// o https://.'; ur.focus(); return; }
+      if (!d.caso_ejemplo.trim()) { msg.textContent = 'Escribí un caso de ejemplo.'; ce.focus(); return; }
+      ok.disabled = true;
+      var row = { titulo: d.titulo.trim(), prioridad: d.prioridad, contexto: d.contexto.trim(), entorno_url: d.entorno_url, entorno_tipo: d.entorno_tipo, criticidad: d.criticidad, caso_ejemplo: d.caso_ejemplo.trim() };
+      var r;
+      if (d.id) r = await sb.from('tickets').update(row).eq('id', d.id).select('id');
+      else r = await sb.from('tickets').insert(Object.assign({ servicio_id: d.servicio_id }, row)).select('id').single();
+      if (r.error || (d.id && !(r.data && r.data.length))) { ok.disabled = false; if (d.id && !r.error) msg.textContent = 'El ticket ya no se puede editar.'; else tkErr(msg, r); return; }
+      var nid = d.id || r.data.id; tkForm = null; tkOpen = nid; tkComents = [];
+      await loadTickets(); window.scrollTo(0, 0);
+    });
+    acts.appendChild(ok); acts.appendChild(no); f.appendChild(acts);
+    parts.push(f);
+    v.replaceChildren.apply(v, parts);
+  }
+
+  /* --- detalle --- */
+  function renderTkDet(v, t) {
+    var parts = [backBtn('← Tickets', function () { tkOpen = ''; tkComents = []; renderTk(); })];
+    var s = tkServ(t.servicio_id), soy = t.solicitante_id === me, resp = tkEsResp(t);
+    var head = mk('div', 'v-head'), h = mk('div'); h.appendChild(mk('h1', '', '#' + t.numero + ' · ' + t.titulo));
+    h.appendChild(mk('p', '', (s ? s.nombre : 'Servicio') + ' · de ' + (soy ? 'vos' : t.solicitante_nombre) + ' a ' + (s && s.responsable_nombre ? s.responsable_nombre : 'sin responsable') + ' · ' + fmtStamp(t.created_at)));
+    head.appendChild(h);
+    if (soy && t.estado === 'nuevo') {
+      var eb = mk('button', 'btn-s', 'Editar'); eb.type = 'button';
+      eb.addEventListener('click', function () { tkForm = { id: t.id, servicio_id: t.servicio_id, titulo: t.titulo, prioridad: t.prioridad, contexto: t.contexto, entorno_url: t.entorno_url, entorno_tipo: t.entorno_tipo, criticidad: t.criticidad, caso_ejemplo: t.caso_ejemplo }; renderTk(); window.scrollTo(0, 0); });
+      head.appendChild(eb);
+    }
+    parts.push(head);
+    var det = mk('div', 'tk-det'); det.appendChild(tkPills(t));
+    function block(title, body, cls) { var b = mk('section', 'tk-block'); b.appendChild(mk('h3', '', title)); var p = mk('p', cls || '', body); b.appendChild(p); return b; }
+    det.appendChild(block('Contexto', t.contexto));
+    var ub = mk('section', 'tk-block'); ub.appendChild(mk('h3', '', 'Entorno afectado'));
+    var up = mk('p'), a = mk('a', '', t.entorno_url); if (/^https?:\/\//.test(t.entorno_url)) { a.href = t.entorno_url; a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+    up.appendChild(a); up.appendChild(document.createTextNode(' · ' + TK_ENT[t.entorno_tipo] + ' · criticidad ' + TK_CRIT[t.criticidad].toLowerCase())); ub.appendChild(up); det.appendChild(ub);
+    det.appendChild(block('Caso de ejemplo', t.caso_ejemplo, 'tk-case'));
+
+    // acciones según rol y estado
+    var acts = mk('div', 'tk-acts'), msg = mk('p', 'a-msg'); msg.setAttribute('role', 'alert');
+    function cambiar(label, estado, primary, ask) {
+      var b = mk('button', primary ? 'btn-p' : 'btn-s', label); b.type = 'button';
+      b.addEventListener('click', async function () {
+        if (ask && !window.confirm(ask)) return;
+        b.disabled = true; msg.textContent = '';
+        var r = await sb.rpc('cambiar_estado_ticket', { p_ticket: t.id, p_estado: estado });
+        if (r.error) { b.disabled = false; tkErr(msg, r); return; }
+        await loadTickets();
+      });
+      acts.appendChild(b);
+    }
+    if (resp) {
+      if (t.estado === 'nuevo') cambiar('Tomar (en curso)', 'en_curso', true);
+      if (t.estado === 'nuevo' || t.estado === 'en_curso') cambiar('Marcar como resuelto', 'resuelto', t.estado === 'en_curso');
+      if (t.estado === 'resuelto') cambiar('Volver a en curso', 'en_curso', false);
+    }
+    if (soy) {
+      if (t.estado === 'resuelto') { cambiar('Confirmar y cerrar', 'cerrado', true); if (!resp) cambiar('No quedó bien: reabrir', 'en_curso', false); }
+      if (t.estado === 'nuevo' || t.estado === 'en_curso') cambiar('Cancelar ticket', 'cerrado', false, '¿Cancelar este ticket? Después no se puede reabrir.');
+    }
+    if (t.estado === 'resuelto' && soy) det.appendChild(mk('p', 'tk-hint', 'El responsable lo marcó como resuelto. Confirmá para cerrarlo o reabrilo si no quedó bien.'));
+    if (acts.childNodes.length) det.appendChild(acts);
+    det.appendChild(msg);
+
+    // conversación
+    var hs = mk('section', 'tk-block'); hs.appendChild(mk('h3', '', 'Conversación'));
+    var hilo = mk('div', 'tk-hilo');
+    if (!tkComents.length) hilo.appendChild(mk('p', 'tk-hint', 'Todavía no hay mensajes.'));
+    tkComents.forEach(function (c) {
+      var m = mk('div', 'tk-msg' + (c.autor_id === me ? ' mine' : '')), who = mk('b', '', c.autor_id === me ? 'Vos' : c.autor_nombre);
+      who.appendChild(mk('small', '', fmtStamp(c.created_at)));
+      m.appendChild(who); m.appendChild(mk('p', '', c.texto)); hilo.appendChild(m);
+    });
+    hs.appendChild(hilo);
+    if (t.estado !== 'cerrado') {
+      var nt = mk('textarea'); nt.maxLength = 2000; nt.placeholder = 'Escribí un mensaje'; nt.setAttribute('aria-label', 'Mensaje'); nt.style.minHeight = '80px'; nt.style.marginTop = '10px';
+      var cm = mk('button', 'btn-s', 'Enviar mensaje'); cm.type = 'button'; cm.style.marginTop = '8px';
+      cm.addEventListener('click', async function () {
+        var tx = nt.value.trim(); if (!tx) return;
+        cm.disabled = true; msg.textContent = '';
+        var r = await sb.from('ticket_comentarios').insert({ ticket_id: t.id, texto: tx });
+        if (r.error) { cm.disabled = false; tkErr(msg, r); return; }
+        nt.value = ''; cm.disabled = false; await loadTkComents();
+      });
+      hs.appendChild(nt); hs.appendChild(cm);
+    } else hs.appendChild(mk('p', 'tk-hint', 'El ticket está cerrado: ya no admite mensajes.'));
+    det.appendChild(hs);
+    parts.push(det);
+    v.replaceChildren.apply(v, parts);
+  }
 
   /* ---------- Métricas (panel principal) ---------- */
 

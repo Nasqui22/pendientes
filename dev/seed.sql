@@ -52,4 +52,11 @@ begin
   insert into public.libros (user_id, titulo, resumen, categoria, alcance, paginas, enlaces)
   values (ids[2], 'Guía de bienvenida', 'Qué hacer la primera semana', 'general', 'equipo',
           '[{"t":"Introducción","b":"# Hola\nEste es un libro de ejemplo.\n- Punto uno\n- Punto dos"}]', '[{"l":"Mesa de ayuda","u":"https://ejemplo.com","k":"ayuda"}]');
+  -- Merlin lo atiende Virginia (en producción es Santiago Risi) y un ticket de ejemplo de Ana
+  update public.servicios set responsable_id = ids[2] where clave = 'merlin';
+  delete from public.tickets where solicitante_id = ids[3];
+  insert into public.tickets (servicio_id, solicitante_id, titulo, prioridad, contexto, entorno_url, entorno_tipo, criticidad, caso_ejemplo)
+  select id, ids[3], 'El reporte mensual sale en blanco', 'alta', 'Pasa desde el lunes a toda el área de ventas.',
+         'https://merlin.ejemplo.com/reportes', 'produccion', 'alta', 'Entro a Reportes > Mensual, elijo octubre y toco Generar: queda en blanco. Esperaba ver la tabla.'
+  from public.servicios where clave = 'merlin';
 end $$;
