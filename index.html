@@ -4392,7 +4392,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
       });
       var sp = mk('span', '', 'Recibir un correo por cada aviso'); sp.appendChild(mk('small', '', 'Con el detalle del aviso y un botón para abrir la web'));
       lb.appendChild(cb); lb.appendChild(sp); return lb;
-    })()));
+    })()]));
   }
   $('n-readall').addEventListener('click', async function () {
     notifs.forEach(function (n) { n.leida = true; }); pintarCampana(); renderNews();
