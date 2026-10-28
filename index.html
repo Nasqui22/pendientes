@@ -3635,7 +3635,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
 '- **Tickets**: tickets nuevos para tu servicio, cambios de estado y mensajes de tus pedidos.\n\n' +
 'Nunca te avisan de lo que hacés vos mismo, ni de tareas privadas.\n\n' +
 '## Elegir qué recibir\n' +
-'Al final del panel, «Qué avisos querés recibir» te deja silenciar cada grupo. Debajo, «Recibir un correo por cada aviso» manda un mail a tu dirección cada vez que llega un aviso de los grupos que no silenciaste. El correo no trae el contenido: solo el grupo y un enlace a la web. Como máximo llegan 20 por hora.' },
+'Al final del panel, «Qué avisos querés recibir» te deja silenciar cada grupo. Debajo, «Recibir un correo por cada aviso» manda un mail a tu dirección cada vez que llega un aviso de los grupos que no silenciaste. El correo trae lo mismo que el aviso (grupo, quién lo generó, título y detalle) y un botón para abrir la web. Como máximo llegan 20 por hora.' },
 
     { id: 'biblioteca', t: 'Biblioteca', b:
 'La Biblioteca es un espacio para compartir información con tu equipo, parecido a las páginas de Microsoft. Cada **libro** tiene varias páginas y enlaces. No se pueden subir archivos: solo texto y URLs.\n\n' +
@@ -4390,7 +4390,7 @@ button.dep-t:hover { color: var(--accent); text-decoration: underline; }
         if (r.error) { nSay('No se pudo guardar la preferencia.'); cb.checked = !cb.checked; return; }
         correoAvisos = cb.checked; nSay('Preferencias guardadas.', true);
       });
-      var sp = mk('span', '', 'Recibir un correo por cada aviso'); sp.appendChild(mk('small', '', 'Sin el contenido: solo avisa y te lleva a la web'));
+      var sp = mk('span', '', 'Recibir un correo por cada aviso'); sp.appendChild(mk('small', '', 'Con el detalle del aviso y un botón para abrir la web'));
       lb.appendChild(cb); lb.appendChild(sp); return lb;
     })()));
   }

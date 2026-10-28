@@ -15,8 +15,13 @@ begin
   if r.estado is distinct from 'enviado' or r.request_id is null then raise exception 'FALLA: no encoló el correo (%)', r.estado; end if;
   select count(*) into n from net.http_request_queue where url = 'http://127.0.0.1:9/prueba' and convert_from(body, 'utf8') like '%a@t.local%';
   if n <> 1 then raise exception 'FALLA: no se encoló un POST para a@t.local (%)', n; end if;
-  -- el contenido del aviso no viaja por correo
-  select count(*) into n from net.http_request_queue where convert_from(body, 'utf8') like '%secreto%'; if n <> 0 then raise exception 'FALLA: el correo lleva el contenido del aviso'; end if;
+  -- el correo lleva el título y el detalle del aviso, y el nombre de quien lo generó
+  select count(*) into n from net.http_request_queue where convert_from(body, 'utf8') like '%Te asignaron una tarea%' and convert_from(body, 'utf8') like '%secreto%'; if n <> 1 then raise exception 'FALLA: el correo no lleva título y detalle (%)', n; end if;
+  -- el texto de usuarios se escapa: no entra HTML ajeno al correo
+  perform notificar(a, b, 'comentarios', 'comentario', '<script>alert(1)</script>', '<img src=x onerror=alert(1)>' || E'\n' || 'línea 2', 'tarea', gen_random_uuid());
+  select count(*) into n from net.http_request_queue where convert_from(body, 'utf8') like '%<script>%' or convert_from(body, 'utf8') like '%<img src=x%'; if n <> 0 then raise exception 'FALLA: el correo deja pasar HTML de usuarios (%)', n; end if;
+  select count(*) into n from net.http_request_queue where convert_from(body, 'utf8') like '%&lt;script&gt;%' and convert_from(body, 'utf8') like '%línea 2%'; if n < 1 then raise exception 'FALLA: el correo no escapó el texto'; end if;
+  delete from correos_enviados where para_id = a;
   -- el token viaja en el encabezado
   select count(*) into n from net.http_request_queue where url = 'http://127.0.0.1:9/prueba' and headers::text like '%token-de-prueba%'; if n <> 1 then raise exception 'FALLA: falta el token en el encabezado'; end if;
 
